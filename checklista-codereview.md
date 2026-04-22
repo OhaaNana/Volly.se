@@ -4,7 +4,7 @@
 - [ ] Gör koden det den ska göra?
 - [ ] Hanteras edge cases? 
 - [ ] Är koden lätt att läsa?
-- [ ] Finns det onödig dupplicering? 
+- [ ] Finns det onödig dupplicering? 
 
 ## Säkerhet och prestanda 
 
