@@ -1,6 +1,24 @@
 # Zero Bug Heroes
 
+# Branch Strategy
 
+This project uses a three-tier branch strategy with short-lived feature branches.
+
+## Branches
+
+| Branch | Purpose |
+|--------|---------|
+| `main` | Production-ready code. Always stable. |
+| `staging` | Integration branch. Testing before production. |
+| `feature/*` | Short-lived branches for individual features or fixes. |
+
+## Rules
+
+- never commit directly to `main` or `staging`
+- feature branches should be short-lived — open a MR early
+- branch names should be descriptive: `feature/`, `fix/`, `chore/`
+- all MRs require at least one reviewer before merging
+- CI must pass before merge
 
 ## Getting started
 
