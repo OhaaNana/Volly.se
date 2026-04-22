@@ -8,9 +8,9 @@
 
 ## Säkerhet och prestanda 
 
-- [ ] Läcks känslig information (tex. lösenord, tokens, API nycklar)?
-- [ ] Finns det risk för SQL-injections eller osäker data? 
-- [ ] Hanteras input på ett korrekt och säkert sätt?
+- [ ] Läcks känslig information (tex. lösenord, tokens, API nycklar)?
+- [ ] Finns det risk för SQL-injections eller osäker data? 
+- [ ] Hanteras input på ett korrekt och säkert sätt?
 - [ ] Finns det onödiga loopar eller tunga operationer?
-- [ ] Görs databasanrop i onödan? 
+- [ ] Görs databasanrop i onödan? 
 
