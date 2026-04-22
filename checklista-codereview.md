@@ -14,4 +14,3 @@
 - [ ] Finns det onödiga loopar eller tunga operationer?
 - [ ] Görs databasanrop i onödan? 
 
-- [ ] test
