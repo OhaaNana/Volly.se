@@ -14,7 +14,7 @@ Hur har du testat detta?
 
 - [ ] Testat manuellt
 - [ ] Testat edge cases
-- [ ] Allt fungerar som förväntat
+- [ ] Allt fungerar som det ska
 
 ---
 
