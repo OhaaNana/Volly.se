@@ -13,4 +13,5 @@
 - [ ] Hanteras input på ett korrekt och säkert sätt?
 - [ ] Finns det onödiga loopar eller tunga operationer?
 - [ ] Görs databasanrop i onödan? 
+- [ ] Tester finns och går igenom. 
 
