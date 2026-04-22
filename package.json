@@ -1,0 +1,4 @@
+"scripts": {
+  "lint": "eslint .",
+  "format:check": "prettier --check ."
+}
