@@ -7,29 +7,21 @@ install:
   image: oven/bun:latest
   script:
     - bun install --frozen-lockfile
-  cache:
-    key: $CI_COMMIT_REF_SLUG
+  artifacts:
     paths:
       - node_modules/
+    expire_in: 1 hour
 
 eslint:
   stage: quality
   image: oven/bun:latest
-  cache:
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - node_modules/
-    policy: pull
+  needs: [install]
   script:
-    - bun run lint
+    - bunx eslint .
 
 prettier:
   stage: quality
   image: oven/bun:latest
-  cache:
-    key: $CI_COMMIT_REF_SLUG
-    paths:
-      - node_modules/
-    policy: pull
+  needs: [install]
   script:
-    - bun run format:check
+    - bunx prettier --check .
