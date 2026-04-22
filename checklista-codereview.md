@@ -2,7 +2,7 @@
 
 ## Kod kvalité och funtionalitet
 - [ ] Gör koden det den ska göra?
-- [ ] Hanteras edge cases? 
+- [ ] Hanteras edge cases? 
 - [ ] Är koden lätt att läsa?
 - [ ] Finns det onödig dupplicering? 
 
