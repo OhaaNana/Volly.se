@@ -36,7 +36,7 @@ export async function connection(app: FastifyInstance) {
           userId: user.userId,
           roomId: user.roomId,
           message: text,
-          timestamp: Date.now(),
+          created_at: Date.now(),
         });
 
         const roomClients = rooms.get(user.roomId) ?? new Set();
