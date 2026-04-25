@@ -13,15 +13,39 @@
     "@fastify/helmet": "^13.0.2",
     "@fastify/postgres": "^6.0.2",
     "@fastify/rate-limit": "^10.3.0",
+    "@fastify/type-provider-typebox": "^6.1.0",
     "@fastify/websocket": "^11.2.0",
+    "@sinclair/typebox": "^0.34.49",
     "axios": "^1.15.0",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
     "fastify": "^5.8.5",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.20.0",
     "react": "^19",
     "react-dom": "^19"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/bun": "latest",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.6.0",
+    "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/bun": "latest"
-  }
+    "nodemon": "^3.1.14",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^6.0.3"
+  },
+  "description": "To make it easy for you to get started with GitLab, here's a list of recommended next steps.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://git.chas-lab.dev/chas-challenge-2026/grupp-15/zero-bug-heroes/zero-bug-heroes.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
