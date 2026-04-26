@@ -1,7 +1,7 @@
 import { useState } from "react";
 import LoginPage from "./LogingPage";
 import SignupPage from "./signupPage";
-import Navbar from "./Navbar";
+import HomePage from "./HomePage";
 
 export function App() {
   const [currentUser, setCurrentUser] = useState<string | null>(() => localStorage.getItem("currentUser"));
@@ -15,11 +15,7 @@ export function App() {
   };
 
   return (
-    <div>
-      <Navbar />
-      <main className="pt-20">
-      <h1>Zero bugs heros</h1>
-
+    <HomePage>
       {currentUser ? (
         <div>
           <p>You are logged in as: <strong>{currentUser}</strong></p>
@@ -42,9 +38,7 @@ export function App() {
           }}
         />
       )}
-      </main>
-
-    </div>
+    </HomePage>
   );
 }
 
