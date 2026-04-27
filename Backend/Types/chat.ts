@@ -8,5 +8,5 @@ export type Payload = {
   userId: number,
   roomId: number,
   message: string,
-  created_at: Date: Date,
+  created_at: Date
 };
