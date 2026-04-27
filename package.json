@@ -4,8 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bun --hot src/index.ts",
-    "build": "bun build ./src/index.html --outdir=dist --sourcemap --target=browser --minify --define:process.env.NODE_ENV='\"production\"' --env='BUN_PUBLIC_*'",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "dev:api": "bun --hot src/index.ts",
     "start": "NODE_ENV=production bun src/index.ts"
   },
   "dependencies": {
@@ -28,6 +30,8 @@
     "@types/react-dom": "^19",
     "autoprefixer": "^10.5.0",
     "postcss": "^8.5.10",
+    "@vitejs/plugin-react": "^5.0.4",
+    "vite": "^7.1.11",
     "tailwindcss": "^4.2.4"
   }
 }
