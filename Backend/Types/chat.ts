@@ -7,6 +7,6 @@ export type UserMeta = {
 export type Payload = {
   userId: number,
   roomId: number,
-  message: string,
-  created_at: Date
+  text_message: string,
+  created_at: string
 };
