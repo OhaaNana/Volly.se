@@ -6,6 +6,10 @@ function Navbar() {
     
   }
 
+  document.addEventListener("mousedown")
+    return () => document.removeEventListener("mousedown")
+  }
+
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-[#f2ede385] border-b border-[rgb(229,221,208)] shadow-[0_10px_30px_rgba(120,100,70,0.14)]">
       <nav className="w-full px-4 sm:px-6 py-3 md:py-4 flex items-center justify-between">

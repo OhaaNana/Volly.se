@@ -33,6 +33,12 @@ function HomePage({ children }: HomePageProps) {
             samarbete, medmänsklighet och ansvar är en självklar del av hur vi
             lever.
           </p>
+          <div>
+            <h1>Hur volly fungerar</h1>
+            <p>
+
+            </p>
+          </div>
         </div>
       </section>
     </div>
