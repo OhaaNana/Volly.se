@@ -14,8 +14,17 @@ export async function connection(app: FastifyInstance) {
         roomId: string;
       };
 
-      console.log("Connected Server");
+      //if (!query || !query.userId || !query.roomId) {
+      //console.log("Invalid query:", request.query);
+      //socket.close(1009, "Invalid query parameters");
+      //return;
+      //}
 
+      if (!userId || !roomId) {
+        console.log("Missing query params");
+        socket.close(1008, "Invalid query parameters bla");
+        return;
+      }
       users.set(socket, { userId, roomId });
 
       if (!rooms.has(roomId)) {
@@ -24,9 +33,7 @@ export async function connection(app: FastifyInstance) {
 
       rooms.get(roomId)!.add(socket);
 
-      console.log(`${userId} has Connected to Room: ${roomId}`);
-
       registerChatevents(socket, request);
-    }
+    },
   );
 }

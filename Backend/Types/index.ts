@@ -1,1 +1,1 @@
-export type {Payload, UserMeta} from "./chat"
+export type { Payload, UserMeta } from "./chat";
