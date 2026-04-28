@@ -14,16 +14,20 @@ export function App() {
     setView("login");
   };
 
+  if (currentUser) {
+    return (
+      <div>
+        <p>You are logged in as: <strong>{currentUser}</strong></p>
+        <button type="button" onClick={logout}>
+          Log out
+        </button>
+      </div>
+    );
+  }
+
   return (
     <HomePage>
-      {currentUser ? (
-        <div>
-          <p>You are logged in as: <strong>{currentUser}</strong></p>
-          <button type="button" onClick={logout}>
-            Log out
-          </button>
-        </div>
-      ) : view === "login" ? (
+      {view === "login" ? (
         <LoginPage
           initialEmail={prefillEmail}
           onLoginSuccess={(email) => setCurrentUser(email)}
