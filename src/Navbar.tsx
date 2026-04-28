@@ -6,9 +6,9 @@ function Navbar() {
     
   }
 
-  document.addEventListener("mousedown")
-    return () => document.removeEventListener("mousedown")
-  }
+ document.addEventListener("mousedown", (e) => {
+  console.log("clicked", e)
+})
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-[#f2ede385] border-b border-[rgb(229,221,208)] shadow-[0_10px_30px_rgba(120,100,70,0.14)]">
@@ -27,7 +27,7 @@ function Navbar() {
             <button
               key={link.id}
               onClick={() => scrollTo(link.id)}
-              className="px-4 py-2 text-[10px] uppercase tracking-[0.4em] text-[#000000] transition-all duration-200 hover:text-[#bbb7b1] hover:bg-[rgba(214,207,196,0.75)] hover:shadow-[0_8px_25_rgba(120,100,70,0.2)] hover:-translate-y-[1px]"
+              className="px-4 py-2 text-[10px] uppercase tracking-[0.4em] text-[#000000] transition-all duration-200 hover:text-[#bbb7b1] hover:bg-[rgba(214,207,196,0.75)] hover:shadow-[0_8px_25_rgba(120,100,70,0.2)] hover:-translate-y-px"
             >
               {link.label}
             </button>

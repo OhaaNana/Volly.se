@@ -10,11 +10,14 @@ function HomePage({ children }: HomePageProps) {
     <div className="min-h-screen bg-white flex flex-col p-6">
       <Navbar />
 
-      <main className="flex-grow flex items-center justify-center">
+      <main className="grow flex items-center justify-center">
         <div className="mt-12 w-full max-w-7xl md:mt-16">{children}</div>
       </main>
 
-      <section className="w-full max-w-7xl self-center px-8 py-10 sm:px-12 md:px-20 md:py-14">
+      <section
+        id="Vision"
+        className="scroll-mt-28 w-full max-w-7xl self-center px-8 py-10 sm:px-12 md:px-20 md:py-14"
+      >
         <h1 className="mt-3 text-6xl text-center font-black tracking-tight text-black sm:text-7xl md:text-8xl">
           VÅR VISION
         </h1>
@@ -33,12 +36,9 @@ function HomePage({ children }: HomePageProps) {
             samarbete, medmänsklighet och ansvar är en självklar del av hur vi
             lever.
           </p>
-          <div>
-            <h1>Hur volly fungerar</h1>
-            <p>
-
-            </p>
-          </div>
+        <div>
+          <h1></h1>
+        </div>
         </div>
       </section>
     </div>
