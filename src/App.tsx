@@ -1,10 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoginPage from "./LogingPage";
 import SignupPage from "./signupPage";
-import HomePage from "./HomePage";
+import HomePage from "./pages/HomePage";
+import HomePageLoggedIn from "./pages/HomePageLoggIn";
 
 export function App() {
-  const [currentUser, setCurrentUser] = useState<string | null>(() => localStorage.getItem("currentUser"));
+  
+  //status = variabel som kan ändras
+  //setStatus = Vad som avgör att den ändras
+  const [status, setStatus] = useState("");
+
+  useEffect(() => {
+    fetch("/api/health")
+      .then((res) => res.json())
+      .then((data) => setStatus(data.ok ? "Backend funkar" : "ERROR, Backend funkar inte"));
+  }, []);
+  
+  const [currentUser, setCurrentUser] = useState<string | null>(() =>
+    localStorage.getItem("currentUser")
+  );
+
   const [view, setView] = useState<"login" | "signup">("login");
   const [prefillEmail, setPrefillEmail] = useState("");
 
@@ -14,19 +29,25 @@ export function App() {
     setView("login");
   };
 
+  if (currentUser) {
+    return (
+      <HomePageLoggedIn
+        currentUser={currentUser}
+        onLogout={logout}
+      />
+    );
+  }
+
   return (
     <HomePage>
-      {currentUser ? (
-        <div>
-          <p>You are logged in as: <strong>{currentUser}</strong></p>
-          <button type="button" onClick={logout}>
-            Log out
-          </button>
-        </div>
-      ) : view === "login" ? (
+      <h1>{status}</h1>
+      {view === "login" ? (
         <LoginPage
           initialEmail={prefillEmail}
-          onLoginSuccess={(email) => setCurrentUser(email)}
+          onLoginSuccess={(email) => {
+            localStorage.setItem("currentUser", email);
+            setCurrentUser(email);
+          }}
           onCreateAccount={() => setView("signup")}
         />
       ) : (

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import Navbar from "./Navbar";
+import Navbar from "../Navbar";
 
 type HomePageProps = {
   children: ReactNode;
@@ -13,6 +13,7 @@ function HomePage({ children }: HomePageProps) {
       <main className="flex-grow flex items-center justify-center">
         <div className="w-full max-w-7xl">
           {children}
+          <h1>hejhej</h1>
         </div>
       </main>
      
