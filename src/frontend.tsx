@@ -7,13 +7,14 @@
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { App } from "./App";
+import { RouterProvider } from "react-router-dom";
+import appRouter from "./routes/AppRouter";
 import "./index.css";
 
 const elem = document.getElementById("root")!;
 const app = (
   <StrictMode>
-    <App />
+    <RouterProvider router={appRouter()} />
   </StrictMode>
 );
 

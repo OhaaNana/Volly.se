@@ -26,7 +26,7 @@ function LoginPage({ onCreateAccount, onLoginSuccess, initialEmail = "" }: Login
   };
 
   return (
-    <div className="flex min-h-[80vh] w-full items-center justify-between px-20 py-10 bg-[#e5e5e5] rounded-3xl">
+    <div className="mt-8 flex min-h-[80vh] w-full items-center justify-between px-20 py-10 bg-[#e5e5e5] rounded-3xl">
       {/* Vänster sida: Hero Text */}
       <div className="w-1/2">
         <h1 className="text-8xl font-medium leading-tight text-black tracking-tighter">
@@ -79,7 +79,7 @@ function LoginPage({ onCreateAccount, onLoginSuccess, initialEmail = "" }: Login
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-black text-white py-3 font-bold rounded-md hover:opacity-90 transition-opacity"
+            className="pointer w-full bg-black text-white py-3 font-bold rounded-md hover:opacity-90 transition-opacity"
           >
             {isLoading ? "Loggar in..." : "Logga in"}
           </button>
