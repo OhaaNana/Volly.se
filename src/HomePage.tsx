@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Navbar from "./Navbar";
 import upArrow from "./assets/upArrow.png";
+import Footer from "./components/footer";
 
 
 
@@ -18,43 +19,24 @@ const scroll = () => {
 function HomePage({ children }: HomePageProps) {
   return (
     <div className="min-h-screen bg-white flex flex-col">
+      
       <Navbar />
-
-      <main className="grow flex items-center justify-center">
-        <div className="mt-12 w-full max-w-7xl md:mt-16">{children}</div>
+      
+      <main className="w-full">
+        <div className="w-full">{children}</div>
       </main>
 
-      <section
-        id="Vision"
-        className="scroll-mt-28 w-full max-w-7xl self-center px-8 py-10 sm:px-12 md:px-20 md:py-14"
-      >
-        <h1 className="mt-3 text-5xl text-center font-black tracking-tight text-black sm:text-7xl md:text-5xl">
-          VÅR VISION
-        </h1>
-        <div className="mt-6 max-w-5xl space-y-6 text-xl leading-10 text-black/80 sm:text-2xl sm:leading-[2.7rem]">
-          <p>
-            På Volly tror vi på kraften i människor som hjälper människor. Vår
-            vision är att göra volontärarbete till en naturlig del av vardagen,
-            där det ska kännas enkelt, meningsfullt och tillgängligt att bidra,
-            oavsett vem du är eller var du befinner dig.
-          </p>
-          <p>
-            Vi vill bygga en plattform som för människor närmare varandra,
-            stärker lokala gemenskaper och skapar verklig förändring över tid.
-            Genom att koppla rätt person till rätt insats i rätt ögonblick vill
-            vi göra omtanke till handling och tillsammans skapa en framtid där
-            samarbete, medmänsklighet och ansvar är en självklar del av hur vi
-            .Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-          </p>
-        <div id="Funkar" className="mt-6 max-w-5xl space-y-6 text-xl leading-10 text-black/80 sm:text-2xl sm:leading-[2.7rem]">
-          <h1 className="mt-20 text-6xl text-center font-black tracking-tight text-black sm:text-7xl md:text-5xl">Hur Volly fungerar</h1>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-        </div>
+      <section id="Vision" className="self-stretch px-20 py-28 bg-white inline-flex justify-center items-start gap-12 overflow-hidden">
+        <div className="flex-1 max-w-[900px] inline-flex flex-col justify-start items-start gap-6">
+          <div className="self-stretch h-16 justify-start text-black text-5xl font-medium font-['DM_Sans'] leading-[68px]">Vår Vision</div>
+          <div className="self-stretch justify-start text-black/80 text-xl font-normal font-['DM_Sans'] leading-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
+          <div className="self-stretch pt-6 inline-flex justify-start items-center gap-[5px]">
+            <div className="justify-start text-black text-xl font-medium font-['DM_Sans'] leading-8">Läs mer</div>
+            {/* Lägg till down arrow icon */}
+          </div>
         </div>
       </section>
-
-
-
+    
       <button
         onClick={scroll}
         aria-label="Scroll to top"
@@ -64,61 +46,86 @@ function HomePage({ children }: HomePageProps) {
       </button>
 
 
-      <section id="CreateAccount" className="w-full bg-[#eeeeee] py-20 px-8 flex flex-col items-center text-center">
-        <div className="w-full max-w-5xl flex flex-col items-center">
-          <h2 className="text-4xl font-medium mb-4 text-black">Skapa konto</h2>
-
-          <div className="mt-10 w-full max-w-md flex flex-col items-center">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              // placeholder: implement signup flow
-              console.log("Skapa konto skickat");
-            }}
-            className="w-full flex flex-col gap-4"
-          >
-            <input
-              name="name"
-              placeholder="Namn"
-              className="w-full border-2 border-black p-3 rounded-lg bg-white placeholder:text-gray-400"
-            />
-
-            <input
-              name="email"
-              type="email"
-              placeholder="E-post"
-              className="w-full border-2 border-black p-3 rounded-lg bg-white placeholder:text-gray-400"
-            />
-
-            <input
-              name="password"
-              type="password"
-              placeholder="Lösenord"
-              className="w-full border-2 border-black p-3 rounded-lg bg-white placeholder:text-gray-400"
-            />
-
-            <button
-              type="submit"
-              className="w-full bg-black text-white py-4 mt-4 font-bold rounded-lg hover:bg-zinc-800 transition-colors"
+      <section id="Skapa konto" className="self-stretch px-20 py-48 bg-gray-200 inline-flex justify-center items-center">
+        <div data-property-1="Default" className="inline-flex flex-col justify-center items-center gap-12">
+          <div className="flex flex-col justify-start items-center gap-8">
+            <div className="self-stretch flex flex-col justify-start items-start gap-2">
+              <div className="self-stretch text-center justify-start text-black text-3xl font-medium font-['DM_Sans'] leading-8">Skapa konto</div>
+            </div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                // placeholder: implement signup flow
+                console.log("Skapa konto skickat");
+              }}
+              className="flex flex-col justify-start items-center gap-4"
             >
-              Skapa konto
-            </button>
-          </form>
-        </div>
+              <div className="self-stretch px-3 inline-flex justify-start items-start gap-2 overflow-hidden">
+                <div className="w-44 h-10 px-3 py-2 bg-white rounded outline outline-2 outline-offset-[-2px] outline-black flex justify-start items-center gap-2">
+                  <input
+                    name="firstName"
+                    placeholder="Förnamn *"
+                    className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
+                  />
+                </div>
+                <div className="w-44 h-10 px-3 py-2 bg-white rounded outline outline-2 outline-offset-[-2px] outline-black flex justify-start items-center gap-2">
+                  <input
+                    name="lastName"
+                    placeholder="Efternamn *"
+                    className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
+                  />
+                </div>
+              </div>
+              <div  className="w-80 h-10 px-3 py-2 bg-white rounded outline outline-2 outline-offset-[-2px] outline-black inline-flex justify-start items-center gap-2">
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="E-post *"
+                  className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
+                />
+              </div>
+              <div className="w-80 h-10 px-3 py-2 bg-white rounded outline outline-2 outline-offset-[-2px] outline-black inline-flex justify-start items-center gap-2">
+                <input
+                  name="password"
+                  type="password"
+                  placeholder="Lösenord *"
+                  className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
+                />
+              </div>
+              <div className="w-80 h-10 px-3 py-2 bg-white rounded outline outline-2 outline-offset-[-2px] outline-black inline-flex justify-start items-center gap-2">
+                <input
+                  name="repeatPassword"
+                  type="password"
+                  placeholder="Upprepa lösenord *"
+                  className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
+                />
+              </div>
+              <label className="self-stretch px-3 py-2 inline-flex justify-start items-center gap-2 cursor-pointer">
+                <div className="w-4 h-4 relative overflow-hidden">
+                  <input type="checkbox" className="absolute inset-0 opacity-0 cursor-pointer" />
+                  <div className="w-3.5 h-3.5 left-[1.33px] top-[1.30px] absolute bg-black" />
+                </div>
+                <div className="justify-start text-black text-xs font-normal font-['DM_Sans'] leading-4">Jag har läst och godkänner villkoren</div>
+              </label>
+              <button type="submit" className="w-80 h-10 px-12 bg-black rounded inline-flex justify-center items-center gap-2.5 overflow-hidden">
+                <div className="justify-start text-white text-base font-medium font-['DM_Sans'] leading-5">Skapa konto</div>
+              </button>
+            </form>
+          </div>
         </div>
       </section>
 
-      <footer className="mt-auto w-full bg-[#e5e5e5] min-h-[20vh] flex items-center justify-between px-6 py-4 flex-row-reverse">
-      
-
-
-        <h1 className="mt-3 text-right text-5xl font-black">Volly</h1>
-        <p>hjadsbjcf</p>
-        <p>info@volly.se</p>
-        <p>hjadsbjcf</p>
-        <p>@2026</p>
-        
-      </footer>
+    <section id="Funkar" className="w-[1440px] h-[800px] px-20 inline-flex flex-col justify-start items-start">
+      <div className="self-stretch px-80 py-80 flex flex-col justify-center items-center gap-12 overflow-hidden">
+        <div className="text-center justify-start text-black text-5xl font-normal font-['DM_Sans'] leading-[52px]">Hur Volly fungerar</div>
+        <div className="px-24 flex flex-col justify-start items-start gap-6">
+            <div className="w-[708px] px-24 inline-flex justify-center items-center gap-2">
+                <div className="flex-1 text-center justify-start text-black text-xl font-normal font-['DM_Sans'] leading-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </div>
+            </div>
+        </div>
+      </div>
+    </section>
+    <Footer />
     </div>
   );
 }

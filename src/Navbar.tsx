@@ -1,26 +1,29 @@
 import { Link } from "react-router-dom";
 
 function Navbar() {
-
   const scrollTo = (id: string) => {
-    const el = document.getElementById(id)
-    el?.scrollIntoView({ behavior: "smooth" })
-    
-  }
+    const el = document.getElementById(id);
+    el?.scrollIntoView({ behavior: "smooth" });
+  };
+
+
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 bg-[#f2ede385] border-b border-[rgb(229,221,208)] shadow-[0_10px_30px_rgba(120,100,70,0.14)]">
-      <nav className="w-full px-4 sm:px-6 py-3 md:py-4 flex items-center justify-between">
-
-        <div className="text-[20px] sm:text-[20px] font-black tracking-[0.24em] sm:tracking-[0.3em] uppercase">
-          Volly
+    <header className="self-stretch h-32 px-14 py-10 relative bg-neutral-200 inline-flex justify-between items-center">
+        <div className="h-12 flex justify-start items-center gap-3">
+          <div
+            className="justify-start text-black text-5xl font-normal font-['Emblema_One'] leading-[48px]"
+            >
+            Volly
+          </div>
         </div>
-    
-        <div className="flex justify-end gap-4 sm:gap-6">
+
+        <div className="flex justify-start items-start gap-9">
           {[
             { id: "Vision", label: "Vår vision" },
             { id: "Funkar", label: "Hur volly fungerar" },
-          ].map(link => (
+            {id: "Skapa konto", label: "Skapa konto"},
+          ].map((link) => (
             <button
               key={link.id}
               onClick={() => scrollTo(link.id)}
@@ -31,15 +34,16 @@ function Navbar() {
           ))}
           <Link
             to="/faq"
-            className="px-4 py-2 text-[10px] uppercase tracking-[0.4em] text-[#000000] rounded-full transition-all duration-200 hover:text-[#bbb7b1] hover:bg-[rgba(214,207,196,0.75)] hover:shadow-[0_8px_25_rgba(120,100,70,0.2)] hover:-translate-y-px"
+            className="justify-start text-black text-3xl font-normal font-['DM_Sans'] leading-8 transition-all duration-200 hover:text-[#bbb7b1] hover:bg-[rgba(214,207,196,0.75)] hover:shadow-[0_8px_25_rgba(120,100,70,0.2)] hover:-translate-y-px"
           >
             FAQ
           </Link>
         </div>
-      </nav>
+        <div className="w-[1600px] h-0 left-[-80px] top-[128px] absolute outline outline-2 outline-offset-[-1px] outline-black/50" />
     </header>
+  
 
-  )
-}
+)};
 
-export default Navbar
+  export default Navbar;
+

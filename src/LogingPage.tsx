@@ -26,80 +26,84 @@ function LoginPage({ onCreateAccount, onLoginSuccess, initialEmail = "" }: Login
   };
 
   return (
-    <div className="mt-8 flex min-h-[80vh] w-full items-center justify-between px-20 py-10 bg-[#e5e5e5] rounded-3xl">
-      {/* Vänster sida: Hero Text */}
-      <div className="w-1/2">
-        <h1 className="text-8xl font-medium leading-tight text-black tracking-tighter">
-          Bli en del av Volly idag.
-        </h1>
+    <div className="self-stretch h-[700px] px-20 py-12 bg-neutral-200 inline-flex justify-between items-center">
+      <div className="flex-1 flex justify-center items-center gap-2.5">
+        <div className="flex-1 justify-center text-black text-8xl font-medium font-['DM_Sans'] leading-[120px]">Lorem ipsum dolor sit amet lorem ipsum </div>
       </div>
-
-      {/* Höger sida: Login-formulär */}
-      <div className="w-[350px] flex flex-col items-center">
-        <h2 className="text-xl font-semibold mb-6 self-center">Logga in</h2>
-        
-        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <MyTextInput
-              type="email"
-              value={email}
-              onChange={(e) => { setEmail(e.target.value); setErrorMessage(""); }}
-              placeholder="E-post"
-              className="w-full border-2 border-black p-2 rounded-md"
-            />
+      <div className="p-10 rounded-[30px] inline-flex flex-col justify-center items-center gap-12">
+        <div className="flex flex-col justify-start items-center gap-8">
+          <div className="self-stretch flex flex-col justify-start items-start gap-2">
+            <div className="self-stretch text-center justify-start text-black text-3xl font-medium font-['DM_Sans'] leading-8">Logga in</div>
           </div>
-
-          <div className="flex flex-col gap-2">
-            <MyTextInput
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => { setPassword(e.target.value); setErrorMessage(""); }}
-              placeholder="Lösenord"
-              className="w-full border-2 border-black p-2 rounded-md"
-            />
-          </div>
-
-          <div className="flex items-center gap-2 text-sm">
-            <input 
-              type="checkbox" 
-              id="show-password" 
-              checked={showPassword}
-              onChange={() => setShowPassword(!showPassword)}
-              className="w-4 h-4"
-            />
-            <label htmlFor="show-password">Visa lösenord</label>
-          </div>
-
-          {errorMessage && (
-            <div className="text-red-600 text-sm italic">
-              <p>{errorMessage}</p>
+          <form onSubmit={handleSubmit} className="self-stretch flex flex-col justify-start items-start gap-4">
+            <div className="w-80 h-10 px-3 py-2 bg-white rounded outline outline-2 outline-offset-[-2px] outline-black inline-flex justify-start items-center gap-2">
+              <MyTextInput
+                type="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setErrorMessage("");
+                }}
+                placeholder="E-post"
+                className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
+              />
             </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="pointer w-full bg-black text-white py-3 font-bold rounded-md hover:opacity-90 transition-opacity"
-          >
-            {isLoading ? "Loggar in..." : "Logga in"}
-          </button>
-
-          <div className="flex justify-between w-full mt-2 text-[12px] font-medium">
-            <button 
-              type="button" 
-              onClick={onCreateAccount}
-              className="hover:underline"
-            >
-              Har du inget konto?
-            </button>
-            <button 
-              type="button" 
-              className="hover:underline"
-            >
-              Glömt ditt lösenord?
-            </button>
-          </div>
-        </form>
+            <div className="w-80 h-10 px-3 py-2 bg-white rounded outline outline-2 outline-offset-[-2px] outline-black inline-flex justify-start items-center gap-2">
+              <MyTextInput
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setErrorMessage("");
+                }}
+                placeholder="Lösenord"
+                className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
+              />
+            </div>
+            <div className="inline-flex justify-start items-center gap-2">
+              <div className="w-4 h-4 relative overflow-hidden">
+                <input
+                  type="checkbox"
+                  checked={showPassword}
+                  onChange={() => setShowPassword(!showPassword)}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                  aria-label="Visa lösenord"
+                />
+                <div className="w-3.5 h-3.5 left-[1.33px] top-[1.30px] absolute bg-black" />
+              </div>
+              <div className="justify-start text-black text-base font-normal font-['DM_Sans'] leading-4">Visa lösenord</div>
+            </div>
+            <div className="w-80 h-10 px-12 bg-black rounded inline-flex justify-center items-center gap-2.5 overflow-hidden">
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-full justify-start text-white text-base font-medium font-['DM_Sans'] leading-5"
+              >
+                {isLoading ? "Loggar in..." : "Logga in"}
+              </button>
+            </div>
+            {errorMessage && (
+              <div className="w-80 text-red-600 text-sm italic">
+                <p>{errorMessage}</p>
+              </div>
+            )}
+            <div className="self-stretch inline-flex justify-between items-center overflow-hidden">
+              <button
+                type="button"
+                onClick={onCreateAccount}
+                className="justify-start text-black text-base font-normal font-['DM_Sans'] leading-4"
+              >
+                Har du inget konto?
+              </button>
+              <button
+                type="button"
+                className="justify-start text-black text-base font-normal font-['DM_Sans'] leading-4"
+              >
+                Glömt ditt lösenord?
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
