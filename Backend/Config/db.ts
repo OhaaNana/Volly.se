@@ -1,14 +1,22 @@
-import { type FastifyInstance } from "fastify";
-import fastifyPostgres from "@fastify/postgres";
-import pkg from "pg";
+import { Pool } from "pg";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const { Pool } = pkg;
+// PostgreSQL connection pool
+export const pool = new Pool({
+  connectionString: process.env.POSTGRES_URI,
+  max: 10, 
+  idleTimeoutMillis: 30000, // stänger inaktiva connections
+  connectionTimeoutMillis: 2000,
+});
 
-export default async function dbSetup(app: FastifyInstance){
-  await app.register(fastifyPostgres, {
-    connectionString: process.env.POSTGRES_URI,
-  });
-}
+// Testa connection direkt när servern startar
+pool.on("connect", () => {
+  console.log("PostgreSQL connected");
+});
+
+pool.on("error", (err) => {
+  console.error("Unexpected PostgreSQL error", err);
+  process.exit(-1);
+});

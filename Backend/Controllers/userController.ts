@@ -1,27 +1,36 @@
 import { type FastifyRequest, type FastifyReply } from "fastify";
+import { pool } from "../Config/db"; 
 
-// Hämta alla users / användare
-export const getUsers = async (request: FastifyRequest, reply: FastifyReply) => {
+
+// Skapa en user
+export const createUser = async (
+  request: FastifyRequest<{ Body: { email: string; password: string } }>,
+  reply: FastifyReply ) => {
   try {
-    const result = await request.server.pg.query(
-      "SELECT id, email FROM users"
+    const { email, password } = request.body;
+
+    const result = await pool.query(
+      "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email",
+      [email, password]
     );
 
-    reply.send(result.rows);
+    console.log("USER CREATED:", result.rows[0]);
+
+    reply.send(result.rows[0]);
   } catch (error) {
-    reply.code(500).send({ message: "Error fetching users", error });
+    reply.code(500).send({ message: "Error creating user", error });
   }
 };
 
-// Hämta en user / användare
+
+// Hämta en user
 export const getUser = async (
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
-) => {
+  reply: FastifyReply ) => {
   try {
     const { id } = request.params;
 
-    const result = await request.server.pg.query(
+    const result = await pool.query(
       "SELECT id, email FROM users WHERE id = $1",
       [id]
     );
@@ -36,16 +45,16 @@ export const getUser = async (
   }
 };
 
-// Updatera user / användare
+
+// Uppdatera user
 export const updateUser = async (
   request: FastifyRequest<{ Params: { id: string }; Body: { email: string } }>,
-  reply: FastifyReply
-) => {
+  reply: FastifyReply ) => {
   try {
     const { id } = request.params;
     const { email } = request.body;
 
-    const result = await request.server.pg.query(
+    const result = await pool.query(
       "UPDATE users SET email = $1 WHERE id = $2 RETURNING id, email",
       [email, id]
     );
@@ -61,15 +70,14 @@ export const updateUser = async (
 };
 
 
-// Ta bort user / användare
+// Ta bort user
 export const deleteUser = async (
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply
-) => {
+  reply: FastifyReply ) => {
   try {
     const { id } = request.params;
 
-    const result = await request.server.pg.query(
+    const result = await pool.query(
       "DELETE FROM users WHERE id = $1 RETURNING id",
       [id]
     );
@@ -81,5 +89,19 @@ export const deleteUser = async (
     reply.send({ message: "User deleted" });
   } catch (error) {
     reply.code(500).send({ message: "Error deleting user", error });
+  }
+};
+
+
+// Hämta alla users
+export const getUsers = async (request: FastifyRequest, reply: FastifyReply) => {
+  try { 
+    const result = await pool.query(
+      "SELECT id, email FROM users"
+    );
+
+    reply.send(result.rows);
+  } catch (error) {
+    reply.code(500).send({ message: "Error fetching users", error });
   }
 };

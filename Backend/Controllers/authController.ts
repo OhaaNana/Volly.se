@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { FastifyRequest, FastifyReply } from "fastify";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { Pool } from "pg";
@@ -9,6 +9,15 @@ dotenv.config();
 const pool = new Pool({
   connectionString: process.env.POSTGRES_URI,
 });
+
+interface AuthRequestBody {
+  email: string;
+  password: string;
+}
+
+interface RefreshTokenRequestBody {
+  refreshToken: string;
+}
 
 // Access token
 const generateAccessToken = (id: string) => {
@@ -27,7 +36,9 @@ const generateRefreshToken = (id: string) => {
 
 
 // Skapa konto
-export const register = async (req: Request, res: Response) => {
+export const register = async (
+  req: FastifyRequest<{ Body: AuthRequestBody }>,
+  res: FastifyReply ) => {
   const { email, password } = req.body;
 
   try {
@@ -37,7 +48,7 @@ export const register = async (req: Request, res: Response) => {
     );
 
     if (userExists.rows.length > 0) {
-      return res.status(400).json({ message: "User exists" });
+      return res.status(400).send({ message: "User exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -49,7 +60,7 @@ export const register = async (req: Request, res: Response) => {
 
     const user = newUser.rows[0];
 
-    res.status(201).json({
+    res.status(201).send({
       message: "User created",
       token: generateAccessToken(user.id),
       refreshToken: generateRefreshToken(user.id),
@@ -57,7 +68,7 @@ export const register = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Register error:", error);
 
-    res.status(500).json({
+    res.status(500).send({
       error: "Registration failed",
       details: error instanceof Error ? error.message : error,
     });
@@ -65,7 +76,9 @@ export const register = async (req: Request, res: Response) => {
 };
 
 // Logga in
-export const login = async (req: Request, res: Response) => {
+export const login = async (
+  req: FastifyRequest<{ Body: AuthRequestBody }>,
+  res: FastifyReply ) => {
   const { email, password } = req.body;
 
   try {
@@ -77,23 +90,23 @@ export const login = async (req: Request, res: Response) => {
     const user = result.rows[0];
 
     if (!user) {
-      return res.status(401).json({ message: "User not found" });
+      return res.status(401).send({ message: "User not found" });
     }
 
     const validPassword = await bcrypt.compare(password, user.password);
 
     if (!validPassword) {
-      return res.status(401).json({ message: "Invalid password" });
+      return res.status(401).send({ message: "Invalid password" });
     }
 
-    res.json({
+    res.send({
       token: generateAccessToken(user.id),
       refreshToken: generateRefreshToken(user.id),
     });
   } catch (error) {
     console.error("Login error:", error);
 
-    res.status(500).json({
+    res.status(500).send({
       error: "Login failed",
       details: error instanceof Error ? error.message : error,
     });
@@ -101,11 +114,13 @@ export const login = async (req: Request, res: Response) => {
 };
 
 // Refresh token
-export const refreshToken = (req: Request, res: Response) => {
+export function refreshToken(
+  req: FastifyRequest<{ Body: RefreshTokenRequestBody }>,
+  res: FastifyReply ): any {
   const token = req.body.refreshToken;
 
   if (!token) {
-    return res.status(401).json({ message: "No refresh token" });
+    return res.status(401).send({ message: "No refresh token" });
   }
 
   try {
@@ -116,8 +131,8 @@ export const refreshToken = (req: Request, res: Response) => {
 
     const newAccessToken = generateAccessToken(decoded.id);
 
-    res.json({ token: newAccessToken });
+    res.send({ token: newAccessToken });
   } catch (error) {
-    return res.status(403).json({ message: "Invalid refresh token" });
+    return res.status(403).send({ message: "Invalid refresh token" });
   }
-};
+}

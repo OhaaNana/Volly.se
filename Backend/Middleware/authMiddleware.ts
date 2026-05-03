@@ -4,7 +4,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-
 declare module "fastify" { interface FastifyRequest {
     user?: {
       id: string;
@@ -14,8 +13,7 @@ declare module "fastify" { interface FastifyRequest {
 
 export const protect = async (
   request: FastifyRequest,
-  reply: FastifyReply
-) => {
+  reply: FastifyReply ) => {
   const authHeader = request.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer")) {
@@ -42,7 +40,6 @@ export const protect = async (
     const decoded = jwt.verify( token, secret ) as unknown as {
         id: string };
 
-    // spara user id
     request.user = {
       id: decoded.id,
     };
