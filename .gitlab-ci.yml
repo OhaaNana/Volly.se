@@ -1,0 +1,27 @@
+stages:
+  - install
+  - quality
+
+install:
+  stage: install
+  image: oven/bun:latest
+  script:
+    - bun install --frozen-lockfile
+  artifacts:
+    paths:
+      - node_modules/
+    expire_in: 1 hour
+
+eslint:
+  stage: quality
+  image: oven/bun:latest
+  needs: [install]
+  script:
+    - bunx eslint .
+
+prettier:
+  stage: quality
+  image: oven/bun:latest
+  needs: [install]
+  script:
+    - bunx prettier --check .

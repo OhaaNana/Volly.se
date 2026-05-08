@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import Navbar from "./Navbar";
 import upArrow from "./assets/upArrow.png";
 import Footer from "./components/footer";
@@ -17,6 +17,19 @@ const scroll = () => {
 };
 
 function HomePage({ children }: HomePageProps) {
+  const [showScrollTopButton, setShowScrollTopButton] = useState(false);
+
+  useEffect(() => {
+    const updateScrollTopButton = () => {
+      setShowScrollTopButton(window.scrollY > 300);
+    };
+
+    updateScrollTopButton();
+    window.addEventListener("scroll", updateScrollTopButton, { passive: true });
+
+    return () => window.removeEventListener("scroll", updateScrollTopButton);
+  }, []);
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
       
@@ -40,7 +53,7 @@ function HomePage({ children }: HomePageProps) {
       <button
         onClick={scroll}
         aria-label="Scroll to top"
-        className="fixed bottom-40 right-6 z-50 rounded-full bg-white p-2 shadow-lg hover:scale-105 transition-transform"
+        className={`fixed bottom-40 right-6 z-50 rounded-full bg-white p-2 shadow-lg transition-all duration-300 ease-out ${showScrollTopButton ? "translate-y-0 opacity-100 pointer-events-auto" : "translate-y-4 opacity-0 pointer-events-none"} hover:scale-105`}
       >
         <img src={upArrow} alt="pil" className="w-10 h-10 object-contain" />
       </button>
