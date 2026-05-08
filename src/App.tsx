@@ -1,7 +1,7 @@
 import { useState } from "react";
-import LoginPage from "./LogingPage";
-import SignupPage from "./signupPage";
-import HomePage from "./HomePage";
+import LoginPage from "./pages/LogingPage";
+import SignupPage from "./pages/signupPage";
+import HomePage from "./pages/HomePage";
 import MenuLoggedIn, { type MenuItem } from "./components/MenuLoggedIn";
 import CreatePostPage from "./pages/CreatePostPage";
 import LoggedInStartPage from "./pages/LoggedInStartPage";

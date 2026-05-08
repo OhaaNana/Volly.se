@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import MyTextInput from "./components/MyTextInput";
-import { useLogin } from "./hooks/useLogin";
-import type { LoginPageProps } from "./types";
+import MyTextInput from "../components/MyTextInput";
+import { useLogin } from "../hooks/useLogin";
+import type { LoginPageProps } from "../types";
 
 function LoginPage({ onCreateAccount, onLoginSuccess, initialEmail = "" }: LoginPageProps) {
   const {

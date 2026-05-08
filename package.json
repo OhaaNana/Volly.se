@@ -34,4 +34,5 @@
     "@vitejs/plugin-react": "^5.0.4",
     "vite": "^7.1.11",
     "tailwindcss": "^4.2.4"
+  }}
 

@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
-import Navbar from "./Navbar";
-import upArrow from "./assets/upArrow.png";
-import Footer from "./components/footer";
+import Navbar from "../Navbar";
+import upArrow from "../assets/upArrow.png";
+import Footer from "../components/footer";
 
 
 
