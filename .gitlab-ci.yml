@@ -76,7 +76,7 @@ biome:
     - .on_any_env
   stage: biome
   image: oven/bun:1
-  needs: [install]
+  needs: [quality]
   allow_failure: true
   script:
     - bunx biome ci .
