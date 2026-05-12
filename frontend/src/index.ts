@@ -7,7 +7,7 @@ const indexPath = new URL(
 );
 const port = Number(process.env.PORT ?? 3000);
 
-const routes: Record<string, unknown> = {
+const routes = {
   "/*": () => new Response(Bun.file(indexPath)),
 
   "/api/hello": {
@@ -25,26 +25,28 @@ const routes: Record<string, unknown> = {
     },
   },
 
-  "/api/hello/:name": async (req: Request & { params: { name: string } }) => {
+  "/api/hello/:name": async (req) => {
     const name = req.params.name;
     return Response.json({
       message: `Hello, ${name}!`,
     });
   },
-};
 
-if (isProduction) {
-  routes["/assets/:asset"] = (req: Request & { params: { asset: string } }) =>
-    new Response(
+  "/assets/:asset": (req) => {
+    if (!isProduction) {
+      return new Response("Not Found", { status: 404 });
+    }
+
+    return new Response(
       Bun.file(new URL(`../dist/assets/${req.params.asset}`, import.meta.url))
     );
-}
+  },
+} satisfies NonNullable<Parameters<typeof serve>[0]["routes"]>;
 
 const server = serve({
   port,
   hostname: "0.0.0.0",
   routes,
-
   development: process.env.NODE_ENV !== "production" && {
     hmr: true,
     console: true,
