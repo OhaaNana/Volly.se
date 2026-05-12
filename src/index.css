@@ -2,6 +2,7 @@
 @import "@flaticon/flaticon-uicons/css/regular/rounded.css";
 @import "@flaticon/flaticon-uicons/css/regular/straight.css";
 @import "@flaticon/flaticon-uicons/css/bold/rounded.css";
+@import "@flaticon/flaticon-uicons/css/solid/rounded.css";
 
 /*
   Design tokens (Skapa-sida m.m.)
@@ -15,6 +16,10 @@
   --color-Colors-border: #e9e4dc;
   --color-Colors-muted: #f6f1e9;
   --color-Colors-warm-foreground: #321a16;
+  /* Aliaser för shadcn-liknande klassnamn (Inkorg m.m.) */
+  --color-sidebar: #fdfaf4;
+  --color-border: #e9e4dc;
+  --color-foreground: #161a26;
 }
 
 @layer base {
