@@ -1,13 +1,13 @@
 import { useState } from "react";
+import HomePage from "./HomePage";
 import LoginPage from "./LogingPage";
 import SignupPage from "./signupPage";
-import HomePage from "./HomePage";
 import "./index.css";
 import MenuLoggedIn, { type MenuItem } from "./components/MenuLoggedIn";
-import CreatePostPage from "./pages/CreatePostPage";
-import LoggedInStartPage from "./pages/LoggedInStartPage";
 import CategoryPage from "./pages/CategoryPage";
+import CreatePostPage from "./pages/CreatePostPage";
 import InboxPage from "./pages/InboxPage";
+import LoggedInStartPage from "./pages/LoggedInStartPage";
 import ProfilePage from "./pages/ProfilePage";
 
 export function App() {

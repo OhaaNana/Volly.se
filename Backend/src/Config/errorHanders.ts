@@ -1,4 +1,4 @@
-import { type FastifyReply, type FastifyRequest } from "fastify";
+import type { FastifyReply, FastifyRequest } from "fastify";
 import type { FastifyInstance } from "fastify/types/instance";
 
 type AppError = Error & {

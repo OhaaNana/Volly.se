@@ -1,5 +1,5 @@
-import { getChat } from "../Repository/chat.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { getChat } from "../Repository/chat.ts";
 
 export async function getChatController(
   request: FastifyRequest,
