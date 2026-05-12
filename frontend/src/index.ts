@@ -2,7 +2,7 @@ import { serve } from "bun";
 
 const isProduction = process.env.NODE_ENV === "production";
 const indexPath = new URL(
-  isProduction ? "../dist/index.html" : "./index.html",
+  isProduction ? "./dist/index.html" : "./index.html",
   import.meta.url
 );
 const port = Number(process.env.PORT ?? 3000);
