@@ -7,51 +7,46 @@ const indexPath = new URL(
 );
 const port = Number(process.env.PORT ?? 3000);
 
-const server = serve({
-  port,
-  routes: {
-    ...(isProduction
-      ? {
-          "/assets/:asset": (req) =>
-            new Response(
-              Bun.file(
-                new URL(`../dist/assets/${req.params.asset}`, import.meta.url)
-              )
-            ),
-        }
-      : {}),
+const routes: Record<string, unknown> = {
+  "/*": () => new Response(Bun.file(indexPath)),
 
-    // Serve index.html for all unmatched routes.
-    "/*": () => new Response(Bun.file(indexPath)),
-
-    "/api/hello": {
-      async GET(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "GET",
-        });
-      },
-      async PUT(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "PUT",
-        });
-      },
-    },
-
-    "/api/hello/:name": async (req) => {
-      const name = req.params.name;
+  "/api/hello": {
+    async GET() {
       return Response.json({
-        message: `Hello, ${name}!`,
+        message: "Hello, world!",
+        method: "GET",
+      });
+    },
+    async PUT() {
+      return Response.json({
+        message: "Hello, world!",
+        method: "PUT",
       });
     },
   },
 
-  development: process.env.NODE_ENV !== "production" && {
-    // Enable browser hot reloading in development
-    hmr: true,
+  "/api/hello/:name": async (req: Request & { params: { name: string } }) => {
+    const name = req.params.name;
+    return Response.json({
+      message: `Hello, ${name}!`,
+    });
+  },
+};
 
-    // Echo console logs from the browser to the server
+if (isProduction) {
+  routes["/assets/:asset"] = (req: Request & { params: { asset: string } }) =>
+    new Response(
+      Bun.file(new URL(`../dist/assets/${req.params.asset}`, import.meta.url))
+    );
+}
+
+const server = serve({
+  port,
+  hostname: "0.0.0.0",
+  routes,
+
+  development: process.env.NODE_ENV !== "production" && {
+    hmr: true,
     console: true,
   },
 });
