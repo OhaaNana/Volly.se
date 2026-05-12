@@ -96,9 +96,12 @@ build_backend:
 # ── Deploy ────────────────────────────────────────────────────────
 .deploy_base:
   stage: deploy
-  image: curlimages/curl:latest
+  image: bitnami/kubectl:latest
   variables:
     GIT_STRATEGY: none
+  before_script:
+    - echo "$KUBECONFIG_B64" | base64 -d > /tmp/kubeconfig
+    - export KUBECONFIG=/tmp/kubeconfig
 
 deploy_review:
   extends: .deploy_base
@@ -110,7 +113,7 @@ deploy_review:
     url: https://$CI_COMMIT_REF_SLUG.doe25.swarm.chas-lab.dev
     on_stop: stop_review
   script:
-    - curl -f -X POST "$PORTAINER_WEBHOOK_REVIEW"
+    - kubectl apply -f k8s/staging/ -n doe25-simon-klausen
 
 stop_review:
   extends: .deploy_base
@@ -121,7 +124,7 @@ stop_review:
     name: developer/$CI_COMMIT_REF_SLUG
     action: stop
   script:
-    - curl -f -X POST "${PORTAINER_WEBHOOK_REVIEW}/stop" || true
+    - echo "Stopping review environment $CI_COMMIT_REF_SLUG"
 
 deploy_staging:
   extends: .deploy_base
@@ -130,9 +133,9 @@ deploy_staging:
     - if: $CI_COMMIT_BRANCH == "master"
   environment:
     name: staging
-    url: https://zero-bug-heroes.staging.doe25.swarm.chas-lab.dev
+    url: https://staging.doe25.swarm.chas-lab.dev
   script:
-    - curl -f -X POST "$PORTAINER_WEBHOOK_STAGING"
+    - kubectl apply -f k8s/staging/ -n doe25-simon-klausen
 
 deploy_production:
   extends: .deploy_base
@@ -144,4 +147,4 @@ deploy_production:
     name: production
     url: https://zero-bug-heroes.doe25.swarm.chas-lab.dev
   script:
-    - curl -f -X POST "$PORTAINER_WEBHOOK_PRODUCTION"
+    - kubectl apply -f k8s/staging/ -n doe25-simon-klausen
