@@ -3,9 +3,8 @@ kind: Ingress
 metadata:
   name: staging-ingress
   namespace: doe25-simon-klausen
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
+  ingressClassName: traefik
   rules:
     - host: staging.doe25.swarm.chas-lab.dev
       http:
