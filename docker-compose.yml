@@ -1,16 +1,30 @@
 services:
-  db:
-    image: postgres:16
-    container_name: postgres_db
-    restart: always
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: db
+  backend:
+    build: ./Backend
     ports:
-      - "5432:5432"
+      - "3001:3001"
+    env_file:
+      - ./Backend/.env
+    depends_on:
+      - db
+
+  frontend:
+    build: ./Frontend
+    ports:
+      - "3000:3000"
+
+  database:
+    image: postgres:16
+    container_name: gym-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5433:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
 
 volumes:
   postgres_data:
