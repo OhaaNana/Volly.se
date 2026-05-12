@@ -114,9 +114,9 @@ deploy_staging:
     name: staging
     url: https://staging-volly.labb.k3s.chas-lab.dev
   script:
-    - kubectl apply -f k8s/staging/ -n doe25-simon-klausen
-    - kubectl rollout restart deployment/frontend-staging -n doe25-simon-klausen
-    - kubectl rollout restart deployment/backend-staging -n doe25-simon-klausen
+    - kubectl apply -f k8s/staging/ -n doe25-group-15
+    - kubectl rollout restart deployment/frontend-staging -n doe25-group-15
+    - kubectl rollout restart deployment/backend-staging -n doe25-group-15
 
 deploy_production:
   extends: .deploy_base
@@ -128,6 +128,6 @@ deploy_production:
     name: production
     url: https://volly.labb.k3s.chas-lab.dev
   script:
-    - kubectl apply -f k8s/production/ -n doe25-simon-klausen
-    - kubectl rollout restart deployment/frontend-production -n doe25-simon-klausen
-    - kubectl rollout restart deployment/backend-production -n doe25-simon-klausen
+    - kubectl apply -f k8s/production/ -n doe25-group-15
+    - kubectl rollout restart deployment/frontend-production -n doe25-group-15
+    - kubectl rollout restart deployment/backend-production -n doe25-group-15
