@@ -1,6 +1,7 @@
 stages:
   - install
   - quality
+  - biome
   - build
   - deploy
 
@@ -61,6 +62,19 @@ prettier:
   script:
     - bunx prettier --check .
 
+# Biome
+
+biome:
+  extends:
+    - .bun_cache
+    - .on_any_env
+  stage: biome
+  image: oven/bun:1
+  needs: [install]
+  allow_failure: true
+  script:
+    - bunx biome ci .
+    
 # Build
 
 .build_base:
