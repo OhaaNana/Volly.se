@@ -18,6 +18,7 @@ spec:
       containers:
         - name: frontend
           image: registry.chas-lab.dev/chas-challenge-2026/grupp-15/zero-bug-heroes/zero-bug-heroes/frontend:staging
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
 ---
