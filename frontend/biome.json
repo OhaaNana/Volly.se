@@ -1,13 +1,12 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
   "files": {
-    "ignore": ["node_modules/**", "dist/**", "**/*.yaml", "**/*.yml"]
+    "ignore": ["node_modules/**", "dist/**", "src/index.ts"]
   },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
-    "indentWidth": 2,
-    "lineWidth": 80
+    "indentWidth": 2
   },
   "javascript": {
     "formatter": {
