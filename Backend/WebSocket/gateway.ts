@@ -34,6 +34,6 @@ export async function connection(app: FastifyInstance) {
       rooms.get(roomId)!.add(socket);
 
       registerChatevents(socket, request);
-    },
+    }
   );
 }

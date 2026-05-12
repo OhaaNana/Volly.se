@@ -1,2 +1,1 @@
-
-export {saveMessage, getChat} from "./chat"
+export { saveMessage, getChat } from "./chat";

@@ -1,5 +1,10 @@
 import { useState } from "react";
-import type { EmailStatus, SignupFormData, SignupResult, StoredUser } from "../types";
+import type {
+  EmailStatus,
+  SignupFormData,
+  SignupResult,
+  StoredUser,
+} from "../types";
 
 const USERS_KEY = "users";
 
@@ -21,7 +26,8 @@ const saveUsers = (users: StoredUser[]) => {
   localStorage.setItem(USERS_KEY, JSON.stringify(users));
 };
 
-const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+const validateEmail = (email: string) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 export const useSignup = () => {
   const [formData, setFormData] = useState<SignupFormData>({
@@ -48,7 +54,9 @@ export const useSignup = () => {
     setEmailStatus("checking");
     try {
       const users = getUsers();
-      const available = !users.some((u) => u.email.toLowerCase() === email.toLowerCase());
+      const available = !users.some(
+        (u) => u.email.toLowerCase() === email.toLowerCase()
+      );
       setEmailStatus(available ? "available" : "taken");
     } catch {
       setEmailStatus("idle");
@@ -58,7 +66,7 @@ export const useSignup = () => {
   const submitRegister = async (): Promise<SignupResult> => {
     setErrorMessage("");
 
-    if (!Object.values(formData).every(val => val.trim())) {
+    if (!Object.values(formData).every((val) => val.trim())) {
       setErrorMessage("Please fill in all fields");
       return { success: false };
     }
@@ -76,7 +84,9 @@ export const useSignup = () => {
     setIsLoading(true);
     try {
       const users = getUsers();
-      const exists = users.some((u) => u.email.toLowerCase() === formData.email.toLowerCase());
+      const exists = users.some(
+        (u) => u.email.toLowerCase() === formData.email.toLowerCase()
+      );
 
       if (exists) {
         setErrorMessage("Email is already taken");
@@ -101,6 +111,6 @@ export const useSignup = () => {
     emailStatus,
     updateField,
     checkEmail,
-    submitRegister
+    submitRegister,
   };
 };

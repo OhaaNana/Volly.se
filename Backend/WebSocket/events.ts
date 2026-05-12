@@ -5,9 +5,9 @@ import { createPayload } from "Backend/Services/chat";
 import { saveMessage } from "Backend/Repository";
 import { users, rooms } from "./rooms";
 
-export function registerChatevents(socket: WebSocket, request: FastifyRequest ) {
-console.log("User has been connected to a room")
- socket.on("message", async (message) => {
+export function registerChatevents(socket: WebSocket, request: FastifyRequest) {
+  console.log("User has been connected to a room");
+  socket.on("message", async (message) => {
     try {
       const text = message.toString();
       const user = users.get(socket);
@@ -24,7 +24,6 @@ console.log("User has been connected to a room")
           client.send(JSON.stringify(payload));
         }
       }
-
     } catch (err) {
       console.error("WS message error:", err);
     }

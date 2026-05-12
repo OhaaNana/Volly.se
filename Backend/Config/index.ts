@@ -4,7 +4,7 @@ import dbSetup from "./db";
 import websocketSetup from "./ws";
 
 export default function Setup(app: FastifyInstance) {
-  dbSetup(app)
+  dbSetup(app);
   pluginSetup(app);
   websocketSetup(app);
 }

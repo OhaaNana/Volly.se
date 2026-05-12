@@ -1,0 +1,34 @@
+stages:
+  - install
+  - quality
+
+.bun_cache:
+  cache:
+    key:
+      files:
+        - bun.lock
+    paths:
+      - node_modules/
+
+install:
+  extends: .bun_cache
+  stage: install
+  image: oven/bun:latest
+  script:
+    - bun install --frozen-lockfile
+
+eslint:
+  extends: .bun_cache
+  stage: quality
+  image: oven/bun:latest
+  needs: [install]
+  script:
+    - bunx eslint .
+
+prettier:
+  extends: .bun_cache
+  stage: quality
+  image: oven/bun:latest
+  needs: [install]
+  script:
+    - bunx prettier --check .

@@ -3,7 +3,7 @@ import type { FastifyRequest } from "fastify";
 
 export async function saveMessage(
   payload: Payload,
-  request: FastifyRequest,
+  request: FastifyRequest
 ): Promise<Payload> {
   const query = `
     INSERT INTO messages 
