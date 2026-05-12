@@ -21,6 +21,7 @@ function Navbar() {
           { id: "Skapa konto", label: "Skapa konto" },
         ].map((link) => (
           <button
+            type="button"
             key={link.id}
             onClick={() => scrollTo(link.id)}
             className="px-4 py-2 text-[10px] uppercase tracking-[0.4em] text-[#000000] rounded-full transition-all duration-200 hover:text-[#bbb7b1] hover:bg-[rgba(214,207,196,0.75)] hover:shadow-[0_8px_25_rgba(120,100,70,0.2)] hover:-translate-y-px"

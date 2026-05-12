@@ -50,6 +50,7 @@ function HomePage({ children }: HomePageProps) {
       </section>
 
       <button
+        type="button"
         onClick={scroll}
         aria-label="Scroll to top"
         className="fixed bottom-40 right-6 z-50 rounded-full bg-white p-2 shadow-lg hover:scale-105 transition-transform"

@@ -125,9 +125,8 @@ export default function CategoryPage({ posts }: Props) {
           <h2 className="text-Colors-foreground text-lg font-semibold font-['DM_Sans'] sm:text-xl">
             Alla inlägg ({count})
           </h2>
-          <div
+          <fieldset
             className="inline-flex w-fit rounded-full bg-Colors-muted/90 p-1 outline outline-1 -outline-offset-1 outline-Colors-border"
-            role="group"
             aria-label="Filtrera på typ av hjälp"
           >
             <button
@@ -154,7 +153,7 @@ export default function CategoryPage({ posts }: Props) {
             >
               Erbjuder
             </button>
-          </div>
+          </fieldset>
         </div>
 
         <div className="flex w-full flex-col items-stretch gap-6">
