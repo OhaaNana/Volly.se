@@ -5,13 +5,25 @@ import HomePage from "./HomePage";
 import MenuLoggedIn, { type MenuItem } from "./components/MenuLoggedIn";
 import CreatePostPage from "./pages/CreatePostPage";
 import LoggedInStartPage from "./pages/LoggedInStartPage";
+import CategoryPage from "./pages/CategoryPage";
+import InboxPage from "./pages/InboxPage";
 import ProfilePage from "./pages/ProfilePage";
 
 export function App() {
   const [currentUser, setCurrentUser] = useState<string | null>(() => localStorage.getItem("currentUser"));
   const [view, setView] = useState<"login" | "signup">("login");
   const [prefillEmail, setPrefillEmail] = useState("");
-  const [posts, setPosts] = useState<Array<{ id: string; title: string; content: string; createdAt: number }>>([]);
+  const [posts, setPosts] = useState<
+    Array<{
+      id: string;
+      title: string;
+      content: string;
+      createdAt: number;
+      postType?: "seek" | "offer";
+      category?: string;
+      tags?: string[];
+    }>
+  >([]);
   const loggedInMenuItems = [
     { id: "start", label: "Start", flaticonClassName: "fi fi-rr-home" },
     { id: "kategorier", label: "Kategorier", flaticonClassName: "fi fi-rr-apps" },
@@ -36,7 +48,7 @@ export function App() {
 
   if (currentUser) {
     return (
-      <div>
+      <div className="min-h-dvh w-full bg-Colors-background">
         <MenuLoggedIn
           items={loggedInMenuItems}
           activeId={activeLoggedInPage}
@@ -47,9 +59,18 @@ export function App() {
         >
           {activeLoggedInPage === "skapa" ? (
             <CreatePostPage
-              onSubmit={({ title, content }) => {
+              onCancel={() => setActiveLoggedInPage("start")}
+              onSubmit={(post) => {
                 setPosts((prev) => [
-                  { id: crypto.randomUUID(), title, content, createdAt: Date.now() },
+                  {
+                    id: crypto.randomUUID(),
+                    title: post.title,
+                    content: post.content,
+                    createdAt: Date.now(),
+                    postType: post.postType,
+                    category: post.category,
+                    tags: post.tags,
+                  },
                   ...prev,
                 ]);
                 setActiveLoggedInPage("start");
@@ -57,6 +78,10 @@ export function App() {
             />
           ) : activeLoggedInPage === "profil" ? (
             <ProfilePage userEmail={currentUser} onLogout={logout} />
+          ) : activeLoggedInPage === "kategorier" ? (
+            <CategoryPage posts={posts} />
+          ) : activeLoggedInPage === "inkorg" ? (
+            <InboxPage />
           ) : (
             <LoggedInStartPage
               firstName={firstName}
