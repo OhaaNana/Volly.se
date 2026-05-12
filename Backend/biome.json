@@ -1,7 +1,8 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "root": false,
+  "$schema": "https://biomejs.dev/schemas/2.4.15/schema.json",
   "files": {
-    "ignore": ["node_modules/**", "dist/**", "src/index.ts"]
+    "includes": ["**", "!**/node_modules", "!**/dist", "!**/src/index.ts"]
   },
   "formatter": {
     "enabled": true,

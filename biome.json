@@ -1,7 +1,13 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.15/schema.json",
   "files": {
-    "ignore": ["node_modules/**", "dist/**", "**/*.yaml", "**/*.yml"]
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/*.yaml",
+      "!**/*.yml"
+    ]
   },
   "formatter": {
     "enabled": true,
