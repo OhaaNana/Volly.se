@@ -28,6 +28,12 @@ variables:
         - k8s/**/*
         - .gitlab-ci.yml
         - bun.lock
+    - if: $CI_COMMIT_BRANCH =~ /^feature\/.+/
+      changes:
+        - frontend/**/*
+        - Backend/**/*
+        - k8s/**/*
+        - .gitlab-ci.yml
 
 # Install
 
