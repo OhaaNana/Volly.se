@@ -1,4 +1,4 @@
-import type { Payload } from "Backend/Types/index";
+import type { Payload } from "../Types/index";
 import type { FastifyRequest } from "fastify";
 
 export async function saveMessage(

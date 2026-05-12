@@ -1,13 +1,16 @@
 import type { WebSocket } from "@fastify/websocket";
 import type { FastifyInstance, FastifyRequest } from "fastify";
 
-import { createPayload } from "Backend/Services/chat";
-import { saveMessage } from "Backend/Repository";
+import { createPayload } from "../Services/chat";
+// import { saveMessage } from "../Repository/chat.ts";
 import { users, rooms } from "./rooms";
 
-export function registerChatevents(socket: WebSocket, request: FastifyRequest) {
+export function aregisterChatevents(
+  socket: WebSocket,
+  request: FastifyRequest
+) {
   console.log("User has been connected to a room");
-  socket.on("message", async (message) => {
+  socket.on("message", async (message: Buffer) => {
     try {
       const text = message.toString();
       const user = users.get(socket);

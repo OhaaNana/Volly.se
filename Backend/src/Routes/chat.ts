@@ -1,4 +1,4 @@
-import { getChatController } from "Backend/Controllers/chat";
+import { getChatController } from "../../Controllers/chat";
 import type { FastifyInstance } from "fastify";
 
 export default async function chatRoutes(app: FastifyInstance) {
