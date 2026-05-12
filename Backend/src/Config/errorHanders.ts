@@ -14,9 +14,8 @@ function isAppError(error: unknown): error is AppError {
 
 export default function setupErrorHandlers(app: FastifyInstance) {
   app.setErrorHandler(
-    (error: unknown, request: FastifyRequest, reply: FastifyReply) => {
+    (error: unknown, _request: FastifyRequest, reply: FastifyReply) => {
       if (!isAppError(error)) {
-        console.log(error);
         return reply.status(500).send({
           error: "Internal Server Error",
           message: "Something Went Wrong",
@@ -47,7 +46,6 @@ export default function setupErrorHandlers(app: FastifyInstance) {
           message: error.message,
         });
       }
-      console.log(error);
       reply.status(500).send({
         error: "Internal Server Error",
         message: "Something Went Wrong",
@@ -56,7 +54,6 @@ export default function setupErrorHandlers(app: FastifyInstance) {
   );
 
   app.setNotFoundHandler((request: FastifyRequest, reply: FastifyReply) => {
-    console.log(`Route has not been found: ${request.method}:${request.url}`);
     reply.status(404).send({
       error: "Not Found",
       message: `Route ${request.method}:${request.url} does not exist`,

@@ -3,8 +3,10 @@ import type { FastifyRequest } from "fastify";
 import { createPayload } from "../Services/chat";
 import { rooms, users } from "./rooms";
 
-export function registerChatevents(socket: WebSocket, request: FastifyRequest) {
-  console.log("User has been connected to a room");
+export function registerChatevents(
+  socket: WebSocket,
+  _request: FastifyRequest
+) {
   socket.on("message", async (message: Buffer) => {
     try {
       const text = message.toString();
@@ -22,9 +24,7 @@ export function registerChatevents(socket: WebSocket, request: FastifyRequest) {
           client.send(JSON.stringify(payload));
         }
       }
-    } catch (err) {
-      console.error("WS message error:", err);
-    }
+    } catch (_err) {}
   });
 
   socket.on("close", () => {

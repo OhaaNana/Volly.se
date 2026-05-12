@@ -20,7 +20,6 @@ export async function connection(app: FastifyInstance) {
       //}
 
       if (!userId || !roomId) {
-        console.log("Missing query params");
         socket.close(1008, "Invalid query parameters bla");
         return;
       }
@@ -30,7 +29,7 @@ export async function connection(app: FastifyInstance) {
         rooms.set(roomId, new Set());
       }
 
-      rooms.get(roomId)!.add(socket);
+      rooms.get(roomId)?.add(socket);
 
       registerChatevents(socket, request);
     }

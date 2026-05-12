@@ -5,6 +5,4 @@ export default function dbSetup(app: FastifyInstance) {
   app.register(postgres, {
     connectionString: process.env.DATABASE_URL,
   });
-  console.log(process.env.DATABASE_URL);
-  console.log("Postgres Has Been Connected");
 }

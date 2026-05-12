@@ -74,8 +74,6 @@ function HomePage({ children }: HomePageProps) {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                // placeholder: implement signup flow
-                console.log("Skapa konto skickat");
               }}
               className="flex flex-col justify-start items-center gap-4"
             >
