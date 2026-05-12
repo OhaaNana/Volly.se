@@ -1,6 +1,5 @@
 {
-  "name": "bun-react-template",
-  "version": "0.1.0",
+  "name": "volly",
   "private": true,
   "type": "module",
   "scripts": {
