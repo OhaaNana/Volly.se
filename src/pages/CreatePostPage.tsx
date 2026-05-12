@@ -16,16 +16,51 @@ type Props = {
 const fieldShadow =
   "shadow-[0px_4px_16px_0px_rgba(22,26,38,0.05),0px_1px_2px_0px_rgba(22,26,38,0.04)]";
 
-const CATEGORIES: readonly { id: string; label: string; bg: string; text: string }[] = [
+const CATEGORIES: readonly {
+  id: string;
+  label: string;
+  bg: string;
+  text: string;
+}[] = [
   { id: "teknik", label: "Teknik", bg: "bg-teal-200", text: "text-teal-800" },
   { id: "sprak", label: "Språk", bg: "bg-pink-200", text: "text-fuchsia-800" },
-  { id: "socialt", label: "Socialt & sällskap", bg: "bg-orange-200", text: "text-orange-900" },
+  {
+    id: "socialt",
+    label: "Socialt & sällskap",
+    bg: "bg-orange-200",
+    text: "text-orange-900",
+  },
   { id: "karriar", label: "Karriär", bg: "bg-blue-200", text: "text-blue-900" },
-  { id: "studier", label: "Studier", bg: "bg-green-200", text: "text-green-900" },
-  { id: "dokument", label: "Dokument & byråkrati", bg: "bg-slate-300", text: "text-slate-900" },
-  { id: "npf", label: "Funktionsvariation & NPF", bg: "bg-violet-200", text: "text-violet-900" },
-  { id: "mental", label: "Mental hälsa", bg: "bg-rose-200", text: "text-rose-900" },
-  { id: "vardag", label: "Vardag", bg: "bg-yellow-200", text: "text-yellow-900" },
+  {
+    id: "studier",
+    label: "Studier",
+    bg: "bg-green-200",
+    text: "text-green-900",
+  },
+  {
+    id: "dokument",
+    label: "Dokument & byråkrati",
+    bg: "bg-slate-300",
+    text: "text-slate-900",
+  },
+  {
+    id: "npf",
+    label: "Funktionsvariation & NPF",
+    bg: "bg-violet-200",
+    text: "text-violet-900",
+  },
+  {
+    id: "mental",
+    label: "Mental hälsa",
+    bg: "bg-rose-200",
+    text: "text-rose-900",
+  },
+  {
+    id: "vardag",
+    label: "Vardag",
+    bg: "bg-yellow-200",
+    text: "text-yellow-900",
+  },
 ] as const;
 
 const TAG_OPTIONS = [
@@ -52,7 +87,9 @@ export default function CreatePostPage({ onSubmit, onCancel }: Props) {
   const [tags, setTags] = useState<string[]>([]);
 
   const toggleTag = (label: string) => {
-    setTags((prev) => (prev.includes(label) ? prev.filter((t) => t !== label) : [...prev, label]));
+    setTags((prev) =>
+      prev.includes(label) ? prev.filter((t) => t !== label) : [...prev, label]
+    );
   };
 
   const submit = (e: React.FormEvent) => {
@@ -90,14 +127,19 @@ export default function CreatePostPage({ onSubmit, onCancel }: Props) {
           </p>
         </div>
 
-        <form className="self-stretch pb-6 flex flex-col justify-start items-start gap-6" onSubmit={submit}>
+        <form
+          className="self-stretch pb-6 flex flex-col justify-start items-start gap-6"
+          onSubmit={submit}
+        >
           <div className="self-stretch inline-flex justify-start items-stretch gap-3 max-sm:flex-col">
             <button
               type="button"
               onClick={() => setPostType("seek")}
               aria-pressed={postType === "seek"}
               className={`${postCardBase} ${
-                postType === "seek" ? "outline-Colors-foreground" : "hover:outline-Colors-muted-foreground/40"
+                postType === "seek"
+                  ? "outline-Colors-foreground"
+                  : "hover:outline-Colors-muted-foreground/40"
               }`}
             >
               <div className="w-6 h-6 pb-2 flex flex-col justify-center items-center">
@@ -122,7 +164,9 @@ export default function CreatePostPage({ onSubmit, onCancel }: Props) {
               onClick={() => setPostType("offer")}
               aria-pressed={postType === "offer"}
               className={`${postCardBase} ${
-                postType === "offer" ? "outline-Colors-foreground" : "hover:outline-Colors-muted-foreground/40"
+                postType === "offer"
+                  ? "outline-Colors-foreground"
+                  : "hover:outline-Colors-muted-foreground/40"
               }`}
             >
               <div className="w-6 h-6 pb-2 flex flex-col justify-center items-center">
@@ -177,7 +221,9 @@ export default function CreatePostPage({ onSubmit, onCancel }: Props) {
                 Kategori
               </span>
               {!category ? (
-                <span className="text-rose-700 text-xs font-medium font-['DM_Sans']">Välj en kategori</span>
+                <span className="text-rose-700 text-xs font-medium font-['DM_Sans']">
+                  Välj en kategori
+                </span>
               ) : null}
             </div>
             <div className="self-stretch inline-flex justify-start items-start gap-2.5 flex-wrap content-start overflow-hidden">
@@ -188,10 +234,14 @@ export default function CreatePostPage({ onSubmit, onCancel }: Props) {
                   onClick={() => setCategory(c.id)}
                   aria-pressed={category === c.id}
                   className={`${categoryChip} ${c.bg} ${
-                    category === c.id ? "outline-2 -outline-offset-2 outline-Colors-foreground" : "min-h-7"
+                    category === c.id
+                      ? "outline-2 -outline-offset-2 outline-Colors-foreground"
+                      : "min-h-7"
                   }`}
                 >
-                  <span className={`justify-start ${c.text} text-xs font-medium font-['DM_Sans'] leading-4`}>
+                  <span
+                    className={`justify-start ${c.text} text-xs font-medium font-['DM_Sans'] leading-4`}
+                  >
                     {c.label}
                   </span>
                 </button>
@@ -200,7 +250,9 @@ export default function CreatePostPage({ onSubmit, onCancel }: Props) {
           </div>
 
           <div className="self-stretch flex flex-col justify-start items-start gap-2">
-            <span className="justify-start text-Colors-foreground text-base font-semibold font-['DM_Sans']">Taggar</span>
+            <span className="justify-start text-Colors-foreground text-base font-semibold font-['DM_Sans']">
+              Taggar
+            </span>
             <div className="self-stretch inline-flex justify-start items-start gap-2.5 flex-wrap content-start">
               {TAG_OPTIONS.map((t) => (
                 <button

@@ -22,7 +22,7 @@
 //                 <div className="w-5 h-5 flex justify-center items-center gap-2.5">
 //                     <div className="w-4 h-4 outline-green-800" />
 //                 </div>
-                
+
 //                     <img src={StartIcon} alt="Start knapp" />
 //                 <div className="w-9 h-4 justify-start text-green-800 text-base font-medium font-['DM_Sans'] leading-5">
 //                     <button>start</button>
@@ -38,7 +38,7 @@
 //             </div>
 //             <div className="self-stretch px-5 py-3.5 rounded-3xl inline-flex justify-start items-center gap-2.5 overflow-hidden">
 //                 <div className="w-5 h-5 flex justify-center items-center gap-2.5">
-                    
+
 //                 </div>
 //                     <img src={SkapaIcon} alt="" />
 //                 <div className="w-11 h-4 justify-start text-Forest text-base font-medium font-['DM_Sans'] leading-5">
@@ -46,7 +46,7 @@
 //             </div>
 //             <div className="self-stretch px-5 py-3.5 rounded-3xl inline-flex justify-start items-center gap-2.5 overflow-hidden">
 //                 <div className="w-5 h-5 flex justify-center items-center gap-2.5">
-                    
+
 //                 </div>
 //                     <img src={InkorgIcon} alt="" />
 //                 <div className="w-11 h-4 justify-start text-Forest text-base font-medium font-['DM_Sans'] leading-5">
@@ -88,10 +88,9 @@
 //         </div>
 //     </div>
 // </div>
-            
+
 //         </div>
 
-        
 //     );
 // }
 

@@ -11,7 +11,11 @@ export default function ProfilePage({ userEmail, onLogout }: Props) {
         Inloggad som: <strong className="text-dark-gray">{userEmail}</strong>
       </p>
 
-      <button type="button" onClick={onLogout} className="rounded-xl border border-zinc-300 px-4 py-2">
+      <button
+        type="button"
+        onClick={onLogout}
+        className="rounded-xl border border-zinc-300 px-4 py-2"
+      >
         Log out
       </button>
     </div>

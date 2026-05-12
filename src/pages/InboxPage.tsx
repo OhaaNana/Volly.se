@@ -50,7 +50,10 @@ export default function InboxPage() {
                     : "text-Colors-muted-foreground hover:text-Colors-foreground"
                 }`}
               >
-                <i className="fi fi-rr-comments text-[15px] leading-none" aria-hidden />
+                <i
+                  className="fi fi-rr-comments text-[15px] leading-none"
+                  aria-hidden
+                />
                 Chattar
               </button>
               <button
@@ -64,7 +67,10 @@ export default function InboxPage() {
                     : "text-Colors-muted-foreground hover:text-Colors-foreground"
                 }`}
               >
-                <i className="fi fi-rr-calendar text-[15px] leading-none" aria-hidden />
+                <i
+                  className="fi fi-rr-calendar text-[15px] leading-none"
+                  aria-hidden
+                />
                 Kalender
               </button>
             </div>

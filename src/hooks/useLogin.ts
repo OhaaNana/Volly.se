@@ -25,16 +25,18 @@ export const useLogin = () => {
 
   const login = async () => {
     setErrorMessage("");
-    
+
     if (!email || !password) {
       setErrorMessage("Please fill in all fields");
       return false;
     }
-    
+
     setIsLoading(true);
     try {
       const users = getUsers();
-      const user = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+      const user = users.find(
+        (u) => u.email.toLowerCase() === email.toLowerCase()
+      );
 
       if (!user) {
         setErrorMessage("User not found.");

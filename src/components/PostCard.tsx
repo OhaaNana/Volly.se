@@ -33,7 +33,9 @@ export default function PostCard({
         <div className="rounded-3xl flex justify-start items-center gap-2.5">
           <div className="inline-flex flex-col justify-start items-start overflow-hidden">
             <div className="w-10 h-10 relative">
-              <div className={`w-10 h-10 left-0 top-0 absolute rounded-full ${avatarBgClassName}`} />
+              <div
+                className={`w-10 h-10 left-0 top-0 absolute rounded-full ${avatarBgClassName}`}
+              />
               <div className="left-[9px] top-[10px] absolute justify-start text-white text-base font-semibold font-['DM_Sans'] leading-5">
                 {authorInitials}
               </div>
@@ -62,29 +64,49 @@ export default function PostCard({
           </div>
         </div>
         <div className="px-3.5 py-0.5 bg-green-200/40 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-green-900/60 text-xs font-semibold font-['DM_Sans'] leading-5">{badgeLabel}</div>
+          <div className="justify-start text-green-900/60 text-xs font-semibold font-['DM_Sans'] leading-5">
+            {badgeLabel}
+          </div>
         </div>
       </div>
 
       <div className="self-stretch py-2.5 flex flex-col justify-start items-start gap-[5px] overflow-hidden">
-        <h2 className="justify-end text-dark-gray text-lg font-semibold font-['DM_Sans'] leading-5">{title}</h2>
-        <p className="justify-end text-zinc-600 text-base font-normal font-['DM_Sans'] leading-6">{body}</p>
+        <h2 className="justify-end text-dark-gray text-lg font-semibold font-['DM_Sans'] leading-5">
+          {title}
+        </h2>
+        <p className="justify-end text-zinc-600 text-base font-normal font-['DM_Sans'] leading-6">
+          {body}
+        </p>
       </div>
 
       <div className="self-stretch p-2.5 inline-flex justify-between items-start overflow-hidden">
         {onContact ? (
-          <button type="button" onClick={onContact} className={contactClassName}>
+          <button
+            type="button"
+            onClick={onContact}
+            className={contactClassName}
+          >
             <span className="w-4 h-4 flex justify-center items-center gap-2.5">
-              <i className="fi fi-rs-comment-dots text-dark-gray" aria-hidden="true" />
+              <i
+                className="fi fi-rs-comment-dots text-dark-gray"
+                aria-hidden="true"
+              />
             </span>
-            <span className="justify-center text-dark-gray text-base font-medium font-['DM_Sans'] leading-4">Kontakta</span>
+            <span className="justify-center text-dark-gray text-base font-medium font-['DM_Sans'] leading-4">
+              Kontakta
+            </span>
           </button>
         ) : (
           <div className={contactClassName}>
             <div className="w-4 h-4 flex justify-center items-center gap-2.5">
-              <i className="fi fi-rs-comment-dots text-dark-gray" aria-hidden="true" />
+              <i
+                className="fi fi-rs-comment-dots text-dark-gray"
+                aria-hidden="true"
+              />
             </div>
-            <div className="justify-center text-dark-gray text-base font-medium font-['DM_Sans'] leading-4">Kontakta</div>
+            <div className="justify-center text-dark-gray text-base font-medium font-['DM_Sans'] leading-4">
+              Kontakta
+            </div>
           </div>
         )}
         {onProfile ? (
@@ -94,9 +116,14 @@ export default function PostCard({
             className="px-6 py-3.5 bg-neutral-50 rounded-3xl outline outline-1 outline-offset-[-1px] outline-zinc-400/30 flex justify-center items-center gap-2.5 overflow-hidden"
           >
             <span className="w-5 h-5 flex justify-center items-center gap-2.5">
-              <i className="fi fi-rr-circle-user text-dark-gray" aria-hidden="true" />
+              <i
+                className="fi fi-rr-circle-user text-dark-gray"
+                aria-hidden="true"
+              />
             </span>
-            <span className="justify-center text-dark-gray text-base font-medium font-['DM_Sans'] leading-4">Profil</span>
+            <span className="justify-center text-dark-gray text-base font-medium font-['DM_Sans'] leading-4">
+              Profil
+            </span>
           </button>
         ) : null}
       </div>

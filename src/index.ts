@@ -1,7 +1,10 @@
 import { serve } from "bun";
 
 const isProduction = process.env.NODE_ENV === "production";
-const indexPath = new URL(isProduction ? "../dist/index.html" : "./index.html", import.meta.url);
+const indexPath = new URL(
+  isProduction ? "../dist/index.html" : "./index.html",
+  import.meta.url
+);
 const port = Number(process.env.PORT ?? 3000);
 
 const server = serve({
@@ -9,8 +12,12 @@ const server = serve({
   routes: {
     ...(isProduction
       ? {
-          "/assets/:asset": req =>
-            new Response(Bun.file(new URL(`../dist/assets/${req.params.asset}`, import.meta.url))),
+          "/assets/:asset": (req) =>
+            new Response(
+              Bun.file(
+                new URL(`../dist/assets/${req.params.asset}`, import.meta.url)
+              )
+            ),
         }
       : {}),
 
@@ -32,7 +39,7 @@ const server = serve({
       },
     },
 
-    "/api/hello/:name": async req => {
+    "/api/hello/:name": async (req) => {
       const name = req.params.name;
       return Response.json({
         message: `Hello, ${name}!`,

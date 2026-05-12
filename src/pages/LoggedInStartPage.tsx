@@ -54,7 +54,8 @@ export default function LoggedInStartPage({
             Vad kan vi lösa tillsammans idag?
           </div>
           <div className="self-stretch justify-start text-neutral-500 text-lg font-normal font-['DM_Sans'] leading-7">
-            Skriv ett inlägg och nå ut till någon med rätt kunskap - eller utforska vad du själv kan bidra med.
+            Skriv ett inlägg och nå ut till någon med rätt kunskap - eller
+            utforska vad du själv kan bidra med.
           </div>
         </div>
         <div className="inline-flex justify-start items-center gap-3">
@@ -130,7 +131,9 @@ export default function LoggedInStartPage({
 
       <div className="w-[750px] max-w-[750px] inline-flex justify-start items-center gap-3.5 overflow-hidden">
         <div className="px-7 py-1.5 bg-neutral-700 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-zinc-100 text-xs font-semibold font-['DM_Sans'] leading-5">Allt</div>
+          <div className="justify-start text-zinc-100 text-xs font-semibold font-['DM_Sans'] leading-5">
+            Allt
+          </div>
         </div>
         <div className="px-7 py-1.5 bg-white-2 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
           <div className="justify-start text-neutral-700 text-xs font-semibold font-['DM_Sans'] leading-5">
@@ -167,4 +170,3 @@ export default function LoggedInStartPage({
     </div>
   );
 }
-

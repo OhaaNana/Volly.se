@@ -46,8 +46,9 @@ function SidebarItem({
           <div
             className={`w-4 h-4 ${
               isActive
-                ? item.activeIcon ?? "outline outline-2 outline-offset-[-1px] outline-green-800"
-                : item.icon ?? ""
+                ? (item.activeIcon ??
+                  "outline outline-2 outline-offset-[-1px] outline-green-800")
+                : (item.icon ?? "")
             }`}
           />
         )}

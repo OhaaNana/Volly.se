@@ -11,7 +11,14 @@ export type CategoryPost = {
   tags?: string[];
 };
 
-type CategoryKey = "allt" | "mental" | "teknik" | "vardag" | "studier" | "sprak" | "karriar";
+type CategoryKey =
+  | "allt"
+  | "mental"
+  | "teknik"
+  | "vardag"
+  | "studier"
+  | "sprak"
+  | "karriar";
 
 const CATEGORY_CARDS: readonly {
   id: CategoryKey;
@@ -22,7 +29,12 @@ const CATEGORY_CARDS: readonly {
   filterLabel: string | null;
 }[] = [
   { id: "allt", label: "Allt", icon: "✨", filterLabel: null },
-  { id: "mental", label: "Mental hälsa", icon: "🌿", filterLabel: "Mental hälsa" },
+  {
+    id: "mental",
+    label: "Mental hälsa",
+    icon: "🌿",
+    filterLabel: "Mental hälsa",
+  },
   { id: "teknik", label: "Teknik", icon: "💻", filterLabel: "Teknik" },
   { id: "vardag", label: "Vardag", icon: "🤝", filterLabel: "Vardag" },
   { id: "studier", label: "Studier", icon: "📚", filterLabel: "Studier" },
@@ -55,7 +67,8 @@ export default function CategoryPage({ posts }: Props) {
   const [activeCategory, setActiveCategory] = useState<CategoryKey>("allt");
   const [postKind, setPostKind] = useState<"seek" | "offer">("seek");
 
-  const activeFilterLabel = CATEGORY_CARDS.find((c) => c.id === activeCategory)?.filterLabel ?? null;
+  const activeFilterLabel =
+    CATEGORY_CARDS.find((c) => c.id === activeCategory)?.filterLabel ?? null;
 
   const filteredPosts = useMemo(() => {
     return posts.filter((p) => {
@@ -98,7 +111,9 @@ export default function CategoryPage({ posts }: Props) {
                 <span className="text-2xl leading-none" aria-hidden>
                   {cat.icon}
                 </span>
-                <span className={`text-center text-sm font-semibold leading-tight ${selected ? "text-white" : "text-Colors-foreground"}`}>
+                <span
+                  className={`text-center text-sm font-semibold leading-tight ${selected ? "text-white" : "text-Colors-foreground"}`}
+                >
                   {cat.label}
                 </span>
               </button>

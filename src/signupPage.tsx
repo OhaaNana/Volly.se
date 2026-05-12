@@ -3,9 +3,14 @@ import { useSignup } from "./hooks/useSignup";
 import type { SignupPageProps } from "./types";
 
 function SignupPage({ onBackToLogin, onSignupSuccess }: SignupPageProps) {
-  const { 
-    formData, errorMessage, isLoading, emailStatus, 
-    updateField, checkEmail, submitRegister 
+  const {
+    formData,
+    errorMessage,
+    isLoading,
+    emailStatus,
+    updateField,
+    checkEmail,
+    submitRegister,
   } = useSignup();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -35,23 +40,42 @@ function SignupPage({ onBackToLogin, onSignupSuccess }: SignupPageProps) {
           {["phone", "email", "password"].map((field) => (
             <div key={field} className="flex flex-col gap-1">
               <MyTextInput
-                type={field === "password" ? "password" : field === "email" ? "email" : "text"}
+                type={
+                  field === "password"
+                    ? "password"
+                    : field === "email"
+                      ? "email"
+                      : "text"
+                }
                 value={formData[field as keyof typeof formData]}
                 onChange={(e) => updateField(field, e.target.value)}
-                onBlur={field === "email" ? () => checkEmail(formData.email) : undefined}
+                onBlur={
+                  field === "email"
+                    ? () => checkEmail(formData.email)
+                    : undefined
+                }
                 placeholder={
-                  field === "phone" ? "Telefonnummer" : 
-                  field === "email" ? "E-post" : "Lösenord"
+                  field === "phone"
+                    ? "Telefonnummer"
+                    : field === "email"
+                      ? "E-post"
+                      : "Lösenord"
                 }
                 className="w-full border-2 border-black p-2 rounded-md"
               />
-              
+
               {/* Status-meddelanden för e-post */}
               {field === "email" && (
                 <div className="text-[10px] h-2 ml-1">
-                  {emailStatus === "checking" && <p className="text-gray-500">Kontrollerar...</p>}
-                  {emailStatus === "available" && <p className="text-green-600">E-posten är ledig!</p>}
-                  {emailStatus === "taken" && <p className="text-red-600">E-posten är upptagen</p>}
+                  {emailStatus === "checking" && (
+                    <p className="text-gray-500">Kontrollerar...</p>
+                  )}
+                  {emailStatus === "available" && (
+                    <p className="text-green-600">E-posten är ledig!</p>
+                  )}
+                  {emailStatus === "taken" && (
+                    <p className="text-red-600">E-posten är upptagen</p>
+                  )}
                 </div>
               )}
             </div>
@@ -69,8 +93,8 @@ function SignupPage({ onBackToLogin, onSignupSuccess }: SignupPageProps) {
             {isLoading ? "Skapar konto..." : "Registrera dig"}
           </button>
 
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={onBackToLogin}
             className="text-sm font-medium hover:underline self-center mt-2"
           >
