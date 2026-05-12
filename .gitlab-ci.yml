@@ -145,4 +145,4 @@ deploy_production:
     name: production
     url: https://volly.labb.k3s.chas-lab.dev
   script:
-    - kubectl apply -f k8s/staging/ -n doe25-simon-klausen
+    - kubectl apply -f k8s/production/ -n doe25-simon-klausen

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-production
+  namespace: doe25-simon-klausen
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-production
+  template:
+    metadata:
+      labels:
+        app: backend-production
+    spec:
+      imagePullSecrets:
+        - name: gitlab-registry
+      containers:
+        - name: backend
+          image: registry.chas-lab.dev/chas-challenge-2026/grupp-15/zero-bug-heroes/zero-bug-heroes/backend:latest
+          imagePullPolicy: Always
+          env:
+            - name: DATABASE_URI
+              value: postgres://postgres:postgres@postgres-production:5432/postgres
+          ports:
+            - containerPort: 3001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-production
+  namespace: doe25-simon-klausen
+spec:
+  selector:
+    app: backend-production
+  ports:
+    - port: 3001
+      targetPort: 3001
