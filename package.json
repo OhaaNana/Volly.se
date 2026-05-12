@@ -3,11 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "dev:api": "bun --hot src/index.ts",
-    "start": "NODE_ENV=production bun src/index.ts"
+    "dev:backend": "cd Backend && bun run /src/index.ts",
+    "dev.frontend": "cd Frontend && npm run dev",
+    "dev": "concurrently \"bun run dev:backend\" \"bun run dev:frontend\"",
+    "i:all": "cd Backend && bun install && cd ../Frontend && npm install"
   },
   "dependencies": {
     "@fastify/cors": "^11.2.0",
