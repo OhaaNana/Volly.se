@@ -2,17 +2,23 @@ stages:
   - install
   - quality
 
+.bun_cache:
+  cache:
+    key:
+      files:
+        - bun.lock
+    paths:
+      - node_modules/
+
 install:
+  extends: .bun_cache
   stage: install
   image: oven/bun:latest
   script:
     - bun install --frozen-lockfile
-  artifacts:
-    paths:
-      - node_modules/
-    expire_in: 1 hour
 
 eslint:
+  extends: .bun_cache
   stage: quality
   image: oven/bun:latest
   needs: [install]
@@ -20,6 +26,7 @@ eslint:
     - bunx eslint .
 
 prettier:
+  extends: .bun_cache
   stage: quality
   image: oven/bun:latest
   needs: [install]
