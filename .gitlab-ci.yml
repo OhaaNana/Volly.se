@@ -108,7 +108,7 @@ deploy_review:
     - if: $CI_COMMIT_BRANCH =~ /^feature\/.+/
   environment:
     name: developer/$CI_COMMIT_REF_SLUG
-    url: https://$CI_COMMIT_REF_SLUG.doe25.swarm.chas-lab.dev
+    url: https://$CI_COMMIT_REF_SLUG.labb.k3s.chas-lab.dev
     on_stop: stop_review
   script:
     - cat ~/.kube/config | head -5
@@ -132,9 +132,8 @@ deploy_staging:
     - if: $CI_COMMIT_BRANCH == "master"
   environment:
     name: staging
-    url: https://staging.doe25.swarm.chas-lab.dev
+    url: https://staging-volly.labb.k3s.chas-lab.dev
   script:
-    - cat ~/.kube/config | head -5
     - kubectl apply -f k8s/staging/ -n doe25-simon-klausen
 
 deploy_production:
@@ -145,7 +144,6 @@ deploy_production:
       when: manual
   environment:
     name: production
-    url: https://zero-bug-heroes.doe25.swarm.chas-lab.dev
+    url: https://volly.labb.k3s.chas-lab.dev
   script:
-    - cat ~/.kube/config | head -5
     - kubectl apply -f k8s/staging/ -n doe25-simon-klausen

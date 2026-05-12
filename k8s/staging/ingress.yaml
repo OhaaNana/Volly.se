@@ -9,7 +9,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: staging.doe25.swarm.chas-lab.dev
+    - host: staging.labb.k3s.chas-lab.dev
       http:
         paths:
           - path: /
@@ -26,4 +26,3 @@ spec:
                 name: backend-staging
                 port:
                   number: 3001
-                  
