@@ -17,6 +17,8 @@
         "react": "^19",
         "react-dom": "^19",
         "react-router-dom": "^7.14.2",
+
+        
       },
       "devDependencies": {
         "@tailwindcss/cli": "^4.2.4",
