@@ -3,12 +3,20 @@ import MyTextInput from "./components/MyTextInput";
 import { useLogin } from "./hooks/useLogin";
 import type { LoginPageProps } from "./types";
 
-function LoginPage({ onCreateAccount, onLoginSuccess, initialEmail = "" }: LoginPageProps) {
+function LoginPage({
+  onCreateAccount,
+  onLoginSuccess,
+  initialEmail = "",
+}: LoginPageProps) {
   const {
-    email, setEmail,
-    password, setPassword,
-    errorMessage, setErrorMessage,
-    isLoading, login: originalLogin
+    email,
+    setEmail,
+    password,
+    setPassword,
+    errorMessage,
+    setErrorMessage,
+    isLoading,
+    login: originalLogin,
   } = useLogin();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -28,14 +36,21 @@ function LoginPage({ onCreateAccount, onLoginSuccess, initialEmail = "" }: Login
   return (
     <div className="self-stretch h-[700px] px-20 py-12 bg-neutral-200 inline-flex justify-between items-center">
       <div className="flex-1 flex justify-center items-center gap-2.5">
-        <div className="flex-1 justify-center text-black text-8xl font-medium font-['DM_Sans'] leading-[120px]">Lorem ipsum dolor sit amet lorem ipsum </div>
+        <div className="flex-1 justify-center text-black text-8xl font-medium font-['DM_Sans'] leading-[120px]">
+          Lorem ipsum dolor sit amet lorem ipsum{" "}
+        </div>
       </div>
       <div className="p-10 rounded-[30px] inline-flex flex-col justify-center items-center gap-12">
         <div className="flex flex-col justify-start items-center gap-8">
           <div className="self-stretch flex flex-col justify-start items-start gap-2">
-            <div className="self-stretch text-center justify-start text-black text-3xl font-medium font-['DM_Sans'] leading-8">Logga in</div>
+            <div className="self-stretch text-center justify-start text-black text-3xl font-medium font-['DM_Sans'] leading-8">
+              Logga in
+            </div>
           </div>
-          <form onSubmit={handleSubmit} className="self-stretch flex flex-col justify-start items-start gap-4">
+          <form
+            onSubmit={handleSubmit}
+            className="self-stretch flex flex-col justify-start items-start gap-4"
+          >
             <div className="w-80 h-10 px-3 py-2 bg-white rounded outline outline-2 outline-offset-[-2px] outline-black inline-flex justify-start items-center gap-2">
               <MyTextInput
                 type="email"
@@ -71,7 +86,9 @@ function LoginPage({ onCreateAccount, onLoginSuccess, initialEmail = "" }: Login
                 />
                 <div className="w-3.5 h-3.5 left-[1.33px] top-[1.30px] absolute bg-black" />
               </div>
-              <div className="justify-start text-black text-base font-normal font-['DM_Sans'] leading-4">Visa lösenord</div>
+              <div className="justify-start text-black text-base font-normal font-['DM_Sans'] leading-4">
+                Visa lösenord
+              </div>
             </div>
             <div className="w-80 h-10 px-12 bg-black rounded inline-flex justify-center items-center gap-2.5 overflow-hidden">
               <button

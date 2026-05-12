@@ -31,7 +31,7 @@ function SidebarItem({
       onClick={() => onNavigate(item.id)}
       aria-current={isActive ? "page" : undefined}
       className={`self-stretch px-5 py-3.5 rounded-3xl inline-flex justify-start items-center gap-2.5 overflow-hidden ${
-        isActive ? "bg-Pastel-Lime" : ""
+        isActive ? "bg-[#D3FBD5]" : ""
       }`}
     >
       <div className="w-5 h-5 flex justify-center items-center gap-2.5">
@@ -46,8 +46,9 @@ function SidebarItem({
           <div
             className={`w-4 h-4 ${
               isActive
-                ? item.activeIcon ?? "outline outline-2 outline-offset-[-1px] outline-green-800"
-                : item.icon ?? ""
+                ? (item.activeIcon ??
+                  "outline outline-2 outline-offset-[-1px] outline-green-800")
+                : (item.icon ?? "")
             }`}
           />
         )}
@@ -80,7 +81,7 @@ function Sidebar({
   user?: MenuLoggedInUser;
 }) {
   return (
-    <aside className="w-72 h-[720px] p-7 bg-stone-50 border-r border-zinc-400/60 inline-flex flex-col justify-between items-start overflow-hidden">
+    <aside className="w-72 shrink-0 min-h-dvh p-7 bg-Colors-background border-r border-Colors-border inline-flex flex-col justify-between items-start overflow-hidden">
       <div className="self-stretch flex flex-col justify-start items-start gap-2.5">
         <div className="inline-flex justify-start items-center gap-2.5 overflow-hidden">
           <div className="w-12 h-12 relative">
@@ -158,7 +159,7 @@ export default function MenuLoggedIn<Id extends string>({
   children,
 }: MenuLoggedInProps<Id>) {
   return (
-    <div className="flex">
+    <div className="flex min-h-dvh w-full bg-Colors-background">
       <Sidebar
         items={items as readonly MenuItem<string>[]}
         activePage={activeId}
@@ -167,7 +168,9 @@ export default function MenuLoggedIn<Id extends string>({
         brandInitial={brandInitial}
         user={user}
       />
-      <main className="flex-1 p-6">{children ?? <h1>{activeId}</h1>}</main>
+      <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-Colors-background p-6">
+        {children ?? <h1>{activeId}</h1>}
+      </main>
     </div>
   );
 }

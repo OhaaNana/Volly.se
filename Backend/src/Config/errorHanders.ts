@@ -13,25 +13,27 @@ export default function setupErrorHandlers(app: FastifyInstance) {
       if (error.code === "23505" || error.code === "11000") {
         return reply.status(400).send({
           error: "Conflict",
-          message: "This data already exists"
-        })
+          message: "This data already exists",
+        });
       }
-      if (error.name === "CastError"){
+      if (error.name === "CastError") {
         return reply.status(400).send({
           error: "Invalid ID",
-          message: `The Provided ID is Incorrect: ${error.path}`
-        })
+          message: `The Provided ID is Incorrect: ${error.path}`,
+        });
       }
       if (error.statusCode && error.statusCode < 500) {
-        return reply.status(error.statusCode).send({ 
+        return reply.status(error.statusCode).send({
           error: error.name,
-          message: error.message });
+          message: error.message,
+        });
       }
       console.log(error);
       reply.status(500).send({
         error: "Internal Server Error",
-        message: "Something Went Wrong" });
-    },
+        message: "Something Went Wrong",
+      });
+    }
   );
 
   app.setNotFoundHandler((request: FastifyRequest, reply: FastifyReply) => {
@@ -42,4 +44,3 @@ export default function setupErrorHandlers(app: FastifyInstance) {
     });
   });
 }
-

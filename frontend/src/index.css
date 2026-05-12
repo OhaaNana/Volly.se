@@ -1,4 +1,24 @@
 @import "tailwindcss";
 @import "@flaticon/flaticon-uicons/css/regular/rounded.css";
 @import "@flaticon/flaticon-uicons/css/regular/straight.css";
+@import "@flaticon/flaticon-uicons/css/bold/rounded.css";
 
+/*
+  Design tokens (Skapa-sida m.m.)
+  Palettreferenser: 0F172A, 115E59, 14532D, 161A26, 1E3A8A, 321A16, 4C1D95, 5D646F, …
+*/
+@theme {
+  --color-Colors-background: #fdfaf4;
+  --color-Colors-foreground: #161a26;
+  --color-Colors-muted-foreground: #5d646f;
+  --color-Colors-card: #ffffff;
+  --color-Colors-border: #e9e4dc;
+  --color-Colors-muted: #f6f1e9;
+  --color-Colors-warm-foreground: #321a16;
+}
+
+@layer base {
+  #root {
+    min-height: 100dvh;
+  }
+}
