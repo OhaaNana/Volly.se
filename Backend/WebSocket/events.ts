@@ -5,10 +5,7 @@ import { createPayload } from "../Services/chat";
 // import { saveMessage } from "../Repository/chat.ts";
 import { users, rooms } from "./rooms";
 
-export function aregisterChatevents(
-  socket: WebSocket,
-  request: FastifyRequest
-) {
+export function registerChatevents(socket: WebSocket, request: FastifyRequest) {
   console.log("User has been connected to a room");
   socket.on("message", async (message: Buffer) => {
     try {
