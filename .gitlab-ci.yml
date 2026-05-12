@@ -96,7 +96,7 @@ build_backend:
 # ── Deploy ────────────────────────────────────────────────────────
 .deploy_base:
   stage: deploy
-  image: curlimages/curl:8
+  image: curlimages/curl:latest
   variables:
     GIT_STRATEGY: none
 
