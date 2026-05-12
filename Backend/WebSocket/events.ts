@@ -1,8 +1,6 @@
 import type { WebSocket } from "@fastify/websocket";
-import type { FastifyInstance, FastifyRequest } from "fastify";
-
+import type { FastifyRequest } from "fastify";
 import { createPayload } from "../Services/chat";
-// import { saveMessage } from "../Repository/chat.ts";
 import { users, rooms } from "./rooms";
 
 export function registerChatevents(socket: WebSocket, request: FastifyRequest) {
