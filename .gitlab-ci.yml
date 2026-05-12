@@ -1,6 +1,13 @@
 stages:
   - install
   - quality
+  - build
+  - deploy
+
+variables:
+  FRONTEND_IMAGE: $CI_REGISTRY_IMAGE/frontend
+  BACKEND_IMAGE: $CI_REGISTRY_IMAGE/backend
+  DOCKER_DRIVER: overlay2
 
 .bun_cache:
   cache:
@@ -10,25 +17,131 @@ stages:
     paths:
       - node_modules/
 
+.on_any_env:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH =~ /^feature\/.+/
+
+# ── Install ───────────────────────────────────────────────────────
 install:
-  extends: .bun_cache
+  extends:
+    - .bun_cache
+    - .on_any_env
   stage: install
-  image: oven/bun:latest
+  image: oven/bun:1
   script:
     - bun install --frozen-lockfile
 
+# ── Quality ───────────────────────────────────────────────────────
 eslint:
-  extends: .bun_cache
+  extends:
+    - .bun_cache
+    - .on_any_env
   stage: quality
-  image: oven/bun:latest
+  image: oven/bun:1
   needs: [install]
   script:
     - bunx eslint .
 
 prettier:
-  extends: .bun_cache
+  extends:
+    - .bun_cache
+    - .on_any_env
   stage: quality
-  image: oven/bun:latest
+  image: oven/bun:1
   needs: [install]
   script:
     - bunx prettier --check .
+
+# ── Build ─────────────────────────────────────────────────────────
+.build_base:
+  extends: .on_any_env
+  stage: build
+  image: docker:27
+  services:
+    - docker:27-dind
+  needs: [eslint, prettier]
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+# main → :latest  |  master → :staging  |  feature → :review-<slug>
+.tag_and_push: &tag_and_push |
+  if [ "$CI_COMMIT_BRANCH" = "main" ]; then
+    ENV_TAG="latest"
+  elif [ "$CI_COMMIT_BRANCH" = "master" ]; then
+    ENV_TAG="staging"
+  else
+    ENV_TAG="review-${CI_COMMIT_REF_SLUG}"
+  fi
+  docker tag "${IMAGE}:${CI_COMMIT_SHORT_SHA}" "${IMAGE}:${ENV_TAG}"
+  docker push "${IMAGE}:${ENV_TAG}"
+
+build_frontend:
+  extends: .build_base
+  script:
+    - export IMAGE=$FRONTEND_IMAGE
+    - docker build -t "${IMAGE}:${CI_COMMIT_SHORT_SHA}" ./frontend
+    - docker push "${IMAGE}:${CI_COMMIT_SHORT_SHA}"
+    - *tag_and_push
+
+build_backend:
+  extends: .build_base
+  script:
+    - export IMAGE=$BACKEND_IMAGE
+    - docker build -t "${IMAGE}:${CI_COMMIT_SHORT_SHA}" ./Backend
+    - docker push "${IMAGE}:${CI_COMMIT_SHORT_SHA}"
+    - *tag_and_push
+
+# ── Deploy ────────────────────────────────────────────────────────
+.deploy_base:
+  stage: deploy
+  image: curlimages/curl:8
+  variables:
+    GIT_STRATEGY: none
+
+deploy_review:
+  extends: .deploy_base
+  needs: [build_frontend, build_backend]
+  rules:
+    - if: $CI_COMMIT_BRANCH =~ /^feature\/.+/
+  environment:
+    name: developer/$CI_COMMIT_REF_SLUG
+    url: https://$CI_COMMIT_REF_SLUG.doe25.swarm.chas-lab.dev
+    on_stop: stop_review
+  script:
+    - curl -f -X POST "$PORTAINER_WEBHOOK_REVIEW"
+
+stop_review:
+  extends: .deploy_base
+  rules:
+    - if: $CI_COMMIT_BRANCH =~ /^feature\/.+/
+      when: manual
+  environment:
+    name: developer/$CI_COMMIT_REF_SLUG
+    action: stop
+  script:
+    - curl -f -X POST "${PORTAINER_WEBHOOK_REVIEW}/stop" || true
+
+deploy_staging:
+  extends: .deploy_base
+  needs: [build_frontend, build_backend]
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+  environment:
+    name: staging
+    url: https://zero-bug-heroes.staging.doe25.swarm.chas-lab.dev
+  script:
+    - curl -f -X POST "$PORTAINER_WEBHOOK_STAGING"
+
+deploy_production:
+  extends: .deploy_base
+  needs: [build_frontend, build_backend]
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
+  environment:
+    name: production
+    url: https://zero-bug-heroes.doe25.swarm.chas-lab.dev
+  script:
+    - curl -f -X POST "$PORTAINER_WEBHOOK_PRODUCTION"

@@ -1,8 +1,14 @@
-FROM oven/bun
+# ── Builder ───────────────────────────────────────────────────────
+FROM oven/bun:1 AS builder
 WORKDIR /app
 COPY package.json package-lock.json* bun.lockb* ./
-RUN bun install
+RUN bun install --frozen-lockfile
 COPY . .
-RUN npm run build
-EXPOSE 3000
-CMD ["vite"]
+RUN bun run build
+
+# ── Production (nginx) ────────────────────────────────────────────
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
