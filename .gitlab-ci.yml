@@ -96,7 +96,7 @@ build_backend:
 # ── Deploy ────────────────────────────────────────────────────────
 .deploy_base:
   stage: deploy
-  image: bitnami/kubectl:latest
+  image: alpine/k8s:1.31.4
   variables:
   before_script:
     - echo "$KUBECONFIG_B64" | base64 -d > /tmp/kubeconfig
