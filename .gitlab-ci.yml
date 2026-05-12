@@ -97,10 +97,9 @@ build_backend:
 .deploy_base:
   stage: deploy
   image: alpine/k8s:1.31.4
-  variables:
   before_script:
-    - echo "$KUBECONFIG_B64" | base64 -d > /tmp/kubeconfig
-    - export KUBECONFIG=/tmp/kubeconfig
+    - mkdir -p ~/.kube
+    - echo "$KUBECONFIG_B64" | base64 -d > ~/.kube/config
 
 deploy_review:
   extends: .deploy_base
