@@ -9,7 +9,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: staging.labb.k3s.chas-lab.dev
+    - host: staging-volly.labb.k3s.chas-lab.dev
       http:
         paths:
           - path: /

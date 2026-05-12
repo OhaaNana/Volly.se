@@ -111,7 +111,6 @@ deploy_review:
     url: https://$CI_COMMIT_REF_SLUG.labb.k3s.chas-lab.dev
     on_stop: stop_review
   script:
-    - cat ~/.kube/config | head -5
     - kubectl apply -f k8s/staging/ -n doe25-simon-klausen
 
 stop_review:
