@@ -1,6 +1,6 @@
 FROM oven/bun:latest
-WORKDIR /app
-COPY package.json bun.lock
+WORKDIR /zero-bug-heroe
+COPY package.json bun.lock ./s
 RUN bun install --frozen-lockfile
 COPY . .
 EXPOSE 3001

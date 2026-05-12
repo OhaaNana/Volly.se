@@ -1,8 +1,10 @@
 import { type FastifyInstance } from "fastify";
-import fastifyPostgres from "@fastify/postgres";
+import postgres from "@fastify/postgres";
 
-export default async function dbSetup(app: FastifyInstance) {
-  await app.register(fastifyPostgres, {
-    connectionString: process.env.POSTGRES_URI,
+export default function dbSetup(app: FastifyInstance) {
+  app.register(postgres, {
+    connectionString: process.env.DATABASE_URL,
   });
+  console.log(process.env.DATABASE_URL);
+  console.log("Postgres Has Been Connected");
 }
