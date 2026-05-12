@@ -3,6 +3,9 @@ kind: Ingress
 metadata:
   name: staging-ingress
   namespace: doe25-simon-klausen
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   ingressClassName: traefik
   rules:
@@ -23,3 +26,4 @@ spec:
                 name: backend-staging
                 port:
                   number: 3001
+                  
