@@ -72,7 +72,7 @@ export function App() {
   }
 
   return (
-    <HomePage>
+    <HomePage onSignupSuccess={(email) => { setPrefillEmail(email); setView("login"); }}>
       {view === "login" ? (
         <LoginPage
           initialEmail={prefillEmail}
