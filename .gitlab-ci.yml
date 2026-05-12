@@ -98,7 +98,6 @@ build_backend:
   stage: deploy
   image: bitnami/kubectl:latest
   variables:
-    GIT_STRATEGY: none
   before_script:
     - echo "$KUBECONFIG_B64" | base64 -d > /tmp/kubeconfig
     - export KUBECONFIG=/tmp/kubeconfig
