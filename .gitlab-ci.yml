@@ -111,6 +111,7 @@ deploy_review:
     url: https://$CI_COMMIT_REF_SLUG.doe25.swarm.chas-lab.dev
     on_stop: stop_review
   script:
+    - cat ~/.kube/config | head -5
     - kubectl apply -f k8s/staging/ -n doe25-simon-klausen
 
 stop_review:
@@ -133,6 +134,7 @@ deploy_staging:
     name: staging
     url: https://staging.doe25.swarm.chas-lab.dev
   script:
+    - cat ~/.kube/config | head -5
     - kubectl apply -f k8s/staging/ -n doe25-simon-klausen
 
 deploy_production:
@@ -145,4 +147,5 @@ deploy_production:
     name: production
     url: https://zero-bug-heroes.doe25.swarm.chas-lab.dev
   script:
+    - cat ~/.kube/config | head -5
     - kubectl apply -f k8s/staging/ -n doe25-simon-klausen
