@@ -2,6 +2,7 @@ import { useState } from "react";
 import LoginPage from "./LogingPage";
 import SignupPage from "./signupPage";
 import HomePage from "./HomePage";
+import "./index.css";
 import MenuLoggedIn, { type MenuItem } from "./components/MenuLoggedIn";
 import CreatePostPage from "./pages/CreatePostPage";
 import LoggedInStartPage from "./pages/LoggedInStartPage";
