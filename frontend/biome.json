@@ -4,6 +4,11 @@
   "files": {
     "includes": ["**", "!**/node_modules", "!**/dist", "!**/src/index.ts"]
   },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
