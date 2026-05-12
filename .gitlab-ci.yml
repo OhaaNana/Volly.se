@@ -8,6 +8,7 @@ variables:
   FRONTEND_IMAGE: $CI_REGISTRY_IMAGE/frontend
   BACKEND_IMAGE: $CI_REGISTRY_IMAGE/backend
   DOCKER_DRIVER: overlay2
+  DOCKER_BUILDKIT: "1"
 
 .bun_cache:
   cache:
@@ -21,9 +22,8 @@ variables:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
     - if: $CI_COMMIT_BRANCH == "master"
-    - if: $CI_COMMIT_BRANCH =~ /^feature\/.+/
 
-# ── Install ───────────────────────────────────────────────────────
+# Install 
 install:
   extends:
     - .bun_cache
@@ -33,7 +33,7 @@ install:
   script:
     - bun install --frozen-lockfile
 
-# ── Quality ───────────────────────────────────────────────────────
+# Quality 
 eslint:
   extends:
     - .bun_cache
@@ -54,7 +54,7 @@ prettier:
   script:
     - bunx prettier --check .
 
-# ── Build ─────────────────────────────────────────────────────────
+# Build 
 .build_base:
   extends: .on_any_env
   stage: build
@@ -65,15 +65,9 @@ prettier:
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
-# main → :latest  |  master → :staging  |  feature → :review-<slug>
+# main → :production  |  master → :staging
 .tag_and_push: &tag_and_push |
-  if [ "$CI_COMMIT_BRANCH" = "main" ]; then
-    ENV_TAG="latest"
-  elif [ "$CI_COMMIT_BRANCH" = "master" ]; then
-    ENV_TAG="staging"
-  else
-    ENV_TAG="review-${CI_COMMIT_REF_SLUG}"
-  fi
+  ENV_TAG=$([ "$CI_COMMIT_BRANCH" = "main" ] && echo "production" || echo "staging")
   docker tag "${IMAGE}:${CI_COMMIT_SHORT_SHA}" "${IMAGE}:${ENV_TAG}"
   docker push "${IMAGE}:${ENV_TAG}"
 
@@ -81,7 +75,7 @@ build_frontend:
   extends: .build_base
   script:
     - export IMAGE=$FRONTEND_IMAGE
-    - docker build -t "${IMAGE}:${CI_COMMIT_SHORT_SHA}" ./frontend
+    - docker build --cache-from "${IMAGE}:staging" -t "${IMAGE}:${CI_COMMIT_SHORT_SHA}" ./frontend
     - docker push "${IMAGE}:${CI_COMMIT_SHORT_SHA}"
     - *tag_and_push
 
@@ -89,40 +83,17 @@ build_backend:
   extends: .build_base
   script:
     - export IMAGE=$BACKEND_IMAGE
-    - docker build -t "${IMAGE}:${CI_COMMIT_SHORT_SHA}" ./Backend
+    - docker build --cache-from "${IMAGE}:staging" -t "${IMAGE}:${CI_COMMIT_SHORT_SHA}" ./Backend
     - docker push "${IMAGE}:${CI_COMMIT_SHORT_SHA}"
     - *tag_and_push
 
-# ── Deploy ────────────────────────────────────────────────────────
+# Deploy 
 .deploy_base:
   stage: deploy
-  image: alpine/k8s:1.31.4
+  image: alpine/k8s:1.34.7
   before_script:
     - mkdir -p ~/.kube
     - echo "$KUBECONFIG_B64" | base64 -d > ~/.kube/config
-
-deploy_review:
-  extends: .deploy_base
-  needs: [build_frontend, build_backend]
-  rules:
-    - if: $CI_COMMIT_BRANCH =~ /^feature\/.+/
-  environment:
-    name: developer/$CI_COMMIT_REF_SLUG
-    url: https://$CI_COMMIT_REF_SLUG.labb.k3s.chas-lab.dev
-    on_stop: stop_review
-  script:
-    - kubectl apply -f k8s/staging/ -n doe25-simon-klausen
-
-stop_review:
-  extends: .deploy_base
-  rules:
-    - if: $CI_COMMIT_BRANCH =~ /^feature\/.+/
-      when: manual
-  environment:
-    name: developer/$CI_COMMIT_REF_SLUG
-    action: stop
-  script:
-    - echo "Stopping review environment $CI_COMMIT_REF_SLUG"
 
 deploy_staging:
   extends: .deploy_base
@@ -134,6 +105,8 @@ deploy_staging:
     url: https://staging-volly.labb.k3s.chas-lab.dev
   script:
     - kubectl apply -f k8s/staging/ -n doe25-simon-klausen
+    - kubectl rollout restart deployment/frontend-staging -n doe25-simon-klausen
+    - kubectl rollout restart deployment/backend-staging -n doe25-simon-klausen
 
 deploy_production:
   extends: .deploy_base
@@ -146,3 +119,5 @@ deploy_production:
     url: https://volly.labb.k3s.chas-lab.dev
   script:
     - kubectl apply -f k8s/production/ -n doe25-simon-klausen
+    - kubectl rollout restart deployment/frontend-production -n doe25-simon-klausen
+    - kubectl rollout restart deployment/backend-production -n doe25-simon-klausen
