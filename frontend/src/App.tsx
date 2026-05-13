@@ -1,6 +1,5 @@
 import { useState } from "react";
 import LoginPage from "./LogingPage";
-import SignupPage from "./signupPage";
 import HomePage from "./HomePage";
 import MenuLoggedIn, { type MenuItem } from "./components/MenuLoggedIn";
 import CreatePostPage from "./pages/CreatePostPage";
@@ -13,8 +12,6 @@ export function App() {
   const [currentUser, setCurrentUser] = useState<string | null>(() =>
     localStorage.getItem("currentUser")
   );
-  const [view, setView] = useState<"login" | "signup">("login");
-  const [prefillEmail, setPrefillEmail] = useState("");
   const [posts, setPosts] = useState<
     Array<{
       id: string;
@@ -55,7 +52,6 @@ export function App() {
   const logout = () => {
     localStorage.removeItem("currentUser");
     setCurrentUser(null);
-    setView("login");
   };
 
   const firstName =
@@ -121,21 +117,9 @@ export function App() {
 
   return (
     <HomePage>
-      {view === "login" ? (
-        <LoginPage
-          initialEmail={prefillEmail}
-          onLoginSuccess={(email) => setCurrentUser(email)}
-          onCreateAccount={() => setView("signup")}
-        />
-      ) : (
-        <SignupPage
-          onBackToLogin={() => setView("login")}
-          onSignupSuccess={(email) => {
-            setPrefillEmail(email);
-            setView("login");
-          }}
-        />
-      )}
+      <LoginPage
+        onLoginSuccess={(email) => setCurrentUser(email)}
+      />
     </HomePage>
   );
 }

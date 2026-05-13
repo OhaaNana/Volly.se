@@ -20,7 +20,6 @@ export type SignupResult = {
 };
 
 export type LoginPageProps = {
-  onCreateAccount: () => void;
   onLoginSuccess: (email: string) => void;
   initialEmail?: string;
 };

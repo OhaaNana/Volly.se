@@ -4,7 +4,6 @@ import { useLogin } from "./hooks/useLogin";
 import type { LoginPageProps } from "./types";
 
 function LoginPage({
-  onCreateAccount,
   onLoginSuccess,
   initialEmail = "",
 }: LoginPageProps) {
@@ -60,7 +59,7 @@ function LoginPage({
                   setErrorMessage("");
                 }}
                 placeholder="E-post"
-                className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
+                className="flex-1 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
               />
             </div>
             <div className="w-80 h-10 px-3 py-2 bg-white rounded outline outline-2 outline-offset-[-2px] outline-black inline-flex justify-start items-center gap-2">
@@ -72,7 +71,7 @@ function LoginPage({
                   setErrorMessage("");
                 }}
                 placeholder="Lösenord"
-                className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
+                className="flex-1 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
               />
             </div>
             <div className="inline-flex justify-start items-center gap-2">
@@ -84,7 +83,7 @@ function LoginPage({
                   className="absolute inset-0 opacity-0 cursor-pointer"
                   aria-label="Visa lösenord"
                 />
-                <div className="w-3.5 h-3.5 left-[1.33px] top-[1.30px] absolute bg-black" />
+                <div className={`w-3.5 h-3.5 left-[1.33px] top-[1.30px] absolute ${showPassword ? 'bg-black' : 'bg-white border-2 border-black'}`} />
               </div>
               <div className="justify-start text-black text-base font-normal font-['DM_Sans'] leading-4">
                 Visa lösenord
@@ -104,14 +103,7 @@ function LoginPage({
                 <p>{errorMessage}</p>
               </div>
             )}
-            <div className="self-stretch inline-flex justify-between items-center overflow-hidden">
-              <button
-                type="button"
-                onClick={onCreateAccount}
-                className="justify-start text-black text-base font-normal font-['DM_Sans'] leading-4"
-              >
-                Har du inget konto?
-              </button>
+            <div className="self-stretch inline-flex justify-end items-center overflow-hidden">
               <button
                 type="button"
                 className="justify-start text-black text-base font-normal font-['DM_Sans'] leading-4"
