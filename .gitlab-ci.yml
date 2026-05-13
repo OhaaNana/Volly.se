@@ -10,11 +10,6 @@ variables:
   DOCKER_DRIVER: overlay2
   DOCKER_BUILDKIT: "1"
 
-artifacts:
-  expire_in: 12 hours
-  paths:
-    - dist/
-
 .bun_cache:
   cache:
     key:
@@ -87,6 +82,10 @@ prettier:
 
 build_frontend:
   extends: .build_base
+  artifacts:
+    expire_in: 2 days
+    paths:
+      - dist/
   script:
     - export IMAGE=$FRONTEND_IMAGE
     - docker build --cache-from "${IMAGE}:staging" -t "${IMAGE}:${CI_COMMIT_SHORT_SHA}" ./frontend
