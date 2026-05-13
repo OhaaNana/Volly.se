@@ -19,14 +19,10 @@ spec:
                 name: frontend-staging
                 port:
                   number: 3000
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: backend-staging
-                port:
-                  number: 3001
-          - path: /docs
+    - host: api.staging-volly.labb.k3s.chas-lab.dev
+      http:
+        paths:
+          - path: /
             pathType: Prefix
             backend:
               service:
