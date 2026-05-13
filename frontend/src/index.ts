@@ -9,49 +9,32 @@ const port = Number(process.env.PORT ?? 3000);
 
 const server = serve({
   port,
+  hostname: "0.0.0.0",
   routes: {
-    ...(isProduction
-      ? {
-          "/assets/:asset": (req) =>
-            new Response(
-              Bun.file(
-                new URL(`../dist/assets/${req.params.asset}`, import.meta.url)
-              )
-            ),
-        }
-      : {}),
-
-    // Serve index.html for all unmatched routes.
     "/*": () => new Response(Bun.file(indexPath)),
 
     "/api/hello": {
-      async GET(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "GET",
-        });
+      async GET() {
+        return Response.json({ message: "Hello, world!", method: "GET" });
       },
-      async PUT(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "PUT",
-        });
+      async PUT() {
+        return Response.json({ message: "Hello, world!", method: "PUT" });
       },
     },
 
-    "/api/hello/:name": async (req) => {
-      const name = req.params.name;
-      return Response.json({
-        message: `Hello, ${name}!`,
-      });
+    "/api/hello/:name": (req) =>
+      Response.json({ message: `Hello, ${req.params.name}!` }),
+
+    "/assets/:asset": (req) => {
+      if (!isProduction) return new Response("Not Found", { status: 404 });
+      return new Response(
+        Bun.file(new URL(`../dist/assets/${req.params.asset}`, import.meta.url))
+      );
     },
   },
 
-  development: process.env.NODE_ENV !== "production" && {
-    // Enable browser hot reloading in development
+  development: !isProduction && {
     hmr: true,
-
-    // Echo console logs from the browser to the server
     console: true,
   },
 });

@@ -1,109 +1,127 @@
 import { useState } from "react";
+import InboxConversationCard, {
+  type InboxConversationCardProps,
+} from "../components/InboxConversationCard";
 
-type InboxTab = "chattar" | "kalender";
+type ChatPreview = Pick<
+  InboxConversationCardProps,
+  | "name"
+  | "initials"
+  | "avatarClassName"
+  | "threadTitle"
+  | "preview"
+  | "timeLabel"
+> & { id: string };
+
+const MOCK_CHATS: ChatPreview[] = [
+  {
+    id: "1",
+    initials: "NN",
+    avatarClassName: "bg-orange-400",
+    name: "Namn Namnsson",
+    threadTitle: "Titel",
+    preview: "Hej! Jag skulle behöva lite hjälp med…",
+    timeLabel: "12m",
+  },
+  {
+    id: "2",
+    initials: "NN",
+    avatarClassName: "bg-orange-400",
+    name: "Namn Namnsson",
+    threadTitle: "Titel",
+    preview: "Hej! Jag skulle behöva lite hjälp med…",
+    timeLabel: "2h",
+  },
+  {
+    id: "3",
+    initials: "NN",
+    avatarClassName: "bg-orange-400",
+    name: "Namn Namnsson",
+    threadTitle: "Titel",
+    preview: "Hej! Jag skulle behöva lite hjälp med…",
+    timeLabel: "1d",
+  },
+];
+
+function SearchIcon() {
+  return (
+    <i
+      aria-hidden
+      className="fi fi-sr-member-search shrink-0 text-[16px] leading-none text-Colors-muted-foreground"
+    />
+  );
+}
 
 /**
- * Inkorg – layout enligt design. Konversationslista fylls på när data hämtas från databasen.
+ * Inkorg – matchar layout från design. Lista kan senare bytas mot data från databasen.
  */
 export default function InboxPage() {
   const [query, setQuery] = useState("");
-  const [activeTab, setActiveTab] = useState<InboxTab>("chattar");
+  const [selectedId, setSelectedId] = useState<string | null>(
+    MOCK_CHATS[0]?.id ?? null
+  );
+
+  const filtered = MOCK_CHATS.filter(
+    (c) =>
+      query.trim() === "" ||
+      c.name.toLowerCase().includes(query.toLowerCase()) ||
+      c.threadTitle.toLowerCase().includes(query.toLowerCase()) ||
+      c.preview.toLowerCase().includes(query.toLowerCase())
+  );
 
   return (
-    <div className="flex w-full min-w-0 flex-1 min-h-0 flex-col">
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl bg-Colors-card outline outline-1 -outline-offset-1 outline-Colors-border shadow-[0px_1px_2px_0px_rgba(22,26,38,0.04)] md:flex-row">
-        {/* Vänster: lista / filter */}
-        <aside className="flex w-full shrink-0 flex-col border-Colors-border bg-Colors-background md:max-w-[320px] md:border-r">
-          <div className="flex flex-col gap-4 p-5">
-            <h1 className="text-Colors-foreground text-2xl font-bold font-['DM_Sans'] tracking-tight sm:text-3xl">
-              Inkorg
-            </h1>
-
-            <label className="relative block">
-              <span className="sr-only">Sök bland chattar</span>
-              <i
-                className="fi fi-rr-search pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[16px] leading-none text-Colors-muted-foreground"
-                aria-hidden
-              />
-              <input
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Sök bland chattar..."
-                className="w-full rounded-3xl border-0 bg-Colors-card py-3 pl-11 pr-4 text-Colors-foreground outline outline-1 -outline-offset-1 outline-Colors-border placeholder:text-Colors-muted-foreground font-['DM_Sans'] text-sm font-normal shadow-[0px_1px_2px_0px_rgba(22,26,38,0.04)] focus:outline-2 focus:-outline-offset-2 focus:outline-Colors-foreground/25"
-              />
-            </label>
-
-            <div
-              className="inline-flex w-full rounded-full bg-Colors-muted/90 p-1 outline outline-1 -outline-offset-1 outline-Colors-border/80"
-              role="tablist"
-              aria-label="Inkorgsvy"
-            >
-              <button
-                type="button"
-                role="tab"
-                aria-selected={activeTab === "chattar"}
-                onClick={() => setActiveTab("chattar")}
-                className={`flex flex-1 items-center justify-center gap-2 rounded-full py-2.5 text-sm font-semibold font-['DM_Sans'] transition-colors ${
-                  activeTab === "chattar"
-                    ? "bg-white text-Colors-foreground shadow-sm"
-                    : "text-Colors-muted-foreground hover:text-Colors-foreground"
-                }`}
-              >
-                <i
-                  className="fi fi-rr-comments text-[15px] leading-none"
-                  aria-hidden
-                />
-                Chattar
-              </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={activeTab === "kalender"}
-                onClick={() => setActiveTab("kalender")}
-                className={`flex flex-1 items-center justify-center gap-2 rounded-full py-2.5 text-sm font-semibold font-['DM_Sans'] transition-colors ${
-                  activeTab === "kalender"
-                    ? "bg-white text-Colors-foreground shadow-sm"
-                    : "text-Colors-muted-foreground hover:text-Colors-foreground"
-                }`}
-              >
-                <i
-                  className="fi fi-rr-calendar text-[15px] leading-none"
-                  aria-hidden
-                />
-                Kalender
-              </button>
-            </div>
+    <div className="inline-flex min-h-0 w-full flex-1 flex-row justify-start items-stretch self-stretch overflow-hidden">
+      {/* Vänster: inkorgslista (w-96) */}
+      <div className="inline-flex w-96 shrink-0 flex-col items-start justify-start self-stretch overflow-hidden border-r border-border bg-sidebar">
+        <div className="flex w-96 flex-col items-start justify-start gap-3 border-b border-border p-5">
+          <div className="justify-start font-['DM_Sans'] text-2xl font-bold text-foreground">
+            Inkorg
           </div>
 
-          {/* Plats för chattlista från databasen */}
-          <div
-            className="min-h-0 flex-1 bg-Colors-card p-3 sm:min-h-[280px]"
-            role="tabpanel"
-            aria-label={activeTab === "chattar" ? "Chattar" : "Kalender"}
-          >
-            <div className="flex h-full min-h-[200px] flex-col items-center justify-center rounded-xl bg-Colors-background/80 px-4 py-10 text-center outline outline-1 -outline-offset-1 outline-Colors-border/60">
-              <p className="max-w-[220px] text-Colors-muted-foreground text-sm font-medium font-['DM_Sans'] leading-relaxed">
-                {activeTab === "chattar"
-                  ? "Dina chattkonversationer visas här när de hämtats från databasen."
-                  : "Kalendervyn kommer när den är kopplad till backend."}
-              </p>
-            </div>
-          </div>
-        </aside>
+          <label className="inline-flex h-10 max-h-10 min-h-10 w-full cursor-text items-center justify-start gap-3 self-stretch rounded-3xl bg-Colors-card px-4 outline outline-1 -outline-offset-1 outline-Colors-border">
+            <span className="sr-only">Sök bland chattar</span>
+            <SearchIcon />
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Sök bland chattar..."
+              className="min-h-0 min-w-0 flex-1 self-stretch bg-transparent font-['DM_Sans'] text-sm font-normal leading-4 text-foreground outline-none placeholder:text-Colors-muted-foreground"
+            />
+          </label>
+        </div>
 
-        {/* Höger: aktiv chatt */}
-        <section
-          className="flex min-h-0 min-w-0 flex-1 flex-col border-t border-Colors-border bg-Colors-background md:border-t-0"
-          aria-label="Chatt"
+        <div
+          className="flex min-h-0 w-96 flex-1 flex-col overflow-y-auto"
+          role="list"
         >
-          <div className="flex min-h-[240px] flex-1 flex-col items-center justify-center px-6 py-16 md:min-h-0">
-            <p className="max-w-md text-center text-Colors-muted-foreground text-base font-medium font-['DM_Sans'] leading-relaxed">
-              Välj en chatt i listan till vänster för att visa meddelanden här.
-            </p>
-          </div>
-        </section>
+          {filtered.map((chat) => (
+            <InboxConversationCard
+              key={chat.id}
+              name={chat.name}
+              initials={chat.initials}
+              avatarClassName={chat.avatarClassName}
+              threadTitle={chat.threadTitle}
+              preview={chat.preview}
+              timeLabel={chat.timeLabel}
+              selected={selectedId === chat.id}
+              onClick={() => setSelectedId(chat.id)}
+            />
+          ))}
+        </div>
       </div>
+
+      {/* Höger: tom chattvy */}
+      <section
+        className="flex min-h-0 min-w-0 flex-1 flex-col bg-Colors-background"
+        aria-label="Chatt"
+      >
+        <div className="flex flex-1 flex-col items-center justify-center px-6 py-16">
+          <p className="max-w-md text-center font-['DM_Sans'] text-base font-medium leading-relaxed text-Colors-muted-foreground">
+            Välj en chatt i listan till vänster för att visa meddelanden här.
+          </p>
+        </div>
+      </section>
     </div>
   );
 }

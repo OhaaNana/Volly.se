@@ -1,4 +1,4 @@
-import { getChat } from "Backend/Repository";
+import { getChat } from "../Repository/chat.ts";
 import type { FastifyReply, FastifyRequest } from "fastify";
 
 export async function getChatController(

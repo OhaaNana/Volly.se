@@ -1,4 +1,4 @@
-import type { Payload, UserMeta } from "Backend/Types";
+import type { Payload, UserMeta } from "../Types";
 
 export function createPayload(user: UserMeta, text: string): Payload {
   return {

@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: staging-ingress
+  name: production-ingress
   namespace: doe25-group-15
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
@@ -9,23 +9,20 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: staging-volly.labb.k3s.chas-lab.dev
+    - host: volly.labb.k3s.chas-lab.dev
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: frontend-staging
+                name: frontend-production
                 port:
                   number: 3000
-    - host: api-staging-volly.labb.k3s.chas-lab.dev
-      http:
-        paths:
-          - path: /
+          - path: /api
             pathType: Prefix
             backend:
               service:
-                name: backend-staging
+                name: backend-production
                 port:
                   number: 3001

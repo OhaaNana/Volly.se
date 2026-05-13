@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend-staging
+  name: frontend-production
   namespace: doe25-group-15
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: frontend-staging
+      app: frontend-production
   template:
     metadata:
       labels:
-        app: frontend-staging
+        app: frontend-production
     spec:
       imagePullSecrets:
         - name: gitlab-registry
       containers:
         - name: frontend
-          image: registry.chas-lab.dev/chas-challenge-2026/grupp-15/zero-bug-heroes/zero-bug-heroes/frontend:staging
+          image: registry.chas-lab.dev/chas-challenge-2026/grupp-15/zero-bug-heroes/zero-bug-heroes/frontend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
@@ -25,11 +25,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend-staging
+  name: frontend-production
   namespace: doe25-group-15
 spec:
   selector:
-    app: frontend-staging
+    app: frontend-production
   ports:
     - port: 3000
       targetPort: 3000
