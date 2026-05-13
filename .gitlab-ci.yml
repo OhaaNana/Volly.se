@@ -10,6 +10,11 @@ variables:
   DOCKER_DRIVER: overlay2
   DOCKER_BUILDKIT: "1"
 
+artifacts:
+  expire_in: 12 hours
+  paths:
+    - dist/
+
 .bun_cache:
   cache:
     key:
