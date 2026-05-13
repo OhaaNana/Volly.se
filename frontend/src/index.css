@@ -12,6 +12,10 @@
   --color-Colors-border: #e9e4dc;
   --color-Colors-muted: #f6f1e9;
   --color-Colors-warm-foreground: #321a16;
+  /* Aliaser för shadcn-liknande klassnamn (Inkorg m.m.) */
+  --color-sidebar: #fdfaf4;
+  --color-border: #e9e4dc;
+  --color-foreground: #161a26;
 }
 
 @layer base {

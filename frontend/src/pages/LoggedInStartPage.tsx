@@ -81,14 +81,12 @@ export default function LoggedInStartPage({
       </div>
 
       <div className="self-stretch flex flex-col justify-start items-center gap-4">
-        <div className="w-[750px] max-w-[750px] p-2.5 bg-white-3 rounded-[40px] shadow-[0px_4px_12px_0px_rgba(0,0,0,0.07)] outline outline-1 outline-offset-[-1px] outline-stone-300/40 inline-flex justify-start items-center overflow-hidden">
-          <div className="px-2.5 py-[5px] inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-            <div className="w-4 h-4 relative overflow-hidden">
-              <div className="w-3.5 h-3.5 left-[1.50px] top-[1.50px] absolute rounded-full outline outline-2 outline-offset-[-1px] outline-zinc-400" />
-              <div className="w-[1.50px] h-[1.50px] left-[15px] top-[15px] absolute outline outline-2 outline-offset-[-1px] outline-zinc-400" />
-            </div>
-          </div>
-          <div className="flex-1 p-[5px] flex justify-start items-start gap-2.5 overflow-hidden">
+        <div className="w-[750px] max-w-[750px] p-2.5 bg-white-3 rounded-[40px] shadow-[0px_4px_12px_0px_rgba(0,0,0,0.07)] outline outline-1 outline-offset-[-1px] outline-stone-300/40 inline-flex justify-start items-center gap-3 overflow-hidden">
+          <i
+            aria-hidden
+            className="fi fi-br-search-heart ml-1 shrink-0 text-[20px] leading-none text-zinc-500"
+          />
+          <div className="flex-1 p-[5px] flex justify-start items-center gap-2.5 overflow-hidden">
             <div className="justify-start text-zinc-500 text-base font-normal font-['DM_Sans'] leading-5">
               Sök efter inlägg, ämnen, taggar...
             </div>
