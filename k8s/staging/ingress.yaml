@@ -26,3 +26,10 @@ spec:
                 name: backend-staging
                 port:
                   number: 3001
+          - path: /docs
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-staging
+                port:
+                  number: 3001
