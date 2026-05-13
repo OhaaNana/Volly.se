@@ -1,11 +1,11 @@
 import { type FastifyRequest, type FastifyReply } from "fastify";
-import { pool } from "../Config/db"; 
-
+import { pool } from "../Config/db";
 
 // Skapa en user
 export const createUser = async (
   request: FastifyRequest<{ Body: { email: string; password: string } }>,
-  reply: FastifyReply ) => {
+  reply: FastifyReply
+) => {
   try {
     const { email, password } = request.body;
 
@@ -22,11 +22,11 @@ export const createUser = async (
   }
 };
 
-
 // Hämta en user
 export const getUser = async (
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply ) => {
+  reply: FastifyReply
+) => {
   try {
     const { id } = request.params;
 
@@ -45,11 +45,11 @@ export const getUser = async (
   }
 };
 
-
 // Uppdatera user
 export const updateUser = async (
   request: FastifyRequest<{ Params: { id: string }; Body: { email: string } }>,
-  reply: FastifyReply ) => {
+  reply: FastifyReply
+) => {
   try {
     const { id } = request.params;
     const { email } = request.body;
@@ -69,11 +69,11 @@ export const updateUser = async (
   }
 };
 
-
 // Ta bort user
 export const deleteUser = async (
   request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply ) => {
+  reply: FastifyReply
+) => {
   try {
     const { id } = request.params;
 
@@ -92,13 +92,13 @@ export const deleteUser = async (
   }
 };
 
-
 // Hämta alla users
-export const getUsers = async (request: FastifyRequest, reply: FastifyReply) => {
-  try { 
-    const result = await pool.query(
-      "SELECT id, email FROM users"
-    );
+export const getUsers = async (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => {
+  try {
+    const result = await pool.query("SELECT id, email FROM users");
 
     reply.send(result.rows);
   } catch (error) {

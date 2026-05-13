@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import { Pool } from "pg";
 import dotenv from "dotenv";
 
-
 dotenv.config();
 const pool = new Pool({
   connectionString: process.env.POSTGRES_URI,
@@ -26,7 +25,6 @@ const generateAccessToken = (id: string) => {
   });
 };
 
-
 // Referesh token
 const generateRefreshToken = (id: string) => {
   return jwt.sign({ id }, process.env.JWT_REFRESH_SECRET as string, {
@@ -34,11 +32,11 @@ const generateRefreshToken = (id: string) => {
   });
 };
 
-
 // Skapa konto
 export const register = async (
   req: FastifyRequest<{ Body: AuthRequestBody }>,
-  res: FastifyReply ) => {
+  res: FastifyReply
+) => {
   const { email, password } = req.body;
 
   try {
@@ -78,14 +76,14 @@ export const register = async (
 // Logga in
 export const login = async (
   req: FastifyRequest<{ Body: AuthRequestBody }>,
-  res: FastifyReply ) => {
+  res: FastifyReply
+) => {
   const { email, password } = req.body;
 
   try {
-    const result = await pool.query(
-      "SELECT * FROM users WHERE email = $1",
-      [email]
-    );
+    const result = await pool.query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
 
     const user = result.rows[0];
 
@@ -116,7 +114,8 @@ export const login = async (
 // Refresh token
 export function refreshToken(
   req: FastifyRequest<{ Body: RefreshTokenRequestBody }>,
-  res: FastifyReply ): any {
+  res: FastifyReply
+): any {
   const token = req.body.refreshToken;
 
   if (!token) {

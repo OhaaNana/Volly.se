@@ -4,16 +4,15 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-declare module "fastify" { interface FastifyRequest {
+declare module "fastify" {
+  interface FastifyRequest {
     user?: {
       id: string;
     };
   }
 }
 
-export const protect = async (
-  request: FastifyRequest,
-  reply: FastifyReply ) => {
+export const protect = async (request: FastifyRequest, reply: FastifyReply) => {
   const authHeader = request.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer")) {
@@ -31,19 +30,19 @@ export const protect = async (
   }
 
   const secret = process.env.JWT_SECRET!;
-  
+
   if (!secret) {
     throw new Error("JWT_SECRET is not defined");
   }
 
   try {
-    const decoded = jwt.verify( token, secret ) as unknown as {
-        id: string };
+    const decoded = jwt.verify(token, secret) as unknown as {
+      id: string;
+    };
 
     request.user = {
       id: decoded.id,
     };
-
   } catch (error) {
     return reply.code(401).send({
       message: "Not authorized, token failed",
