@@ -5,7 +5,7 @@ import {
   updateUser,
   deleteUser,
 } from "../../Controllers/userController";
-import { protect } from "../../Middleware/authMiddleware";
+import { protect } from "../../middleware/authMiddleware";
 
 export default async function userRoutes(app: FastifyInstance) {
   app.get("/", { preHandler: protect } as any, getUsers);

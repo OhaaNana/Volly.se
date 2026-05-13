@@ -1,8 +1,8 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
-import { users, rooms } from "./rooms";
+import { users, rooms } from "./chat.rooms";
 import type { WebSocket } from "@fastify/websocket";
 
-import { registerChatevents } from "./events";
+import { registerChatevents } from "./chat.events";
 
 export async function connection(app: FastifyInstance) {
   app.get(

@@ -3,7 +3,7 @@ import {
   register,
   login,
   refreshToken,
-} from "../../Controllers/authController";
+} from "./controllers/auth.controller";
 
 export default async function authRoutes(app: FastifyInstance) {
   // Auth routes

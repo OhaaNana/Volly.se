@@ -1,7 +1,7 @@
 import type { WebSocket } from "@fastify/websocket";
 import type { FastifyRequest } from "fastify";
 import { createPayload } from "../Services/chat";
-import { users, rooms } from "./rooms";
+import { users, rooms } from "./chat.rooms";
 
 export function registerChatevents(socket: WebSocket, request: FastifyRequest) {
   console.log("User has been connected to a room");
