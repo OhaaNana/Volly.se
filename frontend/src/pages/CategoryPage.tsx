@@ -97,7 +97,7 @@ export default function CategoryPage({ posts }: Props) {
           {CATEGORY_CARDS.map((cat) => {
             const selected = activeCategory === cat.id;
             return (
-              <button
+              <button 
                 key={cat.id}
                 type="button"
                 onClick={() => setActiveCategory(cat.id)}
@@ -166,13 +166,14 @@ export default function CategoryPage({ posts }: Props) {
             filteredPosts.map((post) => (
               <PostCard
                 key={post.id}
-                authorName="Anna Andersson"
-                authorInitials="AA"
+                authorFirstName={(post as any).first_name}
+                authorLastName={(post as any).last_name}
                 timeLabel={formatTimeAgo(post.createdAt)}
                 rating={4.7}
                 badgeLabel={badgeForPost(post)}
                 title={post.title}
                 body={post.content}
+                category={post.category}
               />
             ))
           )}

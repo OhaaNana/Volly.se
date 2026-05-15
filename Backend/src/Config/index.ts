@@ -3,6 +3,7 @@ import pluginSetup from "./plugin";
 import dbSetup from "./db";
 import websocketSetup from "./ws";
 import postsRoutes from "../modules/posts/posts.routes";
+import authRoutes from "../modules/auth/auth.routes";
 
 export default async function Setup(app: FastifyInstance) {
   dbSetup(app);
@@ -11,4 +12,6 @@ export default async function Setup(app: FastifyInstance) {
 
   // Register posts routes
   await app.register(postsRoutes);
+  // Register auth routes
+  await app.register(authRoutes);
 }

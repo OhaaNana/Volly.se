@@ -32,3 +32,13 @@ export async function createPostHandler(
 
   return reply.code(201).send(post);
 }
+
+export async function getPostsHandler(request: FastifyRequest, reply: FastifyReply) {
+  try {
+    const { getPosts } = await import("./posts.repo");
+    const posts = await getPosts(request as FastifyRequest);
+    return reply.send(posts);
+  } catch (error) {
+    return reply.code(500).send({ message: "Failed to fetch posts" });
+  }
+}

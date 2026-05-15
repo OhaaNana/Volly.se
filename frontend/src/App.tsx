@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LoginPage from "./LogingPage";
 import SignupPage from "./signupPage";
 import HomePage from "./HomePage";
@@ -27,6 +27,36 @@ export function App() {
       tags?: string[];
     }>
   >([]);
+
+  useEffect(() => {
+    let mounted = true;
+    async function loadPosts() {
+      try {
+        const res = await fetch("http://localhost:3001/posts");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (!mounted) return;
+        const mapped = (data as any[]).map((p) => ({
+          id: String(p.id),
+          title: p.title,
+          content: p.description ?? p.content ?? "",
+          createdAt: p.created_at ? new Date(p.created_at).getTime() : Date.now(),
+          postType: p.help_type === "getHelp" ? "seek" : p.help_type === "giveHelp" ? "offer" : undefined,
+          category: p.category ?? undefined,
+          first_name: p.first_name,
+          last_name: p.last_name,
+        }));
+        setPosts(mapped);
+      } catch (error) {
+        console.error("Failed to load posts:", error);
+      }
+    }
+
+    loadPosts();
+    return () => {
+      mounted = false;
+    };
+  }, []);
   const loggedInMenuItems = [
     { id: "start", label: "Start", flaticonClassName: "fi fi-rr-home" },
     {

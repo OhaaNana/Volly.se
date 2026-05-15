@@ -6,6 +6,8 @@ type Post = {
   content: string;
   createdAt: number;
   postType?: "seek" | "offer";
+  first_name?: string;
+  last_name?: string;
 };
 
 type Props = {
@@ -41,6 +43,17 @@ export default function LoggedInStartPage({
   posts,
 }: Props) {
   const latestPost = posts?.[0];
+
+  const getAuthorName = (post: Post) => {
+    if (post.first_name || post.last_name) return `${post.first_name ?? ""} ${post.last_name ?? ""}`.trim();
+    return "Anonym";
+  };
+
+  const getInitials = (post: Post) => {
+    const first = post.first_name?.trim()?.[0] ?? "";
+    const last = post.last_name?.trim()?.[0] ?? "";
+    return (first + last).toUpperCase();
+  };
   return (
     <div className="w-full min-w-0 self-stretch px-6 py-12 inline-flex flex-col justify-start items-center gap-8">
       <div className="w-[750px] max-w-[750px] p-10 bg-gradient-to-b from-green-100 to-red-50 rounded-[30px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 flex flex-col justify-start items-start gap-5 overflow-hidden">
@@ -155,16 +168,25 @@ export default function LoggedInStartPage({
         </div>
       </div>
 
-      <PostCard
-        authorName="Anna Andersson"
-        authorInitials="AA"
-        timeLabel={latestPost ? formatTimeAgo(latestPost.createdAt) : "2h sen"}
-        rating={4.7}
-        badgeLabel={badgeForPost(latestPost)}
-        title={latestPost?.title ?? "Subject"}
-        body={latestPost?.content ?? "Body"}
-        onProfile={onProfile}
-      />
+      <div className="w-[750px] max-w-[750px] space-y-4 overflow-y-auto max-h-[60vh]">
+        {posts && posts.length > 0 ? (
+          posts.map((post) => (
+            <PostCard
+              key={post.id}
+              authorName={getAuthorName(post)}
+              authorInitials={getInitials(post)}
+              timeLabel={formatTimeAgo(post.createdAt)}
+              rating={4.7}
+              badgeLabel={badgeForPost(post)}
+              title={post.title}
+              body={post.content}
+              onProfile={onProfile}
+            />
+          ))
+        ) : (
+          <div className="p-6 text-center text-zinc-500">Inga inlägg än.</div>
+        )}
+      </div>
     </div>
   );
 }
