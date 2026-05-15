@@ -1,5 +1,5 @@
 import fastify from "fastify";
-import Setup from "./config/index.ts";
+import Setup from "./config/index";
 import setupErrorHandlers from "./shared/error/errorHanders";
 
 async function start() {

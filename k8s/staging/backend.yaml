@@ -20,7 +20,7 @@ spec:
           image: registry.chas-lab.dev/chas-challenge-2026/grupp-15/zero-bug-heroes/zero-bug-heroes/backend:staging
           imagePullPolicy: Always
           env:
-            - name: DATABASE_URI
+            - name: DATABASE_URL
               value: postgres://postgres:postgres@postgres:5432/postgres
           ports:
             - containerPort: 3001
