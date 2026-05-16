@@ -26,6 +26,11 @@ spec:
               value: postgres://postgres:postgres@postgres:5432/postgres
             - name: CORS_ORIGIN
               value: "https://staging-volly.labb.k3s.chas-lab.dev"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: JWT_SECRET
           ports:
             - containerPort: 3001
 ---
