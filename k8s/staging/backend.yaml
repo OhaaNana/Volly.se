@@ -22,6 +22,8 @@ spec:
           env:
             - name: DATABASE_URL
               value: postgres://postgres:postgres@postgres:5432/postgres
+            - name: CORS_ORIGIN
+              value: "https://staging-volly.labb.k3s.chas-lab.dev"
           ports:
             - containerPort: 3001
 ---
