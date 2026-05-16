@@ -3,7 +3,7 @@ pre-commit:
   commands:
     prettier:
       glob: "**/*.{js,jsx,ts,tsx,json,css}"
-      run: bunx prettier --write {staged_files}
+      run: bunx prettier --write --log-level warn {staged_files}
       stage_fixed: true
 
     eslint:
