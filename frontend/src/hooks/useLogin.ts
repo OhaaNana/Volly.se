@@ -1,21 +1,4 @@
 import { useState } from "react";
-import type { StoredUser } from "../types";
-
-const USERS_KEY = "users";
-
-const getUsers = (): StoredUser[] => {
-  const raw = localStorage.getItem(USERS_KEY);
-  if (!raw) {
-    return [];
-  }
-
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-};
 
 export const useLogin = () => {
   const [email, setEmail] = useState("");
@@ -32,26 +15,44 @@ export const useLogin = () => {
     }
 
     setIsLoading(true);
+
     try {
-      const users = getUsers();
-      const user = users.find(
-        (u) => u.email.toLowerCase() === email.toLowerCase()
-      );
+      console.log("LOGIN FETCH START");
 
-      if (!user) {
-        setErrorMessage("User not found.");
+      const response = await fetch("http://localhost:5174/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      console.log("LOGIN RESPONSE:", data);
+
+      if (!response.ok) {
+        setErrorMessage(data.message || "Login failed");
+
         return false;
       }
 
-      if (user.password !== password) {
-        setErrorMessage("Invalid password.");
-        return false;
+      if (data.token) {
+        localStorage.setItem("token", data.token);
       }
 
-      localStorage.setItem("currentUser", user.email);
+      // Spara current user
+      localStorage.setItem("currentUser", email);
+
       return true;
-    } catch {
-      setErrorMessage("Login failed.");
+    } catch (error) {
+      console.log(error);
+
+      setErrorMessage("Server error");
+
       return false;
     } finally {
       setIsLoading(false);

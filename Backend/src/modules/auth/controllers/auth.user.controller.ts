@@ -1,5 +1,4 @@
-import { type FastifyRequest, type FastifyReply } from "fastify";
-import { pool } from "../Config/db";
+import type { FastifyRequest, FastifyReply } from "fastify";
 
 // Skapa en user
 export const createUser = async (
@@ -9,7 +8,7 @@ export const createUser = async (
   try {
     const { email, password } = request.body;
 
-    const result = await pool.query(
+    const result = await request.server.pg.query(
       "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email",
       [email, password]
     );
@@ -18,7 +17,10 @@ export const createUser = async (
 
     reply.send(result.rows[0]);
   } catch (error) {
-    reply.code(500).send({ message: "Error creating user", error });
+    reply.code(500).send({
+      message: "Error creating user",
+      error,
+    });
   }
 };
 
@@ -30,42 +32,55 @@ export const getUser = async (
   try {
     const { id } = request.params;
 
-    const result = await pool.query(
+    const result = await request.server.pg.query(
       "SELECT id, email FROM users WHERE id = $1",
       [id]
     );
 
     if (result.rows.length === 0) {
-      return reply.code(404).send({ message: "User not found" });
+      return reply.code(404).send({
+        message: "User not found",
+      });
     }
 
     reply.send(result.rows[0]);
   } catch (error) {
-    reply.code(500).send({ message: "Error fetching user", error });
+    reply.code(500).send({
+      message: "Error fetching user",
+      error,
+    });
   }
 };
 
 // Uppdatera user
 export const updateUser = async (
-  request: FastifyRequest<{ Params: { id: string }; Body: { email: string } }>,
+  request: FastifyRequest<{
+    Params: { id: string };
+    Body: { email: string };
+  }>,
   reply: FastifyReply
 ) => {
   try {
     const { id } = request.params;
     const { email } = request.body;
 
-    const result = await pool.query(
+    const result = await request.server.pg.query(
       "UPDATE users SET email = $1 WHERE id = $2 RETURNING id, email",
       [email, id]
     );
 
     if (result.rows.length === 0) {
-      return reply.code(404).send({ message: "User not found" });
+      return reply.code(404).send({
+        message: "User not found",
+      });
     }
 
     reply.send(result.rows[0]);
   } catch (error) {
-    reply.code(500).send({ message: "Error updating user", error });
+    reply.code(500).send({
+      message: "Error updating user",
+      error,
+    });
   }
 };
 
@@ -77,18 +92,25 @@ export const deleteUser = async (
   try {
     const { id } = request.params;
 
-    const result = await pool.query(
+    const result = await request.server.pg.query(
       "DELETE FROM users WHERE id = $1 RETURNING id",
       [id]
     );
 
     if (result.rows.length === 0) {
-      return reply.code(404).send({ message: "User not found" });
+      return reply.code(404).send({
+        message: "User not found",
+      });
     }
 
-    reply.send({ message: "User deleted" });
+    reply.send({
+      message: "User deleted",
+    });
   } catch (error) {
-    reply.code(500).send({ message: "Error deleting user", error });
+    reply.code(500).send({
+      message: "Error deleting user",
+      error,
+    });
   }
 };
 
@@ -98,10 +120,13 @@ export const getUsers = async (
   reply: FastifyReply
 ) => {
   try {
-    const result = await pool.query("SELECT id, email FROM users");
+    const result = await request.server.pg.query("SELECT id, email FROM users");
 
     reply.send(result.rows);
   } catch (error) {
-    reply.code(500).send({ message: "Error fetching users", error });
+    reply.code(500).send({
+      message: "Error fetching users",
+      error,
+    });
   }
 };
