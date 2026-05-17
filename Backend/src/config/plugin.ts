@@ -20,7 +20,8 @@ export default async function pluginSetup(app: FastifyInstance) {
   });
 
   app.register(fastifyCors, {
-    origin: ["http://localhost:3000", "http://localhost:3001"],
+    origin: process.env.CORS_ORIGIN?.split(",") ?? ["http://localhost:3000"],
+    credentials: true,
   });
   app.register(fastifyHelmet);
   app.register(fastifyRateLimit, {

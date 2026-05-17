@@ -1,5 +1,5 @@
 import { type FastifyRequest, type FastifyReply } from "fastify";
-import { pool } from "../Config/db";
+import { pool } from "./auth.controller";
 
 // Skapa en user
 export const createUser = async (

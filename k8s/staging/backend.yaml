@@ -20,8 +20,17 @@ spec:
           image: registry.chas-lab.dev/chas-challenge-2026/grupp-15/zero-bug-heroes/zero-bug-heroes/backend:staging
           imagePullPolicy: Always
           env:
-            - name: DATABASE_URI
+            - name: DATABASE_URL
               value: postgres://postgres:postgres@postgres:5432/postgres
+            - name: POSTGRES_URI
+              value: postgres://postgres:postgres@postgres:5432/postgres
+            - name: CORS_ORIGIN
+              value: "https://staging-volly.labb.k3s.chas-lab.dev"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: JWT_SECRET
           ports:
             - containerPort: 3001
 ---
