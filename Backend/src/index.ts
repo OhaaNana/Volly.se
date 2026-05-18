@@ -1,5 +1,5 @@
 import fastify from "fastify";
-import Setup from "./config/index";
+import Setup from "./config";
 import setupErrorHandlers from "./shared/error/errorHanders";
 import authRoutes from "./modules/auth/auth.routes";
 import userRoutes from "./modules/auth/auth.user.routes";
