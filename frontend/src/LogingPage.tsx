@@ -72,21 +72,22 @@ function LoginPage({ onLoginSuccess, initialEmail = "" }: LoginPageProps) {
                 className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
               />
             </div>
-            <div className="inline-flex justify-start items-center gap-2">
-              <div className="w-4 h-4 relative overflow-hidden">
-                <input
-                  type="checkbox"
-                  checked={showPassword}
-                  onChange={() => setShowPassword(!showPassword)}
-                  className="absolute inset-0 opacity-0 cursor-pointer"
-                  aria-label="Visa lösenord"
-                />
-                <div className="w-3.5 h-3.5 left-[1.33px] top-[1.30px] absolute bg-black" />
-              </div>
-              <div className="justify-start text-black text-base font-normal font-['DM_Sans'] leading-4">
-                Visa lösenord
-              </div>
-            </div>
+            <button
+              type="button"
+              onClick={() => setShowPassword((current) => !current)}
+              aria-label={showPassword ? "Dölj lösenord" : "Visa lösenord"}
+              className="inline-flex items-center gap-3 rounded-md border border-black px-3 py-2 text-sm font-medium text-black transition-colors hover:bg-black hover:text-white"
+            >
+              <span
+                className={`inline-flex h-4 w-4 items-center justify-center rounded border border-current text-[10px] leading-none ${
+                  showPassword ? "bg-black text-white" : "bg-white text-black"
+                }`}
+                aria-hidden="true"
+              >
+                {showPassword ? "✓" : ""}
+              </span>
+              <span>{showPassword ? "Dölj lösenord" : "Visa lösenord"}</span>
+            </button>
             <div className="w-80 h-10 px-12 bg-black rounded inline-flex justify-center items-center gap-2.5 overflow-hidden">
               <button
                 type="submit"

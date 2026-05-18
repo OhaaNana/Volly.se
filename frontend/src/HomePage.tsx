@@ -1,11 +1,14 @@
-import type { ReactNode } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import Navbar from "./Navbar";
 import upArrow from "./assets/upArrow.png";
 import Footer from "./components/footer";
 
 type HomePageProps = {
   children: ReactNode;
+  onSignupSuccess?: (email: string) => void;
 };
+
+const AUTH_URL = "http://localhost:3001/api/auth/register";
 
 const scroll = () => {
   window.scrollTo({
@@ -14,7 +17,85 @@ const scroll = () => {
   });
 };
 
-function HomePage({ children }: HomePageProps) {
+function HomePage({ children, onSignupSuccess }: HomePageProps) {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    repeatPassword: "",
+  });
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
+
+  const updateField = (key: keyof typeof formData, value: string) => {
+    setFormData((current) => ({ ...current, [key]: value }));
+    setStatusMessage("");
+  };
+
+  const handleSignup = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setStatusMessage("");
+
+    if (!agreedToTerms) {
+      setStatusMessage("Du måste godkänna villkoren för att skapa ett konto.");
+      return;
+    }
+
+    if (formData.password !== formData.repeatPassword) {
+      setStatusMessage("Lösenorden matchar inte.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(AUTH_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const payload = (await response.json().catch(() => null)) as {
+        message?: string;
+        error?: string;
+        details?: string;
+      } | null;
+
+      if (!response.ok) {
+        setStatusMessage(
+          payload?.message ??
+            payload?.error ??
+            "Det gick inte att skapa kontot."
+        );
+        return;
+      }
+
+      localStorage.setItem("currentUser", formData.email);
+      onSignupSuccess?.(formData.email);
+      setStatusMessage("Kontot skapades.");
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        repeatPassword: "",
+      });
+      setAgreedToTerms(false);
+    } catch {
+      setStatusMessage("Det gick inte att skapa kontot. Försök igen.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Navbar />
@@ -72,17 +153,17 @@ function HomePage({ children }: HomePageProps) {
               </div>
             </div>
             <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                // placeholder: implement signup flow
-                console.log("Skapa konto skickat");
-              }}
+              onSubmit={handleSignup}
               className="flex flex-col justify-start items-center gap-4"
             >
               <div className="self-stretch px-3 inline-flex justify-start items-start gap-2 overflow-hidden">
                 <div className="w-44 h-10 px-3 py-2 bg-white rounded outline outline-2 outline-offset-[-2px] outline-black flex justify-start items-center gap-2">
                   <input
                     name="firstName"
+                    value={formData.firstName}
+                    onChange={(event) =>
+                      updateField("firstName", event.target.value)
+                    }
                     placeholder="Förnamn *"
                     className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
                   />
@@ -90,6 +171,10 @@ function HomePage({ children }: HomePageProps) {
                 <div className="w-44 h-10 px-3 py-2 bg-white rounded outline outline-2 outline-offset-[-2px] outline-black flex justify-start items-center gap-2">
                   <input
                     name="lastName"
+                    value={formData.lastName}
+                    onChange={(event) =>
+                      updateField("lastName", event.target.value)
+                    }
                     placeholder="Efternamn *"
                     className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
                   />
@@ -99,6 +184,8 @@ function HomePage({ children }: HomePageProps) {
                 <input
                   name="email"
                   type="email"
+                  value={formData.email}
+                  onChange={(event) => updateField("email", event.target.value)}
                   placeholder="E-post *"
                   className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
                 />
@@ -107,6 +194,10 @@ function HomePage({ children }: HomePageProps) {
                 <input
                   name="password"
                   type="password"
+                  value={formData.password}
+                  onChange={(event) =>
+                    updateField("password", event.target.value)
+                  }
                   placeholder="Lösenord *"
                   className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
                 />
@@ -115,28 +206,37 @@ function HomePage({ children }: HomePageProps) {
                 <input
                   name="repeatPassword"
                   type="password"
+                  value={formData.repeatPassword}
+                  onChange={(event) =>
+                    updateField("repeatPassword", event.target.value)
+                  }
                   placeholder="Upprepa lösenord *"
                   className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
                 />
               </div>
               <label className="self-stretch px-3 py-2 inline-flex justify-start items-center gap-2 cursor-pointer">
-                <div className="w-4 h-4 relative overflow-hidden">
-                  <input
-                    type="checkbox"
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                  />
-                  <div className="w-3.5 h-3.5 left-[1.33px] top-[1.30px] absolute bg-black" />
-                </div>
+                <input
+                  type="checkbox"
+                  checked={agreedToTerms}
+                  onChange={(event) => setAgreedToTerms(event.target.checked)}
+                  className="h-4 w-4 shrink-0 cursor-pointer accent-black border-black"
+                />
                 <div className="justify-start text-black text-xs font-normal font-['DM_Sans'] leading-4">
                   Jag har läst och godkänner villkoren
                 </div>
               </label>
+              {statusMessage ? (
+                <p className="w-80 text-sm text-center text-black/70">
+                  {statusMessage}
+                </p>
+              ) : null}
               <button
                 type="submit"
+                disabled={isSubmitting || !agreedToTerms}
                 className="w-80 h-10 px-12 bg-black rounded inline-flex justify-center items-center gap-2.5 overflow-hidden"
               >
                 <div className="justify-start text-white text-base font-medium font-['DM_Sans'] leading-5">
-                  Skapa konto
+                  {isSubmitting ? "Skapar konto..." : "Skapa konto"}
                 </div>
               </button>
             </form>

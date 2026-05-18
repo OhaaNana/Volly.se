@@ -161,7 +161,11 @@ export function App() {
   }
 
   return (
-    <HomePage>
+    <HomePage
+      onSignupSuccess={(email) => {
+        setCurrentUser(email);
+      }}
+    >
       {view === "login" ? (
         <LoginPage
           initialEmail={prefillEmail}
