@@ -6,7 +6,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 export const pool = new Pool({
-  connectionString: process.env.POSTGRES_URI,
+  connectionString:
+    process.env.POSTGRES_URI ?? process.env.DATABASE_URL ?? process.env.DATABASE_URI,
 });
 
 interface AuthRequestBody {
