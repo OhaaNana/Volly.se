@@ -14,5 +14,5 @@ ENV NODE_ENV=production
 
 EXPOSE 3000 
 
-# Run Vite preview server
+
 CMD ["npm", "run", "preview", "--", "--host"]
