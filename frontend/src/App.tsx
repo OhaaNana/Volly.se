@@ -10,23 +10,31 @@ import CategoryPage from "./pages/CategoryPage";
 import InboxPage from "./pages/InboxPage";
 import ProfilePage from "./pages/ProfilePage";
 
+type Post = {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: number;
+  postType?: "seek" | "offer";
+  category?: string;
+  tags?: string[];
+  first_name?: string;
+  last_name?: string;
+};
+
+function helpTypeToPostType(helpType: unknown): Post["postType"] {
+  if (helpType === "getHelp") return "seek";
+  if (helpType === "giveHelp") return "offer";
+  return undefined;
+}
+
 export function App() {
   const [currentUser, setCurrentUser] = useState<string | null>(() =>
     localStorage.getItem("currentUser")
   );
   const [view, setView] = useState<"login" | "signup">("login");
   const [prefillEmail, setPrefillEmail] = useState("");
-  const [posts, setPosts] = useState<
-    Array<{
-      id: string;
-      title: string;
-      content: string;
-      createdAt: number;
-      postType?: "seek" | "offer";
-      category?: string;
-      tags?: string[];
-    }>
-  >([]);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     let mounted = true;
@@ -36,16 +44,21 @@ export function App() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (!mounted) return;
-        const mapped = (data as any[]).map((p) => ({
-          id: String(p.id),
-          title: p.title,
-          content: p.description ?? p.content ?? "",
-          createdAt: p.created_at ? new Date(p.created_at).getTime() : Date.now(),
-          postType: p.help_type === "getHelp" ? "seek" : p.help_type === "giveHelp" ? "offer" : undefined,
-          category: p.category ?? undefined,
-          first_name: p.first_name,
-          last_name: p.last_name,
-        }));
+        const mapped: Post[] = (data as Record<string, unknown>[]).map(
+          (p) => ({
+            id: String(p.id),
+            title: String(p.title ?? ""),
+            content: String(p.description ?? p.content ?? ""),
+            createdAt: p.created_at
+              ? new Date(p.created_at as string).getTime()
+              : Date.now(),
+            postType: helpTypeToPostType(p.help_type),
+            category: p.category != null ? String(p.category) : undefined,
+            first_name:
+              p.first_name != null ? String(p.first_name) : undefined,
+            last_name: p.last_name != null ? String(p.last_name) : undefined,
+          })
+        );
         setPosts(mapped);
       } catch (error) {
         console.error("Failed to load posts:", error);

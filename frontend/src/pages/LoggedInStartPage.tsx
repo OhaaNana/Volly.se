@@ -42,8 +42,6 @@ export default function LoggedInStartPage({
   onProfile,
   posts,
 }: Props) {
-  const latestPost = posts?.[0];
-
   const getAuthorName = (post: Post) => {
     if (post.first_name || post.last_name) return `${post.first_name ?? ""} ${post.last_name ?? ""}`.trim();
     return "Anonym";

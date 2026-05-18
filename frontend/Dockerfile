@@ -1,9 +1,18 @@
-FROM oven/bun:1
+FROM node:20-alpine
+
 WORKDIR /app
-COPY package.json bun.lock ./
-RUN bun install --frozen-lockfile
+
+COPY package*.json ./
+
+RUN npm ci
+
 COPY . .
-RUN bun run build
+
+RUN npm run build
+
 ENV NODE_ENV=production
-EXPOSE 3000
-CMD ["bun", "src/index.ts"]
+
+EXPOSE 3000 
+
+# Run Vite preview server
+CMD ["npm", "run", "preview", "--", "--host"]
