@@ -4,11 +4,7 @@ import { useLogin } from "./hooks/useLogin";
 import type { LoginPageProps } from "./types";
 import "./index.css";
 
-function LoginPage({
-  onCreateAccount,
-  onLoginSuccess,
-  initialEmail = "",
-}: LoginPageProps) {
+function LoginPage({ onLoginSuccess, initialEmail = "" }: LoginPageProps) {
   const {
     email,
     setEmail,
@@ -105,14 +101,7 @@ function LoginPage({
                 <p>{errorMessage}</p>
               </div>
             )}
-            <div className="self-stretch inline-flex justify-between items-center overflow-hidden">
-              <button
-                type="button"
-                onClick={onCreateAccount}
-                className="justify-start text-black text-base font-normal font-['DM_Sans'] leading-4"
-              >
-                Har du inget konto?
-              </button>
+            <div className="self-stretch inline-flex justify-end items-center overflow-hidden">
               <button
                 type="button"
                 className="justify-start text-black text-base font-normal font-['DM_Sans'] leading-4"

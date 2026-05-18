@@ -36,15 +36,28 @@ export function App() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (!mounted) return;
-        const mapped = (data as any[]).map((p) => ({
+        const mapped: Array<{
+          id: string;
+          title: string;
+          content: string;
+          createdAt: number;
+          postType?: "seek" | "offer";
+          category?: string;
+          tags?: string[];
+        }> = (data as any[]).map((p) => ({
           id: String(p.id),
           title: p.title,
           content: p.description ?? p.content ?? "",
-          createdAt: p.created_at ? new Date(p.created_at).getTime() : Date.now(),
-          postType: p.help_type === "getHelp" ? "seek" : p.help_type === "giveHelp" ? "offer" : undefined,
+          createdAt: p.created_at
+            ? new Date(p.created_at).getTime()
+            : Date.now(),
+          postType:
+            p.help_type === "getHelp"
+              ? "seek"
+              : p.help_type === "giveHelp"
+                ? "offer"
+                : undefined,
           category: p.category ?? undefined,
-          first_name: p.first_name,
-          last_name: p.last_name,
         }));
         setPosts(mapped);
       } catch (error) {
@@ -156,7 +169,6 @@ export function App() {
         <LoginPage
           initialEmail={prefillEmail}
           onLoginSuccess={(email) => setCurrentUser(email)}
-          onCreateAccount={() => setView("signup")}
         />
       ) : (
         <SignupPage
