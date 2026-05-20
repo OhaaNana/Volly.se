@@ -18,9 +18,11 @@ export default async function pluginSetup(app: FastifyInstance) {
   await app.register(swaggerUi, {
     routePrefix: "/api/docs",
   });
-
+  const allowedOrigins = process.env.CORS_ORIGIN?.split(",") ?? [
+  "http://localhost:4173",
+  ];
   app.register(fastifyCors, {
-    origin: process.env.CORS_ORIGIN?.split(",") ?? ["http://localhost:3000"],
+    origin: allowedOrigins,
     credentials: true,
   });
   app.register(fastifyHelmet);

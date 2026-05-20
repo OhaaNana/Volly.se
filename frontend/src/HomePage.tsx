@@ -3,12 +3,13 @@ import Navbar from "./Navbar";
 import upArrow from "./assets/upArrow.png";
 import Footer from "./components/footer";
 
+
 type HomePageProps = {
   children: ReactNode;
   onSignupSuccess?: (email: string) => void;
 };
 
-const AUTH_URL = "http://localhost:3001/api/auth/register";
+const REGISTER_URL = "http://127.0.0.1:3001/api/auth/register";
 
 const scroll = () => {
   window.scrollTo({
@@ -36,7 +37,11 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
 
   const handleSignup = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setStatusMessage("");
+    console.log("STATE:", {
+      agreedToTerms,
+      password: formData.password,
+      repeat: formData.repeatPassword,
+    });
 
     if (!agreedToTerms) {
       setStatusMessage("Du måste godkänna villkoren för att skapa ett konto.");
@@ -50,7 +55,7 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch(AUTH_URL, {
+      const response = await fetch(REGISTER_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,13 +77,12 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
       if (!response.ok) {
         setStatusMessage(
           payload?.message ??
-            payload?.error ??
-            "Det gick inte att skapa kontot."
+          payload?.error ??
+          "Det gick inte att skapa kontot."
         );
         return;
       }
 
-      localStorage.setItem("currentUser", formData.email);
       onSignupSuccess?.(formData.email);
       setStatusMessage("Kontot skapades.");
       setFormData({
@@ -88,12 +92,12 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
         password: "",
         repeatPassword: "",
       });
+
       setAgreedToTerms(false);
-    } catch {
-      setStatusMessage("Det gick inte att skapa kontot. Försök igen.");
-    } finally {
-      setIsSubmitting(false);
+
     }
+    catch { setStatusMessage("Det gick inte att skapa kontot. Försök igen."); }
+    finally { setIsSubmitting(false); }
   };
 
   return (
