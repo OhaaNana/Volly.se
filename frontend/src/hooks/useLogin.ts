@@ -1,71 +1,40 @@
 import { useState } from "react";
-import type { StoredUser } from "../types";
 
-const USERS_KEY = "users";
-
-const getUsers = (): StoredUser[] => {
-  const raw = localStorage.getItem(USERS_KEY);
-  if (!raw) {
-    return [];
-  }
-
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-};
-
-export const useLogin = () => {
-  const [email, setEmail] = useState("");
+export const useLogin = (initialEmail = "") => {
+  const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const login = async () => {
+  const login = async (): Promise<string | null> => {
     setErrorMessage("");
-
     if (!email || !password) {
       setErrorMessage("Please fill in all fields");
-      return false;
+      return null;
     }
-
     setIsLoading(true);
     try {
-      const users = getUsers();
-      const user = users.find(
-        (u) => u.email.toLowerCase() === email.toLowerCase()
-      );
-
-      if (!user) {
-        setErrorMessage("User not found.");
-        return false;
+      const res = await fetch("http://localhost:3001/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setErrorMessage(data.message || "Login failed");
+        return null;
       }
-
-      if (user.password !== password) {
-        setErrorMessage("Invalid password.");
-        return false;
-      }
-
-      localStorage.setItem("currentUser", user.email);
-      return true;
-    } catch {
-      setErrorMessage("Login failed.");
-      return false;
+      localStorage.setItem("accessToken", data.token);
+      localStorage.setItem("refreshToken", data.refreshToken);
+      return email;
+    } catch (err) {
+      console.error(err);
+      setErrorMessage("Network error. Try again.");
+      return null;
     } finally {
       setIsLoading(false);
     }
   };
 
-  return {
-    email,
-    setEmail,
-    password,
-    setPassword,
-    errorMessage,
-    setErrorMessage,
-    isLoading,
-    login,
-  };
+  return { email, setEmail, password, setPassword, errorMessage, setErrorMessage, isLoading, login };
 };

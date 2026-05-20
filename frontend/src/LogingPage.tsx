@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import MyTextInput from "./components/MyTextInput";
 import { useLogin } from "./hooks/useLogin";
 import type { LoginPageProps } from "./types";
@@ -13,20 +13,17 @@ function LoginPage({ onLoginSuccess, initialEmail = "" }: LoginPageProps) {
     errorMessage,
     setErrorMessage,
     isLoading,
-    login: originalLogin,
-  } = useLogin();
+    login,
+  } = useLogin(initialEmail);
 
   const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {
-    setEmail(initialEmail);
-  }, [initialEmail, setEmail]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await originalLogin();
-    if (success) {
-      onLoginSuccess(email);
+    console.log("handleSubmit fired");
+    const loggedInEmail = await login();
+    if (loggedInEmail) {
+      onLoginSuccess(loggedInEmail);
     }
   };
 
@@ -88,15 +85,14 @@ function LoginPage({ onLoginSuccess, initialEmail = "" }: LoginPageProps) {
               </span>
               <span>{showPassword ? "Dölj lösenord" : "Visa lösenord"}</span>
             </button>
-            <div className="w-80 h-10 px-12 bg-black rounded inline-flex justify-center items-center gap-2.5 overflow-hidden">
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full h-full justify-start text-white text-base font-medium font-['DM_Sans'] leading-5"
-              >
-                {isLoading ? "Loggar in..." : "Logga in"}
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              onClick={() => console.log("button clicked")}
+              className="w-80 h-10 px-12 bg-black rounded text-white text-base font-medium font-['DM_Sans'] leading-5"
+            >
+              {isLoading ? "Loggar in..." : "Logga in"}
+            </button>
             {errorMessage && (
               <div className="w-80 text-red-600 text-sm italic">
                 <p>{errorMessage}</p>
