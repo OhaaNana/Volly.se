@@ -21,6 +21,7 @@ interface RefreshTokenRequestBody {
   refreshToken: string;
 }
 
+  }
 // Access token
 const generateAccessToken = (id: string) => {
   return jwt.sign({ id }, process.env.JWT_SECRET as string, {
@@ -42,6 +43,12 @@ export const register = async (
 ) => {
   const { email, password } = req.body;
 
+    if (password.length < 7) {
+      return res.status(400).send({
+        message: "Password must be at least 7 characters long",
+      });
+    }
+
   try {
     const userExists = await pool.query(
       "SELECT * FROM users WHERE email = $1",
@@ -51,6 +58,7 @@ export const register = async (
     if (userExists.rows.length > 0) {
       return res.status(400).send({ message: "User exists" });
     }
+
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -73,7 +81,6 @@ export const register = async (
       error: "Registration failed",
       details: error instanceof Error ? error.message : error,
     });
-  }
 };
 
 // Logga in

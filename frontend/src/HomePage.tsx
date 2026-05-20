@@ -47,6 +47,10 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
       setStatusMessage("Du måste godkänna villkoren för att skapa ett konto.");
       return;
     }
+    if (formData.password.length < 7) {
+      setStatusMessage("Lösenordet måste vara minst 7 tecken långt.");
+      return;
+    }
 
     if (formData.password !== formData.repeatPassword) {
       setStatusMessage("Lösenorden matchar inte.");
