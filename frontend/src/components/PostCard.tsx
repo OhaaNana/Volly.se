@@ -35,9 +35,14 @@ export default function PostCard({
 
   const resolvedInitials =
     authorInitials ??
-    ((authorFirstName?.trim()?.[0] ?? (authorName?.trim().split(" ")[0]?.[0] ?? "")) +
-      (authorLastName?.trim()?.[0] ?? (authorName?.trim().split(" ").slice(-1)[0]?.[0] ?? "")))
-      .toUpperCase();
+    (
+      (authorFirstName?.trim()?.[0] ??
+        authorName?.trim().split(" ")[0]?.[0] ??
+        "") +
+      (authorLastName?.trim()?.[0] ??
+        authorName?.trim().split(" ").slice(-1)[0]?.[0] ??
+        "")
+    ).toUpperCase();
   const contactClassName =
     "px-14 py-3.5 bg-green-400 rounded-3xl outline outline-1 outline-offset-[-1px] outline-zinc-400/30 flex justify-center items-center gap-2.5 overflow-hidden";
 

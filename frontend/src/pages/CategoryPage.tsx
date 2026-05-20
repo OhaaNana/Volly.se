@@ -9,6 +9,8 @@ export type CategoryPost = {
   postType?: "seek" | "offer";
   category?: string;
   tags?: string[];
+  first_name?: string;
+  last_name?: string;
 };
 
 type CategoryKey =
@@ -97,7 +99,7 @@ export default function CategoryPage({ posts }: Props) {
           {CATEGORY_CARDS.map((cat) => {
             const selected = activeCategory === cat.id;
             return (
-              <button 
+              <button
                 key={cat.id}
                 type="button"
                 onClick={() => setActiveCategory(cat.id)}
@@ -166,8 +168,8 @@ export default function CategoryPage({ posts }: Props) {
             filteredPosts.map((post) => (
               <PostCard
                 key={post.id}
-                authorFirstName={(post as any).first_name}
-                authorLastName={(post as any).last_name}
+                authorFirstName={post.first_name}
+                authorLastName={post.last_name}
                 timeLabel={formatTimeAgo(post.createdAt)}
                 rating={4.7}
                 badgeLabel={badgeForPost(post)}

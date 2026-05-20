@@ -1,7 +1,6 @@
 import type { FastifyRequest } from "fastify";
 import type { CreatePostInput, PostRow } from "../../shared/types/posts.types";
 
-
 export async function createPost(
   data: CreatePostInput,
   request: FastifyRequest
