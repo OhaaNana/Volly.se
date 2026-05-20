@@ -12,6 +12,8 @@ import LoggedInStartPage from "./pages/LoggedInStartPage";
 import CategoryPage, { type CategoryKey } from "./pages/CategoryPage";
 import InboxPage, { type ChatPreview } from "./pages/InboxPage";
 import ProfilePage from "./pages/ProfilePage";
+import OnboardingPage from "./pages/Onboarding/OnboardingPage";
+
 
 type Post = {
   id: string;
