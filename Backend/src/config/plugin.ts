@@ -16,7 +16,7 @@ export default async function pluginSetup(app: FastifyInstance) {
   });
 
   await app.register(swaggerUi, {
-    routePrefix: "/docs",
+    routePrefix: "/api/docs",
   });
 
   app.register(fastifyCors, {
