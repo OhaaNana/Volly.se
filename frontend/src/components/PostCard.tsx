@@ -4,7 +4,6 @@ export type PostCardProps = {
   authorLastName?: string;
   authorInitials?: string;
   timeLabel?: string;
-  rating?: number;
   badgeLabel?: string;
   title: string;
   body: string;
@@ -21,7 +20,6 @@ export default function PostCard({
   authorLastName,
   authorInitials,
   timeLabel,
-  rating,
   badgeLabel,
   title,
   body,
@@ -35,9 +33,14 @@ export default function PostCard({
 
   const resolvedInitials =
     authorInitials ??
-    ((authorFirstName?.trim()?.[0] ?? (authorName?.trim().split(" ")[0]?.[0] ?? "")) +
-      (authorLastName?.trim()?.[0] ?? (authorName?.trim().split(" ").slice(-1)[0]?.[0] ?? "")))
-      .toUpperCase();
+    (
+      (authorFirstName?.trim()?.[0] ??
+        authorName?.trim().split(" ")[0]?.[0] ??
+        "") +
+      (authorLastName?.trim()?.[0] ??
+        authorName?.trim().split(" ").slice(-1)[0]?.[0] ??
+        "")
+    ).toUpperCase();
   const contactClassName =
     "px-14 py-3.5 bg-green-400 rounded-3xl outline outline-1 outline-offset-[-1px] outline-zinc-400/30 flex justify-center items-center gap-2.5 overflow-hidden";
 
@@ -63,15 +66,6 @@ export default function PostCard({
               <div className="self-stretch flex justify-start items-end gap-1">
                 <div className="justify-end text-zinc-600 text-xs font-medium font-['DM_Sans'] leading-[10px]">
                   {timeLabel}
-                </div>
-              </div>
-              <div className="justify-end text-zinc-600 text-xs font-medium font-['DM_Sans'] leading-[10px]">
-                ·
-              </div>
-              <div className="flex justify-start items-end gap-1">
-                <div className="w-3 h-3 bg-gradient-to-bl from-amber-300 to-yellow-500 outline outline-[0.30px] outline-offset-[-0.15px] outline-neutral-800/30" />
-                <div className="justify-end text-zinc-600 text-xs font-medium font-['DM_Sans'] leading-[10px]">
-                  {rating}
                 </div>
               </div>
             </div>

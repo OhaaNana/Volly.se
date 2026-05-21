@@ -18,9 +18,32 @@ type Post = {
   postType?: "seek" | "offer";
   category?: string;
   tags?: string[];
+  author_email?: string;
   first_name?: string;
   last_name?: string;
 };
+
+function formatDisplayName(
+  firstName?: string,
+  lastName?: string,
+  authorEmail?: string
+) {
+  const fullName = `${firstName ?? ""} ${lastName ?? ""}`.trim();
+  if (fullName) return fullName;
+
+  if (authorEmail) {
+    const localPart = authorEmail.split("@")[0] ?? "";
+    const parts = localPart.split(/[._-]/).filter(Boolean);
+    if (parts.length > 0) {
+      return parts
+        .slice(0, 2)
+        .map((part) => part.replace(/^\w/, (char) => char.toUpperCase()))
+        .join(" ");
+    }
+  }
+
+  return "Okänt namn";
+}
 
 function helpTypeToPostType(helpType: unknown): Post["postType"] {
   if (helpType === "getHelp") return "seek";
@@ -48,11 +71,20 @@ export function App() {
           id: String(p.id),
           title: String(p.title ?? ""),
           content: String(p.description ?? p.content ?? ""),
-          createdAt: p.created_at
-            ? new Date(p.created_at as string).getTime()
-            : Date.now(),
+          // normalize created_at which may be ISO string, ms number, or seconds number
+          createdAt: (() => {
+            const v = p.created_at as unknown;
+            if (typeof v === "number") {
+              // if it's seconds (<=1e11) convert to ms
+              return v < 1e12 ? v * 1000 : v;
+            }
+            if (typeof v === "string") return new Date(v).getTime();
+            return Date.now();
+          })(),
           postType: helpTypeToPostType(p.help_type),
           category: p.category != null ? String(p.category) : undefined,
+          author_email:
+            p.author_email != null ? String(p.author_email) : undefined,
           first_name: p.first_name != null ? String(p.first_name) : undefined,
           last_name: p.last_name != null ? String(p.last_name) : undefined,
         }));
@@ -113,35 +145,84 @@ export function App() {
           items={loggedInMenuItems}
           activeId={activeLoggedInPage}
           onNavigate={setActiveLoggedInPage}
+          onLogout={logout}
           brandName="Volly"
           brandInitial="V"
           user={{
             name: currentUser,
             initials: currentUser.slice(0, 2).toUpperCase(),
-            rating: 4.7,
           }}
         >
           {activeLoggedInPage === "skapa" ? (
             <CreatePostPage
               onCancel={() => setActiveLoggedInPage("start")}
-              onSubmit={(post) => {
-                setPosts((prev) => [
-                  {
-                    id: crypto.randomUUID(),
+              onSubmit={async (post) => {
+                // send to backend
+                try {
+                  const token = localStorage.getItem("token");
+                  const body = {
                     title: post.title,
-                    content: post.content,
-                    createdAt: Date.now(),
-                    postType: post.postType,
-                    category: post.category,
-                    tags: post.tags,
-                  },
-                  ...prev,
-                ]);
-                setActiveLoggedInPage("start");
+                    description: post.content,
+                    help_type:
+                      post.postType === "seek" ? "getHelp" : "giveHelp",
+                    category: post.category ?? "",
+                    tagg: (post.tags || []).join(","),
+                  };
+
+                  const res = await fetch("http://127.0.0.1:3001/posts", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                    },
+                    body: JSON.stringify(body),
+                  });
+
+                  if (!res.ok) {
+                    console.error("Failed to create post", res.status);
+                    // optionally show error to user
+                  } else {
+                    const created = await res.json();
+                    // prepend created post to UI list
+                    setPosts((prev) => [
+                      {
+                        id: String(created.id ?? crypto.randomUUID()),
+                        title: String(created.title ?? post.title),
+                        content: String(created.description ?? post.content),
+                        createdAt: (() => {
+                          const v = created.created_at as unknown;
+                          if (typeof v === "number")
+                            return v < 1e12 ? v * 1000 : v;
+                          if (typeof v === "string")
+                            return new Date(v).getTime();
+                          return Date.now();
+                        })(),
+                        postType: post.postType,
+                        category: post.category,
+                        tags: post.tags,
+                        author_email: currentUser ?? undefined,
+                        first_name: created.first_name,
+                        last_name: created.last_name,
+                      },
+                      ...prev,
+                    ]);
+                  }
+                } catch (e) {
+                  console.error("Error creating post", e);
+                } finally {
+                  setActiveLoggedInPage("start");
+                }
               }}
             />
           ) : activeLoggedInPage === "profil" ? (
-            <ProfilePage userEmail={currentUser} onLogout={logout} />
+            <ProfilePage
+              userEmail={currentUser}
+              onLogout={logout}
+              onProfileUpdated={(nextEmail) => {
+                localStorage.setItem("currentUser", nextEmail);
+                setCurrentUser(nextEmail);
+              }}
+            />
           ) : activeLoggedInPage === "kategorier" ? (
             <CategoryPage posts={posts} />
           ) : activeLoggedInPage === "inkorg" ? (
@@ -153,6 +234,7 @@ export function App() {
               onExploreCategories={() => setActiveLoggedInPage("kategorier")}
               onProfile={() => setActiveLoggedInPage("profil")}
               posts={posts}
+              formatDisplayName={formatDisplayName}
             />
           )}
         </MenuLoggedIn>

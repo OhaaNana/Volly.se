@@ -19,9 +19,13 @@ export default async function pluginSetup(app: FastifyInstance) {
     routePrefix: "/docs",
   });
 
+  const defaultOrigins = ["http://localhost:3000", "http://localhost:5173"];
   app.register(fastifyCors, {
-    origin: process.env.CORS_ORIGIN?.split(",") ?? ["http://localhost:3000"],
+    origin: process.env.CORS_ORIGIN?.split(",") ?? defaultOrigins,
     credentials: true,
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Content-Type", "Authorization"],
   });
   app.register(fastifyHelmet);
   app.register(fastifyRateLimit, {

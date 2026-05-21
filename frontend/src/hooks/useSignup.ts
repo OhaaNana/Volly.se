@@ -22,10 +22,6 @@ const getUsers = (): StoredUser[] => {
   }
 };
 
-const saveUsers = (users: StoredUser[]) => {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-};
-
 const validateEmail = (email: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -83,18 +79,30 @@ export const useSignup = () => {
 
     setIsLoading(true);
     try {
-      const users = getUsers();
-      const exists = users.some(
-        (u) => u.email.toLowerCase() === formData.email.toLowerCase()
-      );
+      const res = await fetch("http://127.0.0.1:3001/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
 
-      if (exists) {
-        setErrorMessage("Email is already taken");
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        setErrorMessage(
+          (payload && (payload.message || payload.error)) ||
+            "Registration failed"
+        );
         return { success: false };
       }
 
-      users.push(formData);
-      saveUsers(users);
+      const data = await res.json();
+      // backend returns token, store it
+      if (data?.token) {
+        localStorage.setItem("token", data.token);
+      }
+
       return { success: true, email: formData.email };
     } catch {
       setErrorMessage("Registration failed.");

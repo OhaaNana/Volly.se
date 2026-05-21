@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev:backend": "cd Backend && bun run /src/index.ts",
-    "dev.frontend": "cd Frontend && npm run dev",
+    "dev:frontend": "cd Frontend && npm run dev",
     "dev": "concurrently \"bun run dev:backend\" \"bun run dev:frontend\"",
     "i:all": "cd Backend && bun install && cd ../Frontend && npm install"
   },

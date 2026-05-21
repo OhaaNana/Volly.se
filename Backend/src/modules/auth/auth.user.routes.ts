@@ -4,6 +4,8 @@ import {
   getUser,
   updateUser,
   deleteUser,
+  getUserByEmail,
+  updateUserByEmail,
 } from "./controllers/auth.user.controller";
 import { protect } from "../../middleware/auth.middleware";
 
@@ -19,6 +21,15 @@ export default async function userRoutes(app: FastifyInstance) {
     } as any,
     getUser
   );
+  app.get(
+    "/by-email/:email",
+    {
+      schema: {
+        params: { type: "object", properties: { email: { type: "string" } } },
+      },
+    } as any,
+    getUserByEmail
+  );
   app.put(
     "/:id",
     {
@@ -29,6 +40,23 @@ export default async function userRoutes(app: FastifyInstance) {
       },
     } as any,
     updateUser
+  );
+  app.put(
+    "/by-email/:email",
+    {
+      schema: {
+        params: { type: "object", properties: { email: { type: "string" } } },
+        body: {
+          type: "object",
+          properties: {
+            email: { type: "string" },
+            first_name: { type: "string" },
+            last_name: { type: "string" },
+          },
+        },
+      },
+    } as any,
+    updateUserByEmail
   );
   app.delete("/:id", { preHandler: protect } as any, deleteUser);
 }

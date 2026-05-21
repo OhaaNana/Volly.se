@@ -13,6 +13,8 @@ export const pool = new Pool({
 });
 
 interface AuthRequestBody {
+  first_name?: string;
+  last_name?: string;
   email: string;
   password: string;
 }
@@ -22,15 +24,22 @@ interface RefreshTokenRequestBody {
 }
 
 // Access token
+const JWT_SECRET = process.env.JWT_SECRET || "dev_jwt_secret_for_local";
+const JWT_REFRESH_SECRET =
+  process.env.JWT_REFRESH_SECRET || "dev_jwt_refresh_secret_for_local";
+
 const generateAccessToken = (id: string) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET as string, {
+  if (!JWT_SECRET) throw new Error("JWT_SECRET is not configured");
+  return jwt.sign({ id }, JWT_SECRET, {
     expiresIn: "1h",
   });
 };
 
-// Referesh token
+// Refresh token
 const generateRefreshToken = (id: string) => {
-  return jwt.sign({ id }, process.env.JWT_REFRESH_SECRET as string, {
+  if (!JWT_REFRESH_SECRET)
+    throw new Error("JWT_REFRESH_SECRET is not configured");
+  return jwt.sign({ id }, JWT_REFRESH_SECRET, {
     expiresIn: "7d",
   });
 };
@@ -40,7 +49,7 @@ export const register = async (
   req: FastifyRequest<{ Body: AuthRequestBody }>,
   res: FastifyReply
 ) => {
-  const { email, password } = req.body;
+  const { first_name, last_name, email, password } = req.body;
 
   try {
     const userExists = await pool.query(
@@ -55,8 +64,8 @@ export const register = async (
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await pool.query(
-      "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
-      [email, hashedPassword]
+      "INSERT INTO users (first_name, last_name, email, password) VALUES ($1, $2, $3, $4) RETURNING *",
+      [first_name ?? null, last_name ?? null, email, hashedPassword]
     );
 
     const user = newUser.rows[0];
