@@ -251,7 +251,10 @@ export default function FaqPage() {
           fungerar.
         </p>
 
-        <section aria-label="Vanliga frågor" className="mt-10 flex flex-col gap-4">
+        <section
+          aria-label="Vanliga frågor"
+          className="mt-10 flex flex-col gap-4"
+        >
           {FAQ_SECTIONS.map((section, index) => (
             <AccordionSection
               key={section.id}
