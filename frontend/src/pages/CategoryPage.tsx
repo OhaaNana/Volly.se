@@ -9,6 +9,7 @@ export type CategoryPost = {
   postType?: "seek" | "offer";
   category?: string;
   tags?: string[];
+  author_email?: string;
   first_name?: string;
   last_name?: string;
 };
@@ -45,7 +46,9 @@ const CATEGORY_CARDS: readonly {
 ] as const;
 
 function formatTimeAgo(createdAt: number): string {
-  const sec = Math.floor((Date.now() - createdAt) / 1000);
+  if (typeof createdAt !== "number" || Number.isNaN(createdAt)) return "Okänt";
+  const normalized = createdAt < 1e12 ? createdAt * 1000 : createdAt;
+  const sec = Math.floor((Date.now() - normalized) / 1000);
   if (sec < 60) return "nyss";
   const min = Math.floor(sec / 60);
   if (min < 60) return `${min} min sen`;
@@ -64,6 +67,22 @@ function badgeForPost(post: CategoryPost): string {
 type Props = {
   posts: CategoryPost[];
 };
+
+function formatDisplayName(post: CategoryPost) {
+  const fullName = `${post.first_name ?? ""} ${post.last_name ?? ""}`.trim();
+  if (fullName) return fullName;
+  if (post.author_email) {
+    const localPart = post.author_email.split("@")[0] ?? "";
+    const parts = localPart.split(/[._-]/).filter(Boolean);
+    if (parts.length > 0) {
+      return parts
+        .slice(0, 2)
+        .map((part) => part.replace(/^\w/, (char) => char.toUpperCase()))
+        .join(" ");
+    }
+  }
+  return "Okänt namn";
+}
 
 export default function CategoryPage({ posts }: Props) {
   const [activeCategory, setActiveCategory] = useState<CategoryKey>("allt");
@@ -168,10 +187,26 @@ export default function CategoryPage({ posts }: Props) {
             filteredPosts.map((post) => (
               <PostCard
                 key={post.id}
+                authorName={formatDisplayName(post)}
                 authorFirstName={post.first_name}
                 authorLastName={post.last_name}
+                authorInitials={
+                  post.first_name || post.last_name
+                    ? `${post.first_name ?? ""}${post.last_name ?? ""}`
+                        .trim()
+                        .slice(0, 2)
+                        .toUpperCase()
+                    : post.author_email
+                      ? post.author_email
+                          .split("@")[0]
+                          .split(/[._-]/)
+                          .filter(Boolean)
+                          .slice(0, 2)
+                          .map((part) => part[0]?.toUpperCase() ?? "")
+                          .join("")
+                      : undefined
+                }
                 timeLabel={formatTimeAgo(post.createdAt)}
-                rating={4.7}
                 badgeLabel={badgeForPost(post)}
                 title={post.title}
                 body={post.content}

@@ -1,21 +1,4 @@
 import { useState } from "react";
-import type { StoredUser } from "../types";
-
-const USERS_KEY = "users";
-
-const getUsers = (): StoredUser[] => {
-  const raw = localStorage.getItem(USERS_KEY);
-  if (!raw) {
-    return [];
-  }
-
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-};
 
 export const useLogin = () => {
   const [email, setEmail] = useState("");
@@ -33,22 +16,29 @@ export const useLogin = () => {
 
     setIsLoading(true);
     try {
-      const users = getUsers();
-      const user = users.find(
-        (u) => u.email.toLowerCase() === email.toLowerCase()
-      );
+      const res = await fetch("http://127.0.0.1:3001/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-      if (!user) {
-        setErrorMessage("User not found.");
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        setErrorMessage(
+          (payload && (payload.message || payload.error)) || "Login failed"
+        );
         return false;
       }
 
-      if (user.password !== password) {
-        setErrorMessage("Invalid password.");
+      const data = await res.json();
+      const token = data?.token;
+      if (!token) {
+        setErrorMessage("No token returned from server");
         return false;
       }
 
-      localStorage.setItem("currentUser", user.email);
+      localStorage.setItem("token", token);
+      localStorage.setItem("currentUser", email);
       return true;
     } catch {
       setErrorMessage("Login failed.");

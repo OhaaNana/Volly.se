@@ -19,8 +19,14 @@
 }
 
 @layer base {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
   #root {
     min-height: 100dvh;
+    overflow-x: hidden;
   }
 }
 
@@ -30,5 +36,29 @@
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  .green-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #16a34a #e9f9ee;
+  }
+
+  .green-scrollbar::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .green-scrollbar::-webkit-scrollbar-track {
+    background: #e9f9ee;
+    border-radius: 9999px;
+  }
+
+  .green-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #22c55e 0%, #15803d 100%);
+    border-radius: 9999px;
+    border: 2px solid #e9f9ee;
+  }
+
+  .green-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #16a34a 0%, #166534 100%);
   }
 }
