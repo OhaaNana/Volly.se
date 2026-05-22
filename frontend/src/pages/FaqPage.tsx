@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-/* ─── FAQ Data ─── */
 type FaqSubItem = { q: string; a: string };
 type FaqSection = {
   id: number;
@@ -96,7 +95,6 @@ const FAQ_SECTIONS: FaqSection[] = [
   },
 ];
 
-/* ─── Chevron Icon ─── */
 function ChevronIcon({ open }: { open: boolean }) {
   return (
     <svg
@@ -119,7 +117,6 @@ function ChevronIcon({ open }: { open: boolean }) {
   );
 }
 
-/* ─── Accordion Section ─── */
 function AccordionSection({
   section,
   isOpen,
@@ -177,7 +174,6 @@ function AccordionSection({
   );
 }
 
-/* ─── Main FAQ Page ─── */
 export default function FaqPage() {
   const [openIndexes, setOpenIndexes] = useState<Set<number>>(new Set());
 
@@ -194,7 +190,6 @@ export default function FaqPage() {
       className="min-h-screen flex flex-col"
       style={{ backgroundColor: "#FDFAF4" }}
     >
-      {/* ── Header ── */}
       <header
         className="w-full px-10 py-5 flex justify-between items-center border-b"
         style={{ backgroundColor: "#D6E8D9", borderColor: "#c8dccb" }}
@@ -209,36 +204,38 @@ export default function FaqPage() {
 
         <nav className="flex items-center gap-6">
           {[
-            { label: "Vår vision", to: "/#Vision" },
-            { label: "Hur Volly fungerar", to: "/#Funkar" },
-            { label: "FAQ", to: "/faq", active: true },
-            { label: "Skapa konto", to: "/#Skapa konto" },
-          ].map((link) => (
-            <Link
-              key={link.label}
-              to={link.active ? "/faq" : "/"}
-              onClick={
-                link.active
-                  ? undefined
-                  : (e) => {
-                      e.preventDefault();
-                      window.location.href = link.to;
-                    }
-              }
-              className="text-sm font-medium font-['DM_Sans'] transition-opacity hover:opacity-60"
-              style={{
-                color: "#321A16",
-                textDecoration: link.active ? "underline" : "none",
-                textUnderlineOffset: "4px",
-              }}
-            >
-              {link.label}
-            </Link>
-          ))}
+            { label: "Vår vision", href: "/#Vision" },
+            { label: "Hur Volly fungerar", href: "/#Funkar" },
+            { label: "FAQ", href: "/faq", active: true },
+            { label: "Skapa konto", href: "/#Skapa konto" },
+          ].map((link) =>
+            link.active ? (
+              <Link
+                key={link.label}
+                to="/faq"
+                className="text-sm font-medium font-['DM_Sans']"
+                style={{
+                  color: "#321A16",
+                  textDecoration: "underline",
+                  textUnderlineOffset: "4px",
+                }}
+              >
+                {link.label}
+              </Link>
+            ) : (
+              <a
+                key={link.label}
+                href={link.href}
+                className="text-sm font-medium font-['DM_Sans'] transition-opacity hover:opacity-60"
+                style={{ color: "#321A16" }}
+              >
+                {link.label}
+              </a>
+            )
+          )}
         </nav>
       </header>
 
-      {/* ── Main Content ── */}
       <main className="flex-1 w-full max-w-[720px] mx-auto px-6 py-16">
         <h1
           className="text-4xl font-bold font-['DM_Sans'] tracking-tight"
@@ -266,13 +263,11 @@ export default function FaqPage() {
         </section>
       </main>
 
-      {/* ── Footer ── */}
       <footer
         className="w-full px-10 pt-10 pb-5 flex flex-col gap-8"
         style={{ backgroundColor: "#D6E8D9" }}
       >
         <div className="flex justify-between items-start gap-16">
-          {/* Column 1: Om oss */}
           <div className="flex flex-col gap-3">
             <h3
               className="text-lg font-semibold font-['DM_Sans']"
@@ -293,7 +288,6 @@ export default function FaqPage() {
             </div>
           </div>
 
-          {/* Column 2: Kontakta oss + Säkerhet */}
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               <h3
@@ -326,7 +320,6 @@ export default function FaqPage() {
             </div>
           </div>
 
-          {/* Volly brand */}
           <div className="flex-1 flex justify-end items-center">
             <span
               className="text-5xl font-normal font-['Emblema_One'] opacity-70"
