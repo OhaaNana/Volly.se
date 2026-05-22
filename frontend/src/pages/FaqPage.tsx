@@ -196,7 +196,7 @@ export default function FaqPage() {
       >
         <Link
           to="/"
-          className="text-3xl font-normal font-['Emblema_One'] leading-none"
+          className="text-5xl font-normal font-['Emblema_One'] leading-[48px]"
           style={{ color: "#00AB46" }}
         >
           Volly
