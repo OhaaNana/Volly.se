@@ -39,9 +39,16 @@ export async function getPostsHandler(
 ) {
   try {
     const { getPosts } = await import("./posts.repo");
-    const posts = await getPosts(request as FastifyRequest);
+    const authorEmail = (request.query as { author_email?: string })
+      .author_email;
+    const posts = await getPosts(request as FastifyRequest, authorEmail);
     return reply.send(posts);
   } catch (error) {
-    return reply.code(500).send({ message: "Failed to fetch posts" });
+    // Log full error for debugging
+    // eslint-disable-next-line no-console
+    console.error("getPostsHandler error:", error);
+    return reply
+      .code(500)
+      .send({ message: "Failed to fetch posts", error: String(error) });
   }
 }
