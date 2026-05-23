@@ -11,5 +11,5 @@ CREATE TABLE messages(
                          
                        FOREIGN KEY (request_id) REFERENCES request(id),
                        FOREIGN KEY (post_id) REFERENCES post(id),
-                       FOREIGN KEY (sender_id) REFERENCES user(id)
+                       FOREIGN KEY (sender_id) REFERENCES users(id)
 );
