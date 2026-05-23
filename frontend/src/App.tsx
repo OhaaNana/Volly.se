@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import LoginPage from "./LogingPage";
-import SignupPage from "./signupPage";
 import HomePage from "./HomePage";
 import "./index.css";
 import MenuLoggedIn, { type MenuItem } from "./components/MenuLoggedIn";
@@ -55,8 +54,7 @@ export function App() {
   const [currentUser, setCurrentUser] = useState<string | null>(() =>
     localStorage.getItem("currentUser")
   );
-  const [view, setView] = useState<"login" | "signup">("login");
-  const [prefillEmail, setPrefillEmail] = useState("");
+  const [prefillEmail] = useState("");
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
@@ -128,7 +126,6 @@ export function App() {
   const logout = () => {
     localStorage.removeItem("currentUser");
     setCurrentUser(null);
-    setView("login");
   };
 
   const firstName =
@@ -248,20 +245,10 @@ export function App() {
         setCurrentUser(email);
       }}
     >
-      {view === "login" ? (
-        <LoginPage
-          initialEmail={prefillEmail}
-          onLoginSuccess={(email) => setCurrentUser(email)}
-        />
-      ) : (
-        <SignupPage
-          onBackToLogin={() => setView("login")}
-          onSignupSuccess={(email) => {
-            setPrefillEmail(email);
-            setView("login");
-          }}
-        />
-      )}
+      <LoginPage
+        initialEmail={prefillEmail}
+        onLoginSuccess={(email) => setCurrentUser(email)}
+      />
     </HomePage>
   );
 }

@@ -10,6 +10,27 @@ type HomePageProps = {
 
 const AUTH_URL = "http://localhost:3001/api/auth/register";
 
+const HOW_IT_WORKS_CARDS = [
+  {
+    icon: "fi fi-rr-apps",
+    title: "Hitta eller skapa ett inlägg",
+    description:
+      "Utforska flödet för att hitta människor som söker eller erbjuder stöd - eller skapa ett eget inlägg för att be eller erbjuda hjälp till andra.\n\nNär du hittar ett inlägg du vill svara på skickas en meddelandeförfrågan för att starta en privat chatt mellan er.",
+  },
+  {
+    icon: "fi fi-rr-video-camera",
+    title: "Chatta & videosamtala",
+    description:
+      "Lär känna varandra tryggt direkt i Volly genom chatt och videosamtal.\n\nVideosamtal blir tillgängligt först efter att en chatt har startats, vilket fungerar som en extra säkerhetsåtgärd och ger båda parter möjlighet att känna sig bekväma innan vidare kontakt.",
+  },
+  {
+    icon: "fi fi-rr-shield-check",
+    title: "Hjälp tryggt & säkert",
+    description:
+      "Verifierade konton, betyg och recensioner hjälper dig att skapa säkra kontakter, samtidigt som möjligheten att vara anonym ger extra integritet vid behov.\n\nFör din säkerhet rekommenderar vi att du aldrig delar känsliga eller personliga uppgifter med andra användare.",
+  },
+] as const;
+
 const scroll = () => {
   window.scrollTo({
     top: 0,
@@ -97,171 +118,205 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="w-full min-h-screen bg-background flex flex-col">
       <Navbar />
 
-      <main className="w-full">
-        <div className="w-full">{children}</div>
-      </main>
+      <main className="w-full flex flex-col gap-24">
+        {children}
 
-      <section
-        id="Vision"
-        className="self-stretch px-20 py-28 bg-white inline-flex justify-center items-start gap-12 overflow-hidden"
-      >
-        <div className="flex-1 max-w-[900px] inline-flex flex-col justify-start items-start gap-6">
-          <div className="self-stretch h-16 justify-start text-black text-5xl font-medium font-['DM_Sans'] leading-[68px]">
-            Vår Vision
-          </div>
-          <div className="self-stretch justify-start text-black/80 text-xl font-normal font-['DM_Sans'] leading-8">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </div>
-          <div className="self-stretch pt-6 inline-flex justify-start items-center gap-[5px]">
-            <div className="justify-start text-black text-xl font-medium font-['DM_Sans'] leading-8">
-              Läs mer
+        <section
+          id="Vision"
+          className="w-full min-h-[672px] py-28 bg-background"
+        >
+          <div className="w-full max-w-[1280px] mx-auto px-20 flex justify-center items-start">
+            <div className="w-full max-w-[900px] flex flex-col justify-start items-start gap-6">
+              <h2 className="self-stretch text-icon-active text-5xl font-semibold font-['DM_Sans'] leading-[68px]">
+                Vår Vision
+              </h2>
+              <p className="self-stretch text-foreground text-xl font-normal font-['DM_Sans'] leading-8">
+                Vår vision är att bygga en plattform, där det är enkelt och
+                uppmuntrande att kunna be om hjälp med sina vardagliga sysslor.
+                Vi vill skapa en gemenskap där människor känner sig trygga och
+                modiga nog att kunna fråga om hjälp, och där andra kan kliva
+                fram och bli någons ”arm” när det behövs.
+                <br />
+                <br />
+                Alla har inte ett nätverk av familj eller vänner i sin närhet.
+                Vår mission är att överbrygga klyftan mellan personliga nätverk
+                och formell socialtjänst, för att säkerställa att alla har lika
+                tillgång till stöd.
+              </p>
+              <div className="pt-6 inline-flex justify-start items-center gap-[5px]">
+                <span className="text-icon-active text-xl font-medium font-['DM_Sans'] leading-8">
+                  Läs mer
+                </span>
+                <span
+                  className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-[8px] border-l-transparent border-r-transparent border-t-icon-active"
+                  aria-hidden="true"
+                />
+              </div>
             </div>
-            {/* Lägg till down arrow icon */}
           </div>
-        </div>
-      </section>
+        </section>
+
+        <section
+          id="Skapa konto"
+          className="w-full py-48 bg-primary-soft flex flex-col justify-center items-center gap-12"
+        >
+          <div className="w-full max-w-[1280px] mx-auto px-10 flex flex-col items-center">
+            <div className="w-80 flex flex-col justify-start items-center gap-8">
+              <div className="self-stretch flex flex-col justify-start items-start gap-2">
+                <h2 className="self-stretch text-center text-warm-foreground text-3xl font-semibold font-['DM_Sans'] leading-9">
+                  Skapa konto
+                </h2>
+              </div>
+
+              <form
+                onSubmit={handleSignup}
+                className="self-stretch flex flex-col justify-start items-start gap-4"
+              >
+                <div className="w-80 max-w-80 min-w-64 flex flex-col justify-center items-start gap-4">
+                  <div className="self-stretch inline-flex justify-start items-center gap-3 overflow-hidden">
+                    <div className="flex-1 h-10 px-3 py-2 bg-card rounded-sm outline outline-2 outline-offset-[-2px] outline-foreground flex justify-start items-center gap-2">
+                      <input
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={(event) =>
+                          updateField("firstName", event.target.value)
+                        }
+                        placeholder="Förnamn *"
+                        className="flex-1 w-full opacity-50 text-foreground text-base font-normal font-['DM_Sans'] leading-4 bg-transparent border-none outline-none placeholder:text-foreground"
+                      />
+                    </div>
+                    <div className="flex-1 h-10 px-3 py-2 bg-card rounded-sm outline outline-2 outline-offset-[-2px] outline-foreground flex justify-start items-center gap-2">
+                      <input
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={(event) =>
+                          updateField("lastName", event.target.value)
+                        }
+                        placeholder="Efternamn *"
+                        className="flex-1 w-full opacity-50 text-foreground text-base font-normal font-['DM_Sans'] leading-4 bg-transparent border-none outline-none placeholder:text-foreground"
+                      />
+                    </div>
+                  </div>
+
+                  {(["email", "password", "repeatPassword"] as const).map(
+                    (field) => (
+                      <div
+                        key={field}
+                        className="self-stretch h-10 px-3 py-2 bg-card rounded-sm outline outline-2 outline-offset-[-2px] outline-foreground inline-flex justify-start items-center gap-2"
+                      >
+                        <input
+                          name={field}
+                          type={field === "email" ? "email" : "password"}
+                          value={formData[field]}
+                          onChange={(event) =>
+                            updateField(field, event.target.value)
+                          }
+                          placeholder={
+                            field === "email"
+                              ? "E-post *"
+                              : field === "password"
+                                ? "Lösenord *"
+                                : "Upprepa lösenord *"
+                          }
+                          className="flex-1 w-full opacity-50 text-foreground text-base font-normal font-['DM_Sans'] leading-4 bg-transparent border-none outline-none placeholder:text-foreground"
+                        />
+                      </div>
+                    )
+                  )}
+
+                  <label className="self-stretch inline-flex justify-start items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={agreedToTerms}
+                      onChange={(event) =>
+                        setAgreedToTerms(event.target.checked)
+                      }
+                      className="sr-only"
+                    />
+                    <span
+                      className={`size-3.5 rounded-xs border-[1.50px] border-foreground flex items-center justify-center ${
+                        agreedToTerms ? "bg-foreground" : "bg-transparent"
+                      }`}
+                      aria-hidden="true"
+                    >
+                      {agreedToTerms ? (
+                        <span className="text-[8px] text-card leading-none">
+                          ✓
+                        </span>
+                      ) : null}
+                    </span>
+                    <span className="text-foreground text-sm font-normal font-['DM_Sans'] leading-4">
+                      Jag har läst och godkänner villkoren
+                    </span>
+                  </label>
+                </div>
+
+                {statusMessage ? (
+                  <p className="w-80 text-sm text-center text-muted-foreground font-['DM_Sans']">
+                    {statusMessage}
+                  </p>
+                ) : null}
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting || !agreedToTerms}
+                  className="self-stretch px-12 py-3 btn-volly-cta inline-flex justify-center items-center disabled:opacity-60"
+                >
+                  <span className="text-warm-foreground text-base font-bold font-['DM_Sans'] leading-4">
+                    {isSubmitting ? "Skapar konto..." : "Skapa konto"}
+                  </span>
+                </button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="Funkar"
+          className="w-full min-h-[800px] pb-24 bg-background"
+        >
+          <div className="w-full max-w-[1280px] mx-auto px-20 flex flex-col justify-center items-center gap-12">
+            <h2 className="text-center text-icon-active text-5xl font-semibold font-['DM_Sans'] leading-[52px]">
+              Hur Volly fungerar
+            </h2>
+            <div className="w-full max-w-[1024px] inline-flex justify-start items-stretch gap-7 flex-col lg:flex-row">
+              {HOW_IT_WORKS_CARDS.map((card) => (
+                <article
+                  key={card.title}
+                  className="flex-1 p-5 bg-card rounded-2xl outline outline-1 outline-offset-[-1px] outline-border inline-flex flex-col justify-start items-start gap-4 overflow-hidden"
+                >
+                  <div className="size-16 bg-pastel-lime rounded-[50px] flex justify-center items-center overflow-hidden">
+                    <i
+                      className={`${card.icon} text-2xl text-primary`}
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <div className="self-stretch flex flex-col justify-start items-start gap-1 overflow-hidden">
+                    <h3 className="self-stretch text-Forest text-lg font-semibold font-['DM_Sans']">
+                      {card.title}
+                    </h3>
+                    <p className="self-stretch text-muted-foreground text-lg font-normal font-['DM_Sans'] leading-6 whitespace-pre-line">
+                      {card.description}
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
 
       <button
         onClick={scroll}
         aria-label="Scroll to top"
-        className="fixed bottom-40 right-6 z-50 rounded-full bg-white p-2 shadow-lg hover:scale-105 transition-transform"
+        className="fixed bottom-40 right-6 z-50 rounded-full bg-card p-2 shadow-lg hover:scale-105 transition-transform outline outline-1 outline-border"
       >
         <img src={upArrow} alt="pil" className="w-10 h-10 object-contain" />
       </button>
 
-      <section
-        id="Skapa konto"
-        className="self-stretch px-20 py-48 bg-gray-200 inline-flex justify-center items-center"
-      >
-        <div
-          data-property-1="Default"
-          className="inline-flex flex-col justify-center items-center gap-12"
-        >
-          <div className="flex flex-col justify-start items-center gap-8">
-            <div className="self-stretch flex flex-col justify-start items-start gap-2">
-              <div className="self-stretch text-center justify-start text-black text-3xl font-medium font-['DM_Sans'] leading-8">
-                Skapa konto
-              </div>
-            </div>
-            <form
-              onSubmit={handleSignup}
-              className="flex flex-col justify-start items-center gap-4"
-            >
-              <div className="self-stretch px-3 inline-flex justify-start items-start gap-2 overflow-hidden">
-                <div className="w-44 h-10 px-3 py-2 bg-white rounded outline outline-2 outline-offset-[-2px] outline-black flex justify-start items-center gap-2">
-                  <input
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={(event) =>
-                      updateField("firstName", event.target.value)
-                    }
-                    placeholder="Förnamn *"
-                    className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
-                  />
-                </div>
-                <div className="w-44 h-10 px-3 py-2 bg-white rounded outline outline-2 outline-offset-[-2px] outline-black flex justify-start items-center gap-2">
-                  <input
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={(event) =>
-                      updateField("lastName", event.target.value)
-                    }
-                    placeholder="Efternamn *"
-                    className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
-                  />
-                </div>
-              </div>
-              <div className="w-80 h-10 px-3 py-2 bg-white rounded outline outline-2 outline-offset-[-2px] outline-black inline-flex justify-start items-center gap-2">
-                <input
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(event) => updateField("email", event.target.value)}
-                  placeholder="E-post *"
-                  className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
-                />
-              </div>
-              <div className="w-80 h-10 px-3 py-2 bg-white rounded outline outline-2 outline-offset-[-2px] outline-black inline-flex justify-start items-center gap-2">
-                <input
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={(event) =>
-                    updateField("password", event.target.value)
-                  }
-                  placeholder="Lösenord *"
-                  className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
-                />
-              </div>
-              <div className="w-80 h-10 px-3 py-2 bg-white rounded outline outline-2 outline-offset-[-2px] outline-black inline-flex justify-start items-center gap-2">
-                <input
-                  name="repeatPassword"
-                  type="password"
-                  value={formData.repeatPassword}
-                  onChange={(event) =>
-                    updateField("repeatPassword", event.target.value)
-                  }
-                  placeholder="Upprepa lösenord *"
-                  className="flex-1 opacity-50 justify-start text-black text-base font-normal font-['DM_Sans'] leading-5 line-clamp-1 bg-transparent border-none outline-none"
-                />
-              </div>
-              <label className="self-stretch px-3 py-2 inline-flex justify-start items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={agreedToTerms}
-                  onChange={(event) => setAgreedToTerms(event.target.checked)}
-                  className="h-4 w-4 shrink-0 cursor-pointer accent-black border-black"
-                />
-                <div className="justify-start text-black text-xs font-normal font-['DM_Sans'] leading-4">
-                  Jag har läst och godkänner villkoren
-                </div>
-              </label>
-              {statusMessage ? (
-                <p className="w-80 text-sm text-center text-black/70">
-                  {statusMessage}
-                </p>
-              ) : null}
-              <button
-                type="submit"
-                disabled={isSubmitting || !agreedToTerms}
-                className="w-80 h-10 px-12 bg-black rounded inline-flex justify-center items-center gap-2.5 overflow-hidden"
-              >
-                <div className="justify-start text-white text-base font-medium font-['DM_Sans'] leading-5">
-                  {isSubmitting ? "Skapar konto..." : "Skapa konto"}
-                </div>
-              </button>
-            </form>
-          </div>
-        </div>
-      </section>
-
-      <section
-        id="Funkar"
-        className="w-[1440px] h-[800px] px-20 inline-flex flex-col justify-start items-start"
-      >
-        <div className="self-stretch px-80 py-80 flex flex-col justify-center items-center gap-12 overflow-hidden">
-          <div className="text-center justify-start text-black text-5xl font-normal font-['DM_Sans'] leading-[52px]">
-            Hur Volly fungerar
-          </div>
-          <div className="px-24 flex flex-col justify-start items-start gap-6">
-            <div className="w-[708px] px-24 inline-flex justify-center items-center gap-2">
-              <div className="flex-1 text-center justify-start text-black text-xl font-normal font-['DM_Sans'] leading-6">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.{" "}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
       <Footer />
     </div>
   );

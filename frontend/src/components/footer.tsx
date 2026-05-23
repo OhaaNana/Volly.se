@@ -1,60 +1,83 @@
+import { Link } from "react-router-dom";
+
 function Footer() {
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <div className="self-stretch px-12 pt-12 pb-6 bg-neutral-200 inline-flex flex-col justify-start items-start gap-3.5">
-      <div className="self-stretch p-8 inline-flex justify-start items-start gap-24">
-        <div className="self-stretch inline-flex flex-col justify-start items-start gap-3.5">
-          <div className="justify-start text-black text-3xl font-medium font-['DM_Sans'] leading-6">
-            Lorem Ipsum
+    <footer className="w-full bg-primary-soft rounded-tl-[30px] rounded-tr-[30px]">
+      <div className="w-full max-w-[1280px] mx-auto px-12 pt-12 pb-6 flex flex-col gap-3.5">
+        <div className="p-8 flex justify-start items-start gap-24 flex-wrap">
+          <div className="inline-flex flex-col justify-start items-start gap-4">
+            <div className="text-warm-foreground text-3xl font-semibold font-['DM_Sans'] leading-6">
+              Om oss
+            </div>
+            <div className="flex flex-col justify-start items-start gap-2.5">
+              <button
+                type="button"
+                onClick={() => scrollTo("Vision")}
+                className="text-left text-warm-foreground text-xl font-normal font-['DM_Sans'] underline leading-6 hover:opacity-80"
+              >
+                Vår vision
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollTo("Funkar")}
+                className="text-left text-warm-foreground text-xl font-normal font-['DM_Sans'] underline leading-6 hover:opacity-80"
+              >
+                Hur Volly fungerar
+              </button>
+              <Link
+                to="/faq"
+                className="text-warm-foreground text-xl font-normal font-['DM_Sans'] underline leading-6 hover:opacity-80"
+              >
+                FAQ
+              </Link>
+            </div>
           </div>
-          <div className="flex flex-col justify-start items-start gap-2.5">
-            <div className="self-stretch justify-start text-black text-xl font-normal font-['DM_Sans'] leading-6">
-              Dolor sit amet
+
+          <div className="inline-flex flex-col justify-start items-start gap-12">
+            <div className="flex flex-col justify-start items-start gap-4">
+              <div className="w-64 text-warm-foreground text-3xl font-semibold font-['DM_Sans'] leading-6">
+                Kontakta oss
+              </div>
+              <a
+                href="mailto:info@volly.nu"
+                className="text-warm-foreground text-xl font-normal font-['DM_Sans'] underline leading-6 hover:opacity-80"
+              >
+                info@volly.nu
+              </a>
             </div>
-            <div className="self-stretch justify-start text-black text-xl font-normal font-['DM_Sans'] leading-6">
-              Consectetur adipiscing
+            <div className="flex flex-col justify-start items-start gap-4">
+              <div className="text-warm-foreground text-3xl font-semibold font-['DM_Sans'] leading-6">
+                Säkerhet & Villkor
+              </div>
+              <button
+                type="button"
+                className="text-left text-warm-foreground text-xl font-normal font-['DM_Sans'] underline leading-6 hover:opacity-80"
+              >
+                Användarvillkor
+              </button>
             </div>
-            <div className="self-stretch justify-start text-black text-xl font-normal font-['DM_Sans'] leading-6">
-              Sed do eiusmod{" "}
-            </div>
-            <div className="self-stretch justify-start text-black text-xl font-normal font-['DM_Sans'] leading-6">
-              tempor incididunt
+          </div>
+
+          <div className="flex-1 min-w-[200px] inline-flex flex-col justify-between items-end">
+            <div className="py-16 flex flex-col justify-center items-end gap-2.5">
+              <div className="opacity-70 text-primary text-7xl font-normal font-emblema leading-6">
+                Volly
+              </div>
             </div>
           </div>
         </div>
-        <div className="self-stretch inline-flex flex-col justify-between items-start">
-          <div className="flex flex-col justify-start items-start gap-3.5">
-            <div className="justify-start text-black text-3xl font-medium font-['DM_Sans'] leading-6">
-              Lorem Ipsum
-            </div>
-            <div className="justify-start text-black text-xl font-normal font-['DM_Sans'] leading-6">
-              info@loremupsum.se
-            </div>
-          </div>
-          <div className="flex flex-col justify-start items-start gap-3.5">
-            <div className="justify-start text-black text-3xl font-medium font-['DM_Sans'] leading-6">
-              Lorem Ipsum
-            </div>
-            <div className="justify-start text-black text-xl font-normal font-['DM_Sans'] leading-6">
-              Dolor sit amet Consectetur adipiscing
-            </div>
-          </div>
-        </div>
-        <div className="flex-1 self-stretch inline-flex flex-col justify-between items-end">
-          <div className="py-16 flex flex-col justify-center items-end gap-2.5">
-            <div className="opacity-70 justify-start text-black text-7xl font-normal font-['Emblema_One'] leading-6">
-              Volly
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="self-stretch flex flex-col justify-center items-center gap-[750px]">
-        <div className="inline-flex justify-center items-center gap-2.5">
-          <div className="justify-start text-black/40 text-xl font-normal font-['DM_Sans'] leading-6">
+
+        <div className="flex flex-col justify-center items-center">
+          <p className="text-muted-foreground text-xl font-normal font-['DM_Sans'] leading-6">
             © 2026 Volly
-          </div>
+          </p>
         </div>
       </div>
-    </div>
+    </footer>
   );
 }
 
