@@ -15,7 +15,7 @@ type Props = {
   firstName: string;
   onCreatePost: () => void;
   onExploreCategories?: () => void;
-  onProfile?: () => void;
+  onProfile?: (authorEmail?: string) => void;
   posts?: Post[];
   formatDisplayName?: (
     firstName?: string,
@@ -213,7 +213,10 @@ export default function LoggedInStartPage({
               badgeLabel={badgeForPost(post)}
               title={post.title}
               body={post.content}
-              onProfile={onProfile}
+              tags={post.tags}
+              onProfile={
+                onProfile ? () => onProfile(post.author_email) : undefined
+              }
             />
           ))
         ) : (

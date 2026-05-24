@@ -52,6 +52,7 @@ export default async function userRoutes(app: FastifyInstance) {
             email: { type: "string" },
             first_name: { type: "string" },
             last_name: { type: "string" },
+            bio: { type: "string" },
           },
         },
       },

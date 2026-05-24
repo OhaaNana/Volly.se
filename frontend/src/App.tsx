@@ -56,6 +56,9 @@ export function App() {
   );
   const [prefillEmail] = useState("");
   const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedProfileEmail, setSelectedProfileEmail] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     let mounted = true;
@@ -81,6 +84,15 @@ export function App() {
           })(),
           postType: helpTypeToPostType(p.help_type),
           category: p.category != null ? String(p.category) : undefined,
+          tags:
+            Array.isArray(p.tags) && p.tags.length > 0
+              ? (p.tags as string[])
+              : typeof p.tagg === "string" && p.tagg.trim()
+                ? (String(p.tagg)
+                    .split(",")
+                    .map((t) => t.trim())
+                    .filter(Boolean) as string[])
+                : undefined,
           author_email:
             p.author_email != null ? String(p.author_email) : undefined,
           first_name: p.first_name != null ? String(p.first_name) : undefined,
@@ -123,6 +135,22 @@ export function App() {
   const [activeLoggedInPage, setActiveLoggedInPage] =
     useState<LoggedInMenuId>("start");
 
+  const handleLoggedInNavigate = (nextPage: LoggedInMenuId) => {
+    setActiveLoggedInPage(nextPage);
+    if (nextPage === "profil") {
+      setSelectedProfileEmail(null);
+    }
+  };
+
+  const openProfileFromPost = (authorEmail?: string) => {
+    if (!authorEmail || authorEmail === currentUser) {
+      setSelectedProfileEmail(null);
+    } else {
+      setSelectedProfileEmail(authorEmail);
+    }
+    setActiveLoggedInPage("profil");
+  };
+
   const logout = () => {
     localStorage.removeItem("currentUser");
     setCurrentUser(null);
@@ -141,7 +169,7 @@ export function App() {
         <MenuLoggedIn
           items={loggedInMenuItems}
           activeId={activeLoggedInPage}
-          onNavigate={setActiveLoggedInPage}
+          onNavigate={handleLoggedInNavigate}
           onLogout={logout}
           brandName="Volly"
           brandInitial="V"
@@ -213,15 +241,24 @@ export function App() {
             />
           ) : activeLoggedInPage === "profil" ? (
             <ProfilePage
-              userEmail={currentUser}
-              onLogout={logout}
+              userEmail={selectedProfileEmail ?? currentUser}
+              isReadOnly={Boolean(selectedProfileEmail)}
+              onBack={
+                selectedProfileEmail
+                  ? () => {
+                      setSelectedProfileEmail(null);
+                      setActiveLoggedInPage("start");
+                    }
+                  : undefined
+              }
               onProfileUpdated={(nextEmail) => {
                 localStorage.setItem("currentUser", nextEmail);
                 setCurrentUser(nextEmail);
+                setSelectedProfileEmail(null);
               }}
             />
           ) : activeLoggedInPage === "kategorier" ? (
-            <CategoryPage posts={posts} />
+            <CategoryPage posts={posts} onProfile={openProfileFromPost} />
           ) : activeLoggedInPage === "inkorg" ? (
             <InboxPage />
           ) : (
@@ -229,7 +266,7 @@ export function App() {
               firstName={firstName}
               onCreatePost={() => setActiveLoggedInPage("skapa")}
               onExploreCategories={() => setActiveLoggedInPage("kategorier")}
-              onProfile={() => setActiveLoggedInPage("profil")}
+              onProfile={openProfileFromPost}
               posts={posts}
               formatDisplayName={formatDisplayName}
             />
