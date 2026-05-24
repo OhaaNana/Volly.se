@@ -14,6 +14,8 @@ export type InboxConversationCardProps = {
   /** Om raden är vald i listan */
   selected?: boolean;
   onClick: () => void;
+  /** Antal olästa meddelanden, visas som röd badge */
+  unreadCount?: number;
 };
 
 /**
@@ -28,6 +30,7 @@ export default function InboxConversationCard({
   timeLabel,
   selected = false,
   onClick,
+  unreadCount,
 }: InboxConversationCardProps) {
   return (
     <button
@@ -44,22 +47,36 @@ export default function InboxConversationCard({
         >
           {initials}
         </div>
+
         <div className="min-w-0 flex-1">
           <div className="font-['DM_Sans'] text-base font-semibold text-foreground">
             {name}
           </div>
+
           <div className="mt-0.5 flex items-center gap-1 font-['DM_Sans'] text-xs font-medium text-green-700">
             <span aria-hidden className="text-green-600">
               ↳
             </span>
             <span>{threadTitle}</span>
           </div>
+
           <p className="mt-1 line-clamp-2 font-['DM_Sans'] text-sm font-normal text-Colors-muted-foreground">
             {preview}
           </p>
         </div>
-        <div className="shrink-0 pt-0.5 font-['DM_Sans'] text-xs font-medium text-Colors-muted-foreground">
-          {timeLabel}
+
+        <div className="shrink-0 pt-0.5 text-right">
+          <div className="font-['DM_Sans'] text-xs font-medium text-Colors-muted-foreground">
+            {timeLabel}
+          </div>
+
+          {unreadCount && unreadCount > 0 ? (
+            <div className="ml-auto flex items-center">
+              <span className="mt-2 inline-flex items-center justify-center rounded-full bg-red-600 px-2 py-0.5 text-xs font-semibold text-white">
+                {unreadCount}
+              </span>
+            </div>
+          ) : null}
         </div>
       </div>
     </button>

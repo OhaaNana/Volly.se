@@ -38,4 +38,19 @@ export default async function chatRoutes(app: FastifyInstance) {
       return reply.send({ status: "ok" });
     },
   });
+
+  // WebSocket Chat
+  app.get("/chat", { websocket: true }, (connection) => {
+    console.log("Client connected");
+
+    connection.on("message", (message: { toString: () => any }) => {
+      console.log("Received:", message.toString());
+
+      connection.send(message.toString());
+    });
+
+    connection.on("close", () => {
+      console.log("Client disconnected");
+    });
+  });
 }
