@@ -6,6 +6,7 @@ type Post = {
   content: string;
   createdAt: number;
   postType?: "seek" | "offer";
+  tags?: string[];
   author_email?: string;
   first_name?: string;
   last_name?: string;
