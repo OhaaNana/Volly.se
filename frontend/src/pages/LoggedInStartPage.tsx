@@ -1,4 +1,5 @@
 import PostCard from "../components/PostCard";
+import type { CategoryKey } from "./CategoryPage";
 
 type Post = {
   id: string;
@@ -15,19 +16,57 @@ type Post = {
 type Props = {
   firstName: string;
   onCreatePost: () => void;
-  onExploreCategories?: () => void;
+  onExploreCategories?: (category?: CategoryKey) => void;
   onProfile?: (authorEmail?: string) => void;
   posts?: Post[];
-  formatDisplayName?: (
-    firstName?: string,
-    lastName?: string,
-    authorEmail?: string
-  ) => string;
 };
+
+const POPULAR_CATEGORIES: {
+  id: CategoryKey;
+  label: string;
+  bgClass: string;
+  textClass: string;
+}[] = [
+  {
+    id: "mental",
+    label: "Hälsa",
+    bgClass: "bg-rose-200",
+    textClass: "text-rose-900",
+  },
+  {
+    id: "teknik",
+    label: "Teknik",
+    bgClass: "bg-teal-200",
+    textClass: "text-teal-800",
+  },
+  {
+    id: "vardag",
+    label: "Vardag",
+    bgClass: "bg-yellow-200",
+    textClass: "text-yellow-900",
+  },
+  {
+    id: "studier",
+    label: "Studier",
+    bgClass: "bg-green-200",
+    textClass: "text-green-900",
+  },
+  {
+    id: "sprak",
+    label: "Språk",
+    bgClass: "bg-pink-200",
+    textClass: "text-fuchsia-800",
+  },
+  {
+    id: "karriar",
+    label: "Karriär",
+    bgClass: "bg-blue-200",
+    textClass: "text-blue-900",
+  },
+];
 
 function formatTimeAgo(createdAt: number): string {
   if (typeof createdAt !== "number" || Number.isNaN(createdAt)) return "Okänt";
-  // normalize seconds -> ms
   const normalized = createdAt < 1e12 ? createdAt * 1000 : createdAt;
   const sec = Math.floor((Date.now() - normalized) / 1000);
   if (sec < 60) return "nyss";
@@ -45,44 +84,45 @@ function badgeForPost(post: Post | undefined): string {
   return "Erbjuder hjälp";
 }
 
+function getAuthorName(post: Post): string {
+  const full = `${post.first_name ?? ""} ${post.last_name ?? ""}`.trim();
+  if (full) return full;
+  if (post.author_email) {
+    const localPart = post.author_email.split("@")[0] ?? "";
+    const parts = localPart.split(/[._-]/).filter(Boolean);
+    if (parts.length > 0) {
+      return parts
+        .slice(0, 2)
+        .map((part) => part.replace(/^\w/, (c) => c.toUpperCase()))
+        .join(" ");
+    }
+  }
+  return "Okänt namn";
+}
+
+function getInitials(post: Post): string {
+  const first = post.first_name?.trim()?.[0] ?? "";
+  const last = post.last_name?.trim()?.[0] ?? "";
+  if (first || last) return (first + last).toUpperCase();
+  if (post.author_email) {
+    return post.author_email
+      .split("@")[0]
+      .split(/[._-]/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((p) => p[0]?.toUpperCase() ?? "")
+      .join("");
+  }
+  return "?";
+}
+
 export default function LoggedInStartPage({
   firstName,
   onCreatePost,
   onExploreCategories,
   onProfile,
   posts,
-  formatDisplayName,
 }: Props) {
-  const getAuthorName = (post: Post) => {
-    if (formatDisplayName) {
-      return formatDisplayName(
-        post.first_name,
-        post.last_name,
-        post.author_email
-      );
-    }
-    if (post.first_name || post.last_name)
-      return `${post.first_name ?? ""} ${post.last_name ?? ""}`.trim();
-    if (post.author_email)
-      return post.author_email.split("@")[0] ?? "Okänt namn";
-    return "Okänt namn";
-  };
-
-  const getInitials = (post: Post) => {
-    const first = post.first_name?.trim()?.[0] ?? "";
-    const last = post.last_name?.trim()?.[0] ?? "";
-    if (first || last) return (first + last).toUpperCase();
-    if (post.author_email) {
-      const localPart = post.author_email.split("@")[0] ?? "";
-      return localPart
-        .split(/[._-]/)
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((part) => part[0]?.toUpperCase() ?? "")
-        .join("");
-    }
-    return (first + last).toUpperCase();
-  };
   return (
     <div className="w-full min-w-0 self-stretch overflow-x-hidden px-4 py-10 sm:px-6 sm:py-12 inline-flex flex-col justify-start items-center gap-8">
       <div className="w-full max-w-[920px] p-6 sm:p-10 bg-gradient-to-b from-green-100 to-red-50 rounded-[30px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 flex flex-col justify-start items-start gap-5 overflow-hidden shadow-[0px_10px_24px_-14px_rgba(22,26,38,0.35)]">
@@ -112,7 +152,7 @@ export default function LoggedInStartPage({
           </button>
           <button
             type="button"
-            onClick={onExploreCategories}
+            onClick={() => onExploreCategories?.()}
             className="px-6 py-3.5 bg-white-2 rounded-3xl outline outline-1 outline-offset-[-1px] outline-zinc-400/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden"
           >
             <div className="justify-start text-dark-gray text-base font-semibold font-['DM_Sans'] leading-5">
@@ -122,50 +162,30 @@ export default function LoggedInStartPage({
         </div>
       </div>
 
-      <div className="self-stretch flex flex-col justify-start items-center gap-4">
-        <div className="w-full max-w-[920px] p-2.5 bg-white-3 rounded-[40px] shadow-[0px_4px_12px_0px_rgba(0,0,0,0.07)] outline outline-1 outline-offset-[-1px] outline-stone-300/40 inline-flex justify-start items-center gap-3 overflow-hidden">
-          <i
-            aria-hidden
-            className="fi fi-br-search-heart ml-1 shrink-0 text-[20px] leading-none text-zinc-500"
-          />
-          <div className="flex-1 p-[5px] flex justify-start items-center gap-2.5 overflow-hidden">
-            <div className="justify-start text-zinc-500 text-base font-normal font-['DM_Sans'] leading-5">
-              Sök efter inlägg, ämnen, taggar...
-            </div>
-          </div>
+      <div className="w-full max-w-[920px] flex flex-col items-start">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-foreground text-lg font-bold font-['DM_Sans'] leading-7">
+            Populära kategorier
+          </h2>
+          <p className="text-muted-foreground text-xs font-normal font-['DM_Sans'] leading-4">
+            Klicka på en kategori för att komma till flödet
+          </p>
         </div>
-
-        <div className="w-full max-w-[920px] flex flex-wrap justify-start items-center gap-2.5">
-          <div className="px-7 py-1.5 bg-indigo-200/60 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-            <div className="justify-start text-blue-900/80 text-sm font-semibold font-['DM_Sans'] leading-5">
-              Teknik
-            </div>
-          </div>
-          <div className="px-7 py-1.5 bg-amber-100/60 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-            <div className="justify-start text-yellow-900/80 text-sm font-semibold font-['DM_Sans'] leading-5">
-              Vardag
-            </div>
-          </div>
-          <div className="px-7 py-1.5 bg-fuchsia-200/60 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-            <div className="justify-start text-purple-950/80 text-sm font-semibold font-['DM_Sans'] leading-5">
-              Språk
-            </div>
-          </div>
-          <div className="px-7 py-1.5 bg-cyan-100/60 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-            <div className="justify-start text-teal-800/80 text-sm font-semibold font-['DM_Sans'] leading-5">
-              Studier
-            </div>
-          </div>
-          <div className="px-7 py-1.5 bg-green-200/60 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-            <div className="justify-start text-green-900/80 text-sm font-semibold font-['DM_Sans'] leading-5">
-              Mental hälsa
-            </div>
-          </div>
-          <div className="px-7 py-1.5 bg-orange-100/60 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-            <div className="justify-start text-amber-900/80 text-sm font-semibold font-['DM_Sans'] leading-5">
-              Karriär
-            </div>
-          </div>
+        <div className="mt-6 self-stretch inline-flex justify-start items-center gap-2">
+          {POPULAR_CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => onExploreCategories?.(cat.id)}
+              className={`flex-1 min-w-0 px-5 py-2.5 ${cat.bgClass} rounded-full outline outline-1 outline-offset-[-1px] outline-Colors-border inline-flex flex-col justify-center items-center`}
+            >
+              <span
+                className={`${cat.textClass} text-xs font-medium font-['DM_Sans'] leading-4`}
+              >
+                {cat.label}
+              </span>
+            </button>
+          ))}
         </div>
       </div>
 

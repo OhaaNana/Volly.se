@@ -13,6 +13,8 @@ export type PostCardProps = {
   avatarBgClassName?: string;
   onContact?: () => void;
   onProfile?: () => void;
+  isSaved?: boolean;
+  onToggleSave?: () => void;
 };
 
 export default function PostCard({
@@ -43,11 +45,12 @@ export default function PostCard({
         authorName?.trim().split(" ").slice(-1)[0]?.[0] ??
         "")
     ).toUpperCase();
-  const contactClassName =
-    "px-14 py-3.5 bg-green-400 rounded-3xl outline outline-1 outline-offset-[-1px] outline-zinc-400/30 flex justify-center items-center gap-2.5 overflow-hidden";
+
+  const contactButtonClassName =
+    "flex-1 min-w-0 inline-flex items-center justify-center gap-2.5 rounded-full bg-green-400 px-6 py-3.5 outline outline-1 outline-offset-[-1px] outline-zinc-400/30";
 
   return (
-    <article className="w-[750px] max-w-[750px] p-7 bg-white-3 rounded-[30px] outline outline-1 outline-offset-[-1px] outline-stone-300/40 flex flex-col justify-start items-start gap-2.5 overflow-hidden">
+    <article className="w-full max-w-[750px] p-7 bg-white-3 rounded-[30px] outline outline-1 outline-offset-[-1px] outline-stone-300/40 flex flex-col justify-start items-start gap-2.5 overflow-hidden">
       <div className="self-stretch inline-flex justify-between items-start overflow-hidden">
         <div className="rounded-3xl flex justify-start items-center gap-2.5">
           <div className="inline-flex flex-col justify-start items-start overflow-hidden">
@@ -73,8 +76,8 @@ export default function PostCard({
             </div>
           </div>
         </div>
-        <div className="px-3.5 py-0.5 bg-green-200/40 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-green-900/60 text-xs font-semibold font-['DM_Sans'] leading-5">
+        <div className="px-3.5 py-0.5 bg-orange-100 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
+          <div className="justify-start text-amber-900/80 text-xs font-semibold font-['DM_Sans'] leading-5">
             {badgeLabel}
           </div>
         </div>
@@ -87,36 +90,39 @@ export default function PostCard({
         <p className="justify-end text-zinc-600 text-base font-normal font-['DM_Sans'] leading-6 line-clamp-3">
           {body}
         </p>
+        {category ? (
+          <div className="pt-1">
+            <span className="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-900 font-['DM_Sans']">
+              {category}
+            </span>
+          </div>
+        ) : null}
       </div>
 
-      <div className="self-stretch p-2.5 inline-flex justify-between items-start overflow-hidden">
+      <div className="self-stretch border-t border-stone-300/30 pt-4 flex items-center gap-2.5">
         {onContact ? (
           <button
             type="button"
             onClick={onContact}
-            className={contactClassName}
+            className={contactButtonClassName}
           >
-            <span className="w-4 h-4 flex justify-center items-center gap-2.5">
-              <i
-                className="fi fi-rs-comment-dots text-dark-gray"
-                aria-hidden="true"
-              />
-            </span>
-            <span className="justify-center text-dark-gray text-base font-medium font-['DM_Sans'] leading-4">
+            <i
+              className="fi fi-rs-comment-dots text-white text-base leading-none"
+              aria-hidden="true"
+            />
+            <span className="text-white text-base font-semibold font-['DM_Sans'] leading-4">
               Kontakta
             </span>
           </button>
         ) : (
-          <div className={contactClassName}>
-            <div className="w-4 h-4 flex justify-center items-center gap-2.5">
-              <i
-                className="fi fi-rs-comment-dots text-dark-gray"
-                aria-hidden="true"
-              />
-            </div>
-            <div className="justify-center text-dark-gray text-base font-medium font-['DM_Sans'] leading-4">
+          <div className={contactButtonClassName}>
+            <i
+              className="fi fi-rs-comment-dots text-white text-base leading-none"
+              aria-hidden="true"
+            />
+            <span className="text-white text-base font-semibold font-['DM_Sans'] leading-4">
               Kontakta
-            </div>
+            </span>
           </div>
         )}
         <div className="flex items-center gap-3">
