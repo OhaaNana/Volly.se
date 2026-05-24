@@ -26,9 +26,7 @@ type CategoryKey =
 const CATEGORY_CARDS: readonly {
   id: CategoryKey;
   label: string;
-  /** Ikon – byts till riktiga assets när du levererar dem */
   icon: string;
-  /** Matchar `post.category` från skapa-flödet; `null` = Allt */
   filterLabel: string | null;
 }[] = [
   { id: "allt", label: "Allt", icon: "✨", filterLabel: null },
