@@ -1,8 +1,18 @@
-FROM oven/bun
+FROM node:20-alpine
+
 WORKDIR /app
-COPY package.json package-lock.json* bun.lockb* ./
-RUN bun install
+
+COPY package*.json ./
+
+RUN npm i
+
 COPY . .
+
 RUN npm run build
-EXPOSE 3000
-CMD ["vite"]
+
+ENV NODE_ENV=production
+
+EXPOSE 5173
+
+# Run Vite preview server
+CMD ["npm", "run", "preview", "--", "--host"]

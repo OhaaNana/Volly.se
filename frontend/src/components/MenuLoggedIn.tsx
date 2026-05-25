@@ -11,7 +11,7 @@ export type MenuItem<Id extends string = string> = {
 export type MenuLoggedInUser = {
   name: string;
   initials: string;
-  rating?: number;
+  // rating removed
 };
 
 function SidebarItem({
@@ -69,6 +69,7 @@ function Sidebar({
   items,
   activePage,
   onNavigate,
+  onLogout,
   brandName,
   brandInitial,
   user,
@@ -76,6 +77,7 @@ function Sidebar({
   items: readonly MenuItem<string>[];
   activePage: string;
   onNavigate: (next: string) => void;
+  onLogout?: () => void;
   brandName: string;
   brandInitial: string;
   user?: MenuLoggedInUser;
@@ -108,33 +110,46 @@ function Sidebar({
         </nav>
       </div>
 
-      {user ? (
-        <div className="self-stretch p-3.5 bg-gradient-to-b from-green-100 to-red-50 rounded-3xl outline outline-1 outline-offset-[-1px] outline-neutral-800/10 inline-flex justify-start items-center gap-2.5">
-          <div className="inline-flex flex-col justify-start items-start overflow-hidden">
-            <div className="w-10 h-10 relative">
-              <div className="w-10 h-10 left-0 top-0 absolute bg-sky-400 rounded-full" />
-              <div className="left-[9px] top-[10px] absolute justify-start text-white text-base font-semibold font-['DM_Sans'] leading-5">
-                {user.initials}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex-1 self-stretch pt-1.5 inline-flex flex-col justify-center items-start gap-2 overflow-hidden">
-            <div className="justify-start text-dark-gray text-base font-semibold font-['DM_Sans'] leading-[10px]">
-              {user.name}
-            </div>
-
-            {typeof user.rating === "number" ? (
-              <div className="inline-flex justify-start items-end gap-1">
-                <div className="w-3 h-3 bg-gradient-to-bl from-amber-300 to-yellow-500 outline outline-[0.30px] outline-offset-[-0.15px] outline-neutral-800/30" />
-                <div className="justify-end text-zinc-600 text-xs font-medium font-['DM_Sans'] leading-[10px]">
-                  {user.rating}
+      <div className="self-stretch flex flex-col justify-start items-start gap-2">
+        {user ? (
+          <div className="self-stretch p-3.5 bg-gradient-to-b from-green-100 to-red-50 rounded-3xl outline outline-1 outline-offset-[-1px] outline-neutral-800/10 inline-flex justify-start items-center gap-2.5">
+            <div className="inline-flex flex-col justify-start items-start overflow-hidden">
+              <div className="w-10 h-10 relative">
+                <div className="w-10 h-10 left-0 top-0 absolute bg-sky-400 rounded-full" />
+                <div className="left-[9px] top-[10px] absolute justify-start text-white text-base font-semibold font-['DM_Sans'] leading-5">
+                  {user.initials}
                 </div>
               </div>
-            ) : null}
+            </div>
+
+            <div className="flex-1 self-stretch pt-1.5 inline-flex flex-col justify-center items-start gap-2 overflow-hidden">
+              <div className="justify-start text-dark-gray text-base font-semibold font-['DM_Sans'] leading-[10px]">
+                {user.name}
+              </div>
+
+              {/* rating removed */}
+            </div>
           </div>
-        </div>
-      ) : null}
+        ) : null}
+
+        {onLogout ? (
+          <button
+            type="button"
+            onClick={onLogout}
+            className="self-stretch px-5 py-3.5 rounded-3xl inline-flex justify-start items-center gap-2.5 overflow-hidden text-Colors-muted-foreground hover:bg-Colors-muted transition-colors"
+          >
+            <div className="w-5 h-5 flex justify-center items-center gap-2.5">
+              <i
+                aria-hidden="true"
+                className="fi fi-rr-sign-out-alt text-[16px] leading-none"
+              />
+            </div>
+            <div className="justify-start text-base font-medium font-['DM_Sans'] leading-5">
+              Logga ut
+            </div>
+          </button>
+        ) : null}
+      </div>
     </aside>
   );
 }
@@ -143,6 +158,7 @@ export type MenuLoggedInProps<Id extends string = string> = {
   items: readonly MenuItem<Id>[];
   activeId: Id;
   onNavigate: (next: Id) => void;
+  onLogout?: () => void;
   brandName: string;
   brandInitial: string;
   user?: MenuLoggedInUser;
@@ -153,6 +169,7 @@ export default function MenuLoggedIn<Id extends string>({
   items,
   activeId,
   onNavigate,
+  onLogout,
   brandName,
   brandInitial,
   user,
@@ -164,6 +181,7 @@ export default function MenuLoggedIn<Id extends string>({
         items={items as readonly MenuItem<string>[]}
         activePage={activeId}
         onNavigate={onNavigate as (next: string) => void}
+        onLogout={onLogout}
         brandName={brandName}
         brandInitial={brandInitial}
         user={user}

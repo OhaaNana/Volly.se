@@ -6,18 +6,30 @@ type Post = {
   content: string;
   createdAt: number;
   postType?: "seek" | "offer";
+  tags?: string[];
+  author_email?: string;
+  first_name?: string;
+  last_name?: string;
 };
 
 type Props = {
   firstName: string;
   onCreatePost: () => void;
   onExploreCategories?: () => void;
-  onProfile?: () => void;
+  onProfile?: (authorEmail?: string) => void;
   posts?: Post[];
+  formatDisplayName?: (
+    firstName?: string,
+    lastName?: string,
+    authorEmail?: string
+  ) => string;
 };
 
 function formatTimeAgo(createdAt: number): string {
-  const sec = Math.floor((Date.now() - createdAt) / 1000);
+  if (typeof createdAt !== "number" || Number.isNaN(createdAt)) return "Okänt";
+  // normalize seconds -> ms
+  const normalized = createdAt < 1e12 ? createdAt * 1000 : createdAt;
+  const sec = Math.floor((Date.now() - normalized) / 1000);
   if (sec < 60) return "nyss";
   const min = Math.floor(sec / 60);
   if (min < 60) return `${min} min sen`;
@@ -39,26 +51,56 @@ export default function LoggedInStartPage({
   onExploreCategories,
   onProfile,
   posts,
+  formatDisplayName,
 }: Props) {
-  const latestPost = posts?.[0];
+  const getAuthorName = (post: Post) => {
+    if (formatDisplayName) {
+      return formatDisplayName(
+        post.first_name,
+        post.last_name,
+        post.author_email
+      );
+    }
+    if (post.first_name || post.last_name)
+      return `${post.first_name ?? ""} ${post.last_name ?? ""}`.trim();
+    if (post.author_email)
+      return post.author_email.split("@")[0] ?? "Okänt namn";
+    return "Okänt namn";
+  };
+
+  const getInitials = (post: Post) => {
+    const first = post.first_name?.trim()?.[0] ?? "";
+    const last = post.last_name?.trim()?.[0] ?? "";
+    if (first || last) return (first + last).toUpperCase();
+    if (post.author_email) {
+      const localPart = post.author_email.split("@")[0] ?? "";
+      return localPart
+        .split(/[._-]/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0]?.toUpperCase() ?? "")
+        .join("");
+    }
+    return (first + last).toUpperCase();
+  };
   return (
-    <div className="w-full min-w-0 self-stretch px-6 py-12 inline-flex flex-col justify-start items-center gap-8">
-      <div className="w-[750px] max-w-[750px] p-10 bg-gradient-to-b from-green-100 to-red-50 rounded-[30px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 flex flex-col justify-start items-start gap-5 overflow-hidden">
+    <div className="w-full min-w-0 self-stretch overflow-x-hidden px-4 py-10 sm:px-6 sm:py-12 inline-flex flex-col justify-start items-center gap-8">
+      <div className="w-full max-w-[920px] p-6 sm:p-10 bg-gradient-to-b from-green-100 to-red-50 rounded-[30px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 flex flex-col justify-start items-start gap-5 overflow-hidden shadow-[0px_10px_24px_-14px_rgba(22,26,38,0.35)]">
         <div className="px-3.5 py-[5px] bg-white rounded-[20px] outline outline-1 outline-offset-[-1px] outline-stone-300/60 flex flex-col justify-center items-start gap-2.5 overflow-hidden">
           <div className="justify-center text-green-600 text-sm font-semibold font-['DM_Sans'] leading-5">
             Välkommen tillbaka, {firstName}
           </div>
         </div>
         <div className="self-stretch py-2.5 flex flex-col justify-start items-start gap-2.5">
-          <div className="justify-start text-dark-gray text-4xl font-bold font-['DM_Sans'] leading-10">
+          <div className="justify-start text-dark-gray text-3xl sm:text-4xl font-bold font-['DM_Sans'] leading-10">
             Vad kan vi lösa tillsammans idag?
           </div>
-          <div className="self-stretch justify-start text-neutral-500 text-lg font-normal font-['DM_Sans'] leading-7">
+          <div className="self-stretch justify-start text-neutral-500 text-base sm:text-lg font-normal font-['DM_Sans'] leading-7">
             Skriv ett inlägg och nå ut till någon med rätt kunskap - eller
             utforska vad du själv kan bidra med.
           </div>
         </div>
-        <div className="inline-flex justify-start items-center gap-3">
+        <div className="inline-flex flex-wrap justify-start items-center gap-3">
           <button
             type="button"
             onClick={onCreatePost}
@@ -81,21 +123,19 @@ export default function LoggedInStartPage({
       </div>
 
       <div className="self-stretch flex flex-col justify-start items-center gap-4">
-        <div className="w-[750px] max-w-[750px] p-2.5 bg-white-3 rounded-[40px] shadow-[0px_4px_12px_0px_rgba(0,0,0,0.07)] outline outline-1 outline-offset-[-1px] outline-stone-300/40 inline-flex justify-start items-center overflow-hidden">
-          <div className="px-2.5 py-[5px] inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-            <div className="w-4 h-4 relative overflow-hidden">
-              <div className="w-3.5 h-3.5 left-[1.50px] top-[1.50px] absolute rounded-full outline outline-2 outline-offset-[-1px] outline-zinc-400" />
-              <div className="w-[1.50px] h-[1.50px] left-[15px] top-[15px] absolute outline outline-2 outline-offset-[-1px] outline-zinc-400" />
-            </div>
-          </div>
-          <div className="flex-1 p-[5px] flex justify-start items-start gap-2.5 overflow-hidden">
+        <div className="w-full max-w-[920px] p-2.5 bg-white-3 rounded-[40px] shadow-[0px_4px_12px_0px_rgba(0,0,0,0.07)] outline outline-1 outline-offset-[-1px] outline-stone-300/40 inline-flex justify-start items-center gap-3 overflow-hidden">
+          <i
+            aria-hidden
+            className="fi fi-br-search-heart ml-1 shrink-0 text-[20px] leading-none text-zinc-500"
+          />
+          <div className="flex-1 p-[5px] flex justify-start items-center gap-2.5 overflow-hidden">
             <div className="justify-start text-zinc-500 text-base font-normal font-['DM_Sans'] leading-5">
               Sök efter inlägg, ämnen, taggar...
             </div>
           </div>
         </div>
 
-        <div className="w-full max-w-[750px] inline-flex justify-between items-center overflow-hidden">
+        <div className="w-full max-w-[920px] flex flex-wrap justify-start items-center gap-2.5">
           <div className="px-7 py-1.5 bg-indigo-200/60 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
             <div className="justify-start text-blue-900/80 text-sm font-semibold font-['DM_Sans'] leading-5">
               Teknik
@@ -129,7 +169,7 @@ export default function LoggedInStartPage({
         </div>
       </div>
 
-      <div className="w-[750px] max-w-[750px] inline-flex justify-start items-center gap-3.5 overflow-hidden">
+      <div className="w-full max-w-[920px] inline-flex flex-wrap justify-start items-center gap-3">
         <div className="px-7 py-1.5 bg-neutral-700 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
           <div className="justify-start text-zinc-100 text-xs font-semibold font-['DM_Sans'] leading-5">
             Allt
@@ -157,16 +197,33 @@ export default function LoggedInStartPage({
         </div>
       </div>
 
-      <PostCard
-        authorName="Anna Andersson"
-        authorInitials="AA"
-        timeLabel={latestPost ? formatTimeAgo(latestPost.createdAt) : "2h sen"}
-        rating={4.7}
-        badgeLabel={badgeForPost(latestPost)}
-        title={latestPost?.title ?? "Subject"}
-        body={latestPost?.content ?? "Body"}
-        onProfile={onProfile}
-      />
+      <div
+        className={`w-full max-w-[920px] space-y-4 ${
+          posts && posts.length > 1
+            ? "overflow-y-auto max-h-[64vh] pr-2 green-scrollbar"
+            : ""
+        }`}
+      >
+        {posts && posts.length > 0 ? (
+          posts.map((post) => (
+            <PostCard
+              key={post.id}
+              authorName={getAuthorName(post)}
+              authorInitials={getInitials(post)}
+              timeLabel={formatTimeAgo(post.createdAt)}
+              badgeLabel={badgeForPost(post)}
+              title={post.title}
+              body={post.content}
+              tags={post.tags}
+              onProfile={
+                onProfile ? () => onProfile(post.author_email) : undefined
+              }
+            />
+          ))
+        ) : (
+          <div className="p-6 text-center text-zinc-500">Inga inlägg än.</div>
+        )}
+      </div>
     </div>
   );
 }

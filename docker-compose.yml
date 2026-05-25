@@ -5,17 +5,21 @@ services:
       - "3001:3001"
     env_file:
       - ./Backend/.env
+    environment:
+      POSTGRES_URI: postgresql://postgres:postgres@database:5432/postgres
+      DATABASE_URL: postgresql://postgres:postgres@database:5432/postgres
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-supersecretrefresh123}
     depends_on:
-      - db
+      - database
 
   frontend:
     build: ./Frontend
     ports:
-      - "3000:3000"
+      - "4173:4173"
 
   database:
     image: postgres:16
-    container_name: gym-postgres
+    container_name: Volly-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
@@ -25,6 +29,7 @@ services:
       - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./Backend/src/database/migrations/000_create_users_table.sql:/docker-entrypoint-initdb.d/01_users.sql
 
 volumes:
-  postgres_data:
+  pgdata:
