@@ -21,7 +21,7 @@ export default async function pluginSetup(app: FastifyInstance) {
     routePrefix: "/api/docs",
   });
 
-  const defaultOrigins = ["http://localhost:3000", "http://localhost:5173"];
+  const defaultOrigins = ["http://localhost:3000", "http://localhost:4173"];
   app.register(fastifyCors, {
     origin: process.env.CORS_ORIGIN?.split(",") ?? defaultOrigins,
     credentials: true,
