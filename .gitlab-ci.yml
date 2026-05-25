@@ -38,7 +38,8 @@ install:
   stage: install
   image: oven/bun:1
   script:
-    - bun install --frozen-lockfile
+    - cd Backend && bun install --frozen-lockfile && cd ..
+    - cd frontend && npm install
 
 # Quality
 
@@ -67,9 +68,12 @@ prettier:
 .build_base:
   extends: .on_any_env
   stage: build
-  image: docker:27
+  image:
+    name: docker:27
+    pull_policy: if-not-present
   services:
-    - docker:27-dind
+    - name: docker:27-dind
+      pull_policy: if-not-present
   needs: [eslint, prettier]
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
