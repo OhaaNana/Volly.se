@@ -1,25 +1,32 @@
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: staging-ingress
   namespace: doe25-group-15
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: doe25-group-15-security-headers-staging@kubernetescrd,doe25-group-15-api-rate-limit-staging@kubernetescrd
 spec:
-  entryPoints:
-    - websecure
-  routes:
-    - match: Host(`staging-volly.labb.k3s.chas-lab.dev`) && PathPrefix(`/api`)
-      kind: Rule
-      middlewares:
-        - name: security-headers-staging
-        - name: api-rate-limit-staging
-      services:
-        - name: backend-staging
-          port: 3001
-    - match: Host(`staging-volly.labb.k3s.chas-lab.dev`)
-      kind: Rule
-      middlewares:
-        - name: security-headers-staging
-      services:
-        - name: frontend-staging
-          port: 3000
-  tls: {}
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - staging-volly.labb.k3s.chas-lab.dev
+  rules:
+    - host: staging-volly.labb.k3s.chas-lab.dev
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-staging
+                port:
+                  number: 3001
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-staging
+                port:
+                  number: 3000
