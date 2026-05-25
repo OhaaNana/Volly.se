@@ -1,4 +1,4 @@
-import { getChat } from "../../chat/chat.repo.ts";
+import { getChat } from "../../chat/chat.repo";
 import type { FastifyReply, FastifyRequest } from "fastify";
 
 export async function getChatController(
@@ -6,6 +6,6 @@ export async function getChatController(
   reply: FastifyReply
 ) {
   const { roomId } = request.params as { roomId: string };
-  const result = getChat(Number(roomId), request);
+  const result = await getChat(Number(roomId), request);
   return reply.send(result);
 }

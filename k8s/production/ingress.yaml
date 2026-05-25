@@ -1,28 +1,25 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
 metadata:
   name: production-ingress
   namespace: doe25-group-15
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
-  ingressClassName: traefik
-  rules:
-    - host: volly.labb.k3s.chas-lab.dev
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: frontend-production
-                port:
-                  number: 3000
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: backend-production
-                port:
-                  number: 3001
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`volly.labb.k3s.chas-lab.dev`) && PathPrefix(`/api`)
+      kind: Rule
+      middlewares:
+        - name: security-headers-production
+        - name: api-rate-limit-production
+      services:
+        - name: backend-production
+          port: 3001
+    - match: Host(`volly.labb.k3s.chas-lab.dev`)
+      kind: Rule
+      middlewares:
+        - name: security-headers-production
+      services:
+        - name: frontend-production
+          port: 3000
+  tls: {}

@@ -28,8 +28,8 @@ type ProfileResponse = {
   bio?: string | null;
 };
 
-const PROFILE_API_BASE = "http://localhost:3001/api/users/by-email";
-const POSTS_API_BASE = "http://localhost:3001/posts";
+const PROFILE_API_BASE = "/api/users/by-email";
+const POSTS_API_BASE = "/api/posts";
 
 function getDisplayName(email: string) {
   const localPart = email.split("@")[0] || "Anna Andersson";
@@ -145,7 +145,7 @@ export default function ProfilePage({
 
         setErrorMessage(
           msg.includes("Failed to fetch")
-            ? "Kunde inte nå servern på http://localhost:3001 — kontrollera att backend körs."
+            ? "Kunde inte nå servern. Försök igen senare."
             : msg
         );
         setCurrentEmail(userEmail);
@@ -206,7 +206,7 @@ export default function ProfilePage({
         setPosts([]);
         setErrorMessage(
           msg.includes("Failed to fetch")
-            ? "Kunde inte nå servern på http://localhost:3001 — kontrollera att backend körs."
+            ? "Kunde inte nå servern. Försök igen senare."
             : "Det gick inte att hämta inlägg."
         );
       } finally {

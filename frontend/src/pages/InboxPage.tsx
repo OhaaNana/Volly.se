@@ -48,7 +48,7 @@ export default function InboxPage() {
 
   const socketRef = useRef<WebSocket | null>(null);
 
-  const currentUser = "Namnsson";
+  const currentUser = localStorage.getItem("currentUser") ?? "";
 
   // Olästa meddelanden
   const [unread, setUnread] = useState<Record<string, number>>({});
@@ -66,7 +66,7 @@ export default function InboxPage() {
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const response = await fetch("http://localhost:3001/chats");
+        const response = await fetch("/api/chat/rooms");
 
         if (!response.ok) {
           throw new Error("Failed to fetch chats");
@@ -96,17 +96,24 @@ export default function InboxPage() {
       setIsLoading(true);
 
       try {
-        const response = await fetch(
-          `http://localhost:3001/chat/${selectedId}`
-        );
+        const response = await fetch(`/api/chat/${selectedId}`);
 
         if (!response.ok) {
           throw new Error("Failed to fetch messages");
         }
 
         const data = await response.json();
+        const mapped = (data as Record<string, unknown>[]).map((m) => ({
+          id: String(m.id),
+          text: String(m.text_message ?? ""),
+          sender: String(m.sender_id ?? ""),
+          createdAt: m.created_at
+            ? new Date(m.created_at as string).toLocaleTimeString()
+            : undefined,
+          chatId: selectedId,
+        }));
 
-        setMessages(data);
+        setMessages(mapped);
       } catch (error) {
         console.error("Error fetching messages:", error);
       } finally {
@@ -119,7 +126,10 @@ export default function InboxPage() {
 
   // WebSocket connection
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:3001/chat");
+    const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const socket = new WebSocket(
+      `${wsProtocol}//${window.location.host}/api/chat`
+    );
 
     socketRef.current = socket;
 

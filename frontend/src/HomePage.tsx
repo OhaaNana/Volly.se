@@ -9,7 +9,7 @@ type HomePageProps = {
   onSignupSuccess?: (email: string) => void;
 };
 
-const AUTH_URL = "http://localhost:3001/api/auth/register";
+const AUTH_URL = "/api/auth/register";
 
 const scroll = () => {
   window.scrollTo({

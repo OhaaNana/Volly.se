@@ -79,7 +79,7 @@ export const useSignup = () => {
 
     setIsLoading(true);
     try {
-      const res = await fetch("http://127.0.0.1:3001/register", {
+      const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

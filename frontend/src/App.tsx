@@ -64,7 +64,7 @@ export function App() {
     let mounted = true;
     async function loadPosts() {
       try {
-        const res = await fetch("http://localhost:3001/posts");
+        const res = await fetch("/api/posts");
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (!mounted) return;
@@ -194,7 +194,7 @@ export function App() {
                     tagg: (post.tags || []).join(","),
                   };
 
-                  const res = await fetch("http://127.0.0.1:3001/posts", {
+                  const res = await fetch("/api/posts", {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json",

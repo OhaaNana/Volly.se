@@ -24,6 +24,7 @@ export default async function userRoutes(app: FastifyInstance) {
   app.get(
     "/by-email/:email",
     {
+      preHandler: protect,
       schema: {
         params: { type: "object", properties: { email: { type: "string" } } },
       },
@@ -44,6 +45,7 @@ export default async function userRoutes(app: FastifyInstance) {
   app.put(
     "/by-email/:email",
     {
+      preHandler: protect,
       schema: {
         params: { type: "object", properties: { email: { type: "string" } } },
         body: {

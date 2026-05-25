@@ -2,7 +2,24 @@ import { getChatController } from "../auth/controllers/auth.chat.controller";
 import type { FastifyInstance } from "fastify";
 
 export default async function chatRoutes(app: FastifyInstance) {
-  app.get("/chat/:roomId", {
+  app.get("/health", {
+    schema: {
+      tags: ["Health"],
+      response: {
+        200: {
+          type: "object",
+          properties: {
+            status: { type: "string" },
+          },
+        },
+      },
+    },
+    handler: async (_req, reply) => {
+      return reply.send({ status: "ok" });
+    },
+  });
+
+  app.get("/:roomId", {
     schema: {
       tags: ["Chat"],
       params: {
@@ -19,23 +36,5 @@ export default async function chatRoutes(app: FastifyInstance) {
       },
     },
     handler: getChatController,
-  });
-
-  // Test route
-  app.get("/health", {
-    schema: {
-      tags: ["Health"],
-      response: {
-        200: {
-          type: "object",
-          properties: {
-            status: { type: "string" },
-          },
-        },
-      },
-    },
-    handler: async (_req, reply) => {
-      return reply.send({ status: "ok" });
-    },
   });
 }
