@@ -224,8 +224,6 @@ export function App() {
               firstName={firstName}
               onCreatePost={() => setActiveLoggedInPage("skapa")}
               onExploreCategories={() => setActiveLoggedInPage("kategorier")}
-              onProfile={openProfileFromPost}
-              posts={posts}
             />
           )}
         </MenuLoggedIn>

@@ -9,7 +9,6 @@ export type PostCardProps = {
   body: string;
   category?: string;
   tags?: string[];
-  /** Tailwind-klass för avatar-cirkelns bakgrund, t.ex. `bg-sky-400` */
   avatarBgClassName?: string;
   onContact?: () => void;
   onProfile?: () => void;
@@ -100,37 +99,21 @@ export default function PostCard({
       </div>
 
       <div className="self-stretch border-t border-stone-300/30 pt-4 flex items-center gap-2.5">
-        {onContact ? (
-          <button
-            type="button"
-            onClick={onContact}
-            className={contactButtonClassName}
-          >
-            <i
-              className="fi fi-rs-comment-dots text-white text-base leading-none"
-              aria-hidden="true"
-            />
-            <span className="text-white text-base font-semibold font-['DM_Sans'] leading-4">
-              Kontakta
-            </span>
-          </button>
-        ) : (
-          <div className={contactButtonClassName}>
-            <i
-              className="fi fi-rs-comment-dots text-white text-base leading-none"
-              aria-hidden="true"
-            />
-            <span className="text-white text-base font-semibold font-['DM_Sans'] leading-4">
-              Kontakta
-            </span>
-          </div>
-        )}
+        <button
+          type="button"
+          onClick={onContact}
+          disabled={!onContact}
+          className={contactButtonClassName}
+        >
+          <i
+            className="fi fi-rs-comment-dots text-white text-base leading-none"
+            aria-hidden="true"
+          />
+          <span className="text-white text-base font-semibold font-['DM_Sans'] leading-4">
+            Kontakta
+          </span>
+        </button>
         <div className="flex items-center gap-3">
-          {category ? (
-            <div className="text-xs text-Colors-muted-foreground px-2 py-1 rounded-md bg-Colors-muted/60">
-              {category}
-            </div>
-          ) : null}
           {tags && tags.length > 0
             ? tags.map((t) => (
                 <div
