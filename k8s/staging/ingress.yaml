@@ -25,3 +25,13 @@ spec:
                 name: frontend-staging
                 port:
                   number: 3000
+    - host: grafana-staging-volly.labb.k3s.chas-lab.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 3000

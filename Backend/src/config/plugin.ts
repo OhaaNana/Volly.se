@@ -3,9 +3,11 @@ import fastifyHelmet from "@fastify/helmet";
 import fastifyRateLimit from "@fastify/rate-limit";
 import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
+import metricsPlugin from "fastify-metrics";
 import type { FastifyInstance } from "fastify/types/instance";
 
 export default async function pluginSetup(app: FastifyInstance) {
+  await app.register(metricsPlugin, { endpoint: "/metrics" });
   await app.register(swagger, {
     openapi: {
       info: {
