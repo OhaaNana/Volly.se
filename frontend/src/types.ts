@@ -22,6 +22,7 @@ export type SignupResult = {
 export type LoginPageProps = {
   onLoginSuccess: (email: string) => void;
   initialEmail?: string;
+  onGoToSignup?: () => void;
 };
 
 export type SignupPageProps = {

@@ -1,13 +1,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: backend-staging-ingress
+  name: volly-staging
   namespace: doe25-group-15
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls: "true"
-    traefik.ingress.kubernetes.io/router.rule: "Host(`staging-volly.labb.k3s.chas-lab.dev`) && PathPrefix(`/api`)"
-    traefik.ingress.kubernetes.io/router.priority: "100"
 spec:
   ingressClassName: traefik
   rules:
@@ -21,22 +18,6 @@ spec:
                 name: backend-staging
                 port:
                   number: 3001
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: frontend-staging-ingress
-  namespace: doe25-group-15
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls: "true"
-    traefik.ingress.kubernetes.io/router.priority: "1"
-spec:
-  ingressClassName: traefik
-  rules:
-    - host: staging-volly.labb.k3s.chas-lab.dev
-      http:
-        paths:
           - path: /
             pathType: Prefix
             backend:

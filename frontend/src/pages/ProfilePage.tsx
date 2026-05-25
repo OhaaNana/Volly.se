@@ -2,7 +2,8 @@ import { useEffect, useState, type FormEvent } from "react";
 
 type Props = {
   userEmail: string;
-  onLogout: () => void;
+  isReadOnly?: boolean;
+  onBack?: () => void;
   onProfileUpdated?: (nextEmail: string) => void;
 };
 
@@ -16,6 +17,7 @@ type ProfilePost = {
   description?: string | null;
   help_type?: string | null;
   created_at?: string | Date | number | null;
+  tags?: string[];
 };
 
 type ProfileResponse = {
@@ -23,6 +25,7 @@ type ProfileResponse = {
   email?: string;
   first_name?: string | null;
   last_name?: string | null;
+  bio?: string | null;
 };
 
 const PROFILE_API_BASE = "http://localhost:3001/api/users/by-email";
@@ -88,10 +91,17 @@ function normalizeCreatedAt(value: unknown): number | undefined {
   return undefined;
 }
 
-export default function ProfilePage({ userEmail, onProfileUpdated }: Props) {
+export default function ProfilePage({
+  userEmail,
+  isReadOnly = false,
+  onBack,
+  onProfileUpdated,
+}: Props) {
   const [currentEmail, setCurrentEmail] = useState(userEmail);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [bio, setBio] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
   const [posts, setPosts] = useState<ProfilePost[]>([]);
   const [isProfileLoading, setIsProfileLoading] = useState(true);
   const [isPostsLoading, setIsPostsLoading] = useState(true);
@@ -106,6 +116,7 @@ export default function ProfilePage({ userEmail, onProfileUpdated }: Props) {
       setIsProfileLoading(true);
       setErrorMessage("");
       setStatusMessage("");
+      setIsEditing(false);
 
       try {
         const response = await fetch(
@@ -124,6 +135,7 @@ export default function ProfilePage({ userEmail, onProfileUpdated }: Props) {
         setCurrentEmail(payload.email ?? userEmail);
         setFirstName(payload.first_name ?? "");
         setLastName(payload.last_name ?? "");
+        setBio(payload.bio ?? "");
       } catch (error) {
         if (!mounted) return;
         const msg =
@@ -154,17 +166,34 @@ export default function ProfilePage({ userEmail, onProfileUpdated }: Props) {
         );
 
         if (!response.ok) {
-          throw new Error("Det gick inte att hämta dina inlägg.");
+          throw new Error("Det gick inte att hämta inlägg.");
         }
 
-        const payload = (await response.json()) as ProfilePost[];
+        const raw = await response.json();
 
         if (!mounted) return;
 
-        const mapped = payload.map((p) => ({
-          ...p,
-          created_at: normalizeCreatedAt(p.created_at),
-        }));
+        const payload = Array.isArray(raw) ? raw : [];
+
+        const mapped = payload.map((item: unknown) => {
+          const p = item as Record<string, unknown>;
+          const tagsFromArray = Array.isArray(p.tags)
+            ? (p.tags as unknown[]).filter(Boolean).map(String)
+            : undefined;
+          const tagsFromString =
+            typeof p.tagg === "string" && p.tagg.trim()
+              ? String(p.tagg)
+                  .split(",")
+                  .map((s) => s.trim())
+                  .filter(Boolean)
+              : undefined;
+
+          return {
+            ...(p as Record<string, unknown>),
+            created_at: normalizeCreatedAt(p.created_at),
+            tags: tagsFromArray ?? tagsFromString,
+          } as ProfilePost;
+        });
 
         setPosts(mapped as ProfilePost[]);
       } catch (error) {
@@ -173,12 +202,12 @@ export default function ProfilePage({ userEmail, onProfileUpdated }: Props) {
         const msg =
           error instanceof Error
             ? error.message
-            : "Det gick inte att hämta dina inlägg.";
+            : "Det gick inte att hämta inlägg.";
         setPosts([]);
         setErrorMessage(
           msg.includes("Failed to fetch")
             ? "Kunde inte nå servern på http://localhost:3001 — kontrollera att backend körs."
-            : "Det gick inte att hämta dina inlägg."
+            : "Det gick inte att hämta inlägg."
         );
       } finally {
         if (mounted) {
@@ -206,6 +235,7 @@ export default function ProfilePage({ userEmail, onProfileUpdated }: Props) {
     (post) => post.help_type === "getHelp"
   ).length;
   const isLoading = isProfileLoading || isPostsLoading;
+  const isFormLocked = isReadOnly || !isEditing || isLoading || isSaving;
 
   const saveProfile = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -227,6 +257,7 @@ export default function ProfilePage({ userEmail, onProfileUpdated }: Props) {
             email: currentEmail,
             first_name: firstName,
             last_name: lastName,
+            bio,
           }),
         }
       );
@@ -235,6 +266,7 @@ export default function ProfilePage({ userEmail, onProfileUpdated }: Props) {
         email?: string;
         first_name?: string | null;
         last_name?: string | null;
+        bio?: string | null;
         message?: string;
       } | null;
 
@@ -248,7 +280,9 @@ export default function ProfilePage({ userEmail, onProfileUpdated }: Props) {
       setCurrentEmail(nextEmail);
       setFirstName(payload?.first_name ?? firstName);
       setLastName(payload?.last_name ?? lastName);
+      setBio(payload?.bio ?? bio);
       setStatusMessage("Profilen sparades.");
+      setIsEditing(false);
       onProfileUpdated?.(nextEmail);
 
       const refreshedPosts = await fetch(
@@ -300,6 +334,33 @@ export default function ProfilePage({ userEmail, onProfileUpdated }: Props) {
                   </div>
                 </div>
               </div>
+
+              <div className="flex gap-2 self-end pb-1.5">
+                {isReadOnly && onBack ? (
+                  <button
+                    type="button"
+                    onClick={onBack}
+                    className="inline-flex h-9 items-center justify-center gap-1.5 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-sm font-semibold text-Colors-foreground transition-opacity hover:opacity-90"
+                  >
+                    Tillbaka
+                  </button>
+                ) : null}
+
+                {!isReadOnly ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStatusMessage("");
+                      setErrorMessage("");
+                      setIsEditing((prev) => !prev);
+                    }}
+                    disabled={isLoading || isSaving}
+                    className="inline-flex h-9 items-center justify-center gap-1.5 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-sm font-semibold text-Colors-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isEditing ? "Avbryt" : "Redigera"}
+                  </button>
+                ) : null}
+              </div>
             </div>
           </div>
 
@@ -309,7 +370,9 @@ export default function ProfilePage({ userEmail, onProfileUpdated }: Props) {
                 {displayName}
               </h2>
               <p className="max-w-3xl text-base leading-7 text-Colors-muted-foreground">
-                Uppdatera dina kontaktuppgifter här.
+                {isReadOnly
+                  ? "Här kan du läsa mer om användaren och se personens inlägg."
+                  : "Uppdatera dina kontaktuppgifter och en kort presentation av dig själv här."}
               </p>
             </div>
 
@@ -321,7 +384,8 @@ export default function ProfilePage({ userEmail, onProfileUpdated }: Props) {
                 <input
                   value={firstName}
                   onChange={(event) => setFirstName(event.target.value)}
-                  className="h-12 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-base text-[#161a26] outline-none transition-shadow focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
+                  disabled={isFormLocked}
+                  className="h-12 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-base text-[#161a26] outline-none transition-shadow disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
                   placeholder="Förnamn"
                 />
               </label>
@@ -333,7 +397,8 @@ export default function ProfilePage({ userEmail, onProfileUpdated }: Props) {
                 <input
                   value={lastName}
                   onChange={(event) => setLastName(event.target.value)}
-                  className="h-12 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-base text-[#161a26] outline-none transition-shadow focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
+                  disabled={isFormLocked}
+                  className="h-12 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-base text-[#161a26] outline-none transition-shadow disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
                   placeholder="Efternamn"
                 />
               </label>
@@ -346,19 +411,44 @@ export default function ProfilePage({ userEmail, onProfileUpdated }: Props) {
                   type="email"
                   value={currentEmail}
                   onChange={(event) => setCurrentEmail(event.target.value)}
-                  className="h-12 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-base text-[#161a26] outline-none transition-shadow focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
+                  disabled={isFormLocked}
+                  className="h-12 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-base text-[#161a26] outline-none transition-shadow disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
                   placeholder="namn@exempel.se"
                 />
               </label>
 
+              <label className="flex flex-col gap-2 sm:col-span-2">
+                <span className="text-sm font-semibold text-[#161a26]">
+                  Om dig själv
+                </span>
+                <textarea
+                  value={bio}
+                  onChange={(event) => setBio(event.target.value)}
+                  disabled={isFormLocked}
+                  className="min-h-32 rounded-3xl border border-Colors-border bg-Colors-card px-4 py-3 text-base text-[#161a26] outline-none transition-shadow placeholder:text-Colors-muted-foreground disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
+                  placeholder="Skriv något om vad du kan hjälpa till med, språk du talar eller vad du söker hjälp med."
+                />
+              </label>
+
               <div className="sm:col-span-2 flex flex-wrap items-center gap-3 pt-1">
-                <button
-                  type="submit"
-                  disabled={isSaving || isLoading}
-                  className="inline-flex h-11 items-center justify-center rounded-3xl bg-Colors-foreground px-5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {isSaving ? "Sparar..." : "Spara ändringar"}
-                </button>
+                {!isReadOnly && isEditing ? (
+                  <button
+                    type="submit"
+                    disabled={isSaving || isLoading}
+                    className="inline-flex h-11 items-center justify-center rounded-3xl bg-Colors-foreground px-5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {isSaving ? "Sparar..." : "Spara ändringar"}
+                  </button>
+                ) : !isReadOnly ? (
+                  <span className="text-sm text-Colors-muted-foreground">
+                    Fälten är låsta. Tryck på Redigera för att uppdatera din
+                    profil.
+                  </span>
+                ) : (
+                  <span className="text-sm text-Colors-muted-foreground">
+                    Visningsläge för profil.
+                  </span>
+                )}
 
                 {isLoading ? (
                   <span className="text-sm text-Colors-muted-foreground">
@@ -404,12 +494,23 @@ export default function ProfilePage({ userEmail, onProfileUpdated }: Props) {
                 </div>
               </div>
             </div>
+
+            {bio.trim() ? (
+              <div className="rounded-3xl border border-Colors-border bg-[#f8faf7] px-4 py-4 text-sm leading-6 text-[#334155]">
+                <div className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-Colors-muted-foreground">
+                  Om mig
+                </div>
+                {bio}
+              </div>
+            ) : null}
           </div>
         </section>
 
         <section className="space-y-4">
           <div className="flex items-center justify-between gap-4">
-            <h3 className="text-xl font-bold text-[#161a26]">Dina inlägg</h3>
+            <h3 className="text-xl font-bold text-[#161a26]">
+              {isReadOnly ? "Inlägg" : "Dina inlägg"}
+            </h3>
             <span className="rounded-full bg-Colors-muted px-3 py-1 text-xs font-semibold text-Colors-muted-foreground">
               {posts.length} st
             </span>
@@ -458,15 +559,26 @@ export default function ProfilePage({ userEmail, onProfileUpdated }: Props) {
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-[#D3FBD5] px-2.5 py-1 text-xs font-medium text-[#166534]">
-                      {post.category ?? "Okänd kategori"}
-                    </span>
-                    <span className="rounded-full bg-Colors-muted px-2.5 py-1 text-xs font-medium text-Colors-muted-foreground">
-                      Chatt
-                    </span>
-                    <span className="rounded-full bg-Colors-muted px-2.5 py-1 text-xs font-medium text-Colors-muted-foreground">
-                      Videochatt
-                    </span>
+                    {post.category ? (
+                      <span className="rounded-full bg-[#D3FBD5] px-2.5 py-1 text-xs font-medium text-[#166534]">
+                        {post.category}
+                      </span>
+                    ) : (
+                      <span className="rounded-full bg-[#D3FBD5] px-2.5 py-1 text-xs font-medium text-[#166534]">
+                        Okänd kategori
+                      </span>
+                    )}
+
+                    {post.tags && post.tags.length > 0
+                      ? post.tags.map((t) => (
+                          <span
+                            key={t}
+                            className="rounded-full bg-Colors-muted px-2.5 py-1 text-xs font-medium text-Colors-muted-foreground"
+                          >
+                            {t}
+                          </span>
+                        ))
+                      : null}
                   </div>
                 </article>
               ))

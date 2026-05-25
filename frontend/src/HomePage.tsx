@@ -1,6 +1,8 @@
 import { useState, type FormEvent, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import upArrow from "./assets/upArrow.png";
+import Footer from "./components/footer";
+import HowVollyWorks from "./components/HowVollyWorks";
 
 type HomePageProps = {
   children?: ReactNode;
@@ -161,140 +163,22 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
   };
 
   return (
-    <div className="min-h-screen w-full overflow-x-hidden bg-background">
-      <div className="flex w-full flex-col overflow-hidden bg-background">
-        <header className="relative inline-flex h-32 w-full items-center justify-between bg-primary-soft pl-14 pr-12 py-10">
-          <button
-            type="button"
-            onClick={() => scrollToSection("top")}
-            className="flex h-12 items-center gap-3"
-          >
-            <span className="font-['Emblema_One'] text-5xl font-normal leading-12 text-primary">
-              Volly
-            </span>
-          </button>
+    <div className="w-full min-h-screen bg-background flex flex-col">
+      <Navbar />
 
-          <nav className="flex items-center gap-1">
-            {navItems.map((item) =>
-              item.href ? (
-                <Link
-                  key={item.id}
-                  to={item.href}
-                  className="rounded-3xl px-4 py-2 font-['DM_Sans'] text-2xl font-semibold text-warm-foreground transition-colors hover:bg-white/40"
-                >
-                  {item.label}
-                </Link>
-              ) : (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => scrollToSection(item.id)}
-                  className="rounded-3xl px-4 py-2 font-['DM_Sans'] text-2xl font-semibold text-warm-foreground transition-colors hover:bg-white/40"
-                >
-                  {item.label}
-                </button>
-              )
-            )}
-          </nav>
+      <main className="w-full flex flex-col gap-24">
+        {children}
 
-          <div className="pointer-events-none absolute -left-20 top-32 h-0 w-360 border-t-2 border-border" />
-        </header>
-
-        <div className="flex flex-col gap-24">
-          <section className="inline-flex w-full items-center justify-between rounded-bl-[30px] rounded-br-[30px] bg-linear-to-b from-primary-soft to-neutral-300 p-32">
-            <div className="flex flex-1 items-center justify-center gap-2.5">
-              <div className="justify-center font-['DM_Sans'] text-7xl font-medium leading-30 text-warm-foreground">
-                <span>Enklare vardag. </span>
-                <span className="font-bold">Tillsammans</span>
-                <span>.</span>
-              </div>
-            </div>
-
-            <div className="w-96">
-              <div className="rounded-[30px] p-10">
-                <form
-                  onSubmit={handleLoginSubmit}
-                  className="flex w-80 flex-col items-center gap-8"
-                >
-                  <div className="flex w-full flex-col items-start gap-2">
-                    <div className="w-full text-center font-['DM_Sans'] text-3xl font-semibold leading-9 text-warm-foreground">
-                      Logga in
-                    </div>
-                  </div>
-
-                  <div className="flex w-full flex-col gap-4">
-                    <label className="flex items-center rounded-md border-2 border-foreground bg-card p-3">
-                      <input
-                        name="email"
-                        type="email"
-                        value={loginForm.email}
-                        onChange={(event) =>
-                          updateLoginField("email", event.target.value)
-                        }
-                        placeholder="E-post"
-                        className="w-full bg-transparent font-['DM_Sans'] text-base text-foreground outline-none placeholder:text-foreground/50"
-                      />
-                    </label>
-
-                    <label className="flex items-center rounded-md border-2 border-foreground bg-card p-3">
-                      <input
-                        name="password"
-                        type={showPassword ? "text" : "password"}
-                        value={loginForm.password}
-                        onChange={(event) =>
-                          updateLoginField("password", event.target.value)
-                        }
-                        placeholder="Lösenord"
-                        className="w-full bg-transparent font-['DM_Sans'] text-base text-foreground outline-none placeholder:text-foreground/50"
-                      />
-                    </label>
-
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={showPassword}
-                        onChange={(event) =>
-                          setShowPassword(event.target.checked)
-                        }
-                        className="h-3.5 w-3.5 rounded-xs border-[1.5px] border-foreground accent-warm-foreground"
-                      />
-                      <span className="font-['DM_Sans'] text-sm text-foreground">
-                        Visa lösenord
-                      </span>
-                    </label>
-
-                    <button
-                      type="submit"
-                      disabled={isLoggingIn}
-                      className="inline-flex items-center justify-center rounded-md border border-border bg-linear-to-r from-orange-300 to-red-400 px-12 py-3 text-base font-bold text-foreground shadow-[0px_8px_24px_-8px_rgba(22,26,38,0.08),0px_1px_3px_0px_rgba(22,26,38,0.05)] transition-transform hover:-translate-y-px disabled:cursor-not-allowed disabled:opacity-70"
-                    >
-                      {isLoggingIn ? "Loggar in..." : "Logga in"}
-                    </button>
-
-                    <div className="flex items-center justify-between gap-2 text-base font-semibold text-warm-foreground">
-                      <button type="button">Glömt lösenord</button>
-                    </div>
-
-                    {loginStatus ? (
-                      <p className="text-center text-sm text-foreground/75">
-                        {loginStatus}
-                      </p>
-                    ) : null}
-                  </div>
-                </form>
-              </div>
-            </div>
-          </section>
-
-          <section
-            id="Vision"
-            className="inline-flex h-168 w-full items-start justify-center gap-12 overflow-hidden bg-background px-20 py-28"
-          >
-            <div className="inline-flex w-225 max-w-225 flex-col items-start justify-start gap-6">
-              <div className="h-16 self-stretch font-['DM_Sans'] text-5xl font-semibold leading-17 text-icon-active">
+        <section
+          id="Vision"
+          className="w-full min-h-[672px] py-28 bg-background"
+        >
+          <div className="w-full max-w-[1280px] mx-auto px-20 flex justify-center items-start">
+            <div className="w-full max-w-[900px] flex flex-col justify-start items-start gap-6">
+              <h2 className="self-stretch text-icon-active text-5xl font-semibold font-['DM_Sans'] leading-[68px]">
                 Vår Vision
-              </div>
-              <div className="self-stretch font-['DM_Sans'] text-xl font-normal leading-8 text-foreground">
+              </h2>
+              <p className="self-stretch text-foreground text-xl font-normal font-['DM_Sans'] leading-8">
                 Vår vision är att bygga en plattform, där det är enkelt och
                 uppmuntrande att kunna be om hjälp med sina vardagliga sysslor.
                 Vi vill skapa en gemenskap där människor känner sig trygga och
@@ -305,284 +189,148 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
                 Alla har inte ett nätverk av familj eller vänner i sin närhet.
                 Vår mission är att överbrygga klyftan mellan personliga nätverk
                 och formell socialtjänst, för att säkerställa att alla har lika
-                tillgång till stöd....
-              </div>
-              <button
-                type="button"
-                onClick={() => scrollToSection("Funkar")}
-                className="inline-flex items-center gap-1.25 pt-6"
-              >
-                <span className="font-['DM_Sans'] text-xl font-medium leading-8 text-icon-active">
+                tillgång till stöd.
+              </p>
+              <div className="pt-6 inline-flex justify-start items-center gap-[5px]">
+                <span className="text-icon-active text-xl font-medium font-['DM_Sans'] leading-8">
                   Läs mer
                 </span>
-                <div className="flex w-7 items-center justify-center overflow-hidden p-1">
-                  <img src={upArrow} alt="" className="h-3 w-4 rotate-90" />
-                </div>
-              </button>
+                <span
+                  className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-[8px] border-l-transparent border-r-transparent border-t-icon-active"
+                  aria-hidden="true"
+                />
+              </div>
             </div>
-          </section>
+          </div>
+        </section>
 
-          <section
-            id="Skapa konto"
-            className="flex flex-col items-center justify-center gap-12 rounded-[30px] bg-primary-soft px-10 py-48"
-          >
-            <div className="flex w-80 flex-col items-center gap-8">
-              <div className="flex flex-col items-start gap-2 self-stretch">
-                <div className="self-stretch text-center font-['DM_Sans'] text-3xl font-semibold leading-9 text-warm-foreground">
+        <section
+          id="Skapa konto"
+          className="w-full py-48 bg-primary-soft flex flex-col justify-center items-center gap-12"
+        >
+          <div className="w-full max-w-[1280px] mx-auto px-10 flex flex-col items-center">
+            <div className="w-80 flex flex-col justify-start items-center gap-8">
+              <div className="self-stretch flex flex-col justify-start items-start gap-2">
+                <h2 className="self-stretch text-center text-warm-foreground text-3xl font-semibold font-['DM_Sans'] leading-9">
                   Skapa konto
-                </div>
+                </h2>
               </div>
 
               <form
-                onSubmit={handleSignupSubmit}
-                className="flex w-80 max-w-80 min-w-64 flex-col items-start justify-center gap-4"
+                onSubmit={handleSignup}
+                className="self-stretch flex flex-col justify-start items-start gap-4"
               >
-                <div className="flex w-full items-center gap-3 overflow-hidden">
-                  <label className="flex h-10 flex-1 items-center gap-2 rounded-sm border-2 border-foreground bg-card px-3 py-2">
+                <div className="w-80 max-w-80 min-w-64 flex flex-col justify-center items-start gap-4">
+                  <div className="self-stretch inline-flex justify-start items-center gap-3 overflow-hidden">
+                    <div className="flex-1 h-10 px-3 py-2 bg-card rounded-sm outline outline-2 outline-offset-[-2px] outline-foreground flex justify-start items-center gap-2">
+                      <input
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={(event) =>
+                          updateField("firstName", event.target.value)
+                        }
+                        placeholder="Förnamn *"
+                        className="flex-1 w-full opacity-50 text-foreground text-base font-normal font-['DM_Sans'] leading-4 bg-transparent border-none outline-none placeholder:text-foreground"
+                      />
+                    </div>
+                    <div className="flex-1 h-10 px-3 py-2 bg-card rounded-sm outline outline-2 outline-offset-[-2px] outline-foreground flex justify-start items-center gap-2">
+                      <input
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={(event) =>
+                          updateField("lastName", event.target.value)
+                        }
+                        placeholder="Efternamn *"
+                        className="flex-1 w-full opacity-50 text-foreground text-base font-normal font-['DM_Sans'] leading-4 bg-transparent border-none outline-none placeholder:text-foreground"
+                      />
+                    </div>
+                  </div>
+
+                  {(["email", "password", "repeatPassword"] as const).map(
+                    (field) => (
+                      <div
+                        key={field}
+                        className="self-stretch h-10 px-3 py-2 bg-card rounded-sm outline outline-2 outline-offset-[-2px] outline-foreground inline-flex justify-start items-center gap-2"
+                      >
+                        <input
+                          name={field}
+                          type={field === "email" ? "email" : "password"}
+                          value={formData[field]}
+                          onChange={(event) =>
+                            updateField(field, event.target.value)
+                          }
+                          placeholder={
+                            field === "email"
+                              ? "E-post *"
+                              : field === "password"
+                                ? "Lösenord *"
+                                : "Upprepa lösenord *"
+                          }
+                          className="flex-1 w-full opacity-50 text-foreground text-base font-normal font-['DM_Sans'] leading-4 bg-transparent border-none outline-none placeholder:text-foreground"
+                        />
+                      </div>
+                    )
+                  )}
+
+                  <label className="self-stretch inline-flex justify-start items-center gap-2 cursor-pointer">
                     <input
-                      name="firstName"
-                      value={signupForm.firstName}
+                      type="checkbox"
+                      checked={agreedToTerms}
                       onChange={(event) =>
-                        updateSignupField("firstName", event.target.value)
+                        setAgreedToTerms(event.target.checked)
                       }
-                      placeholder="Förnamn *"
-                      className="w-full bg-transparent font-['DM_Sans'] text-base text-foreground outline-none placeholder:text-foreground/50"
+                      className="sr-only"
                     />
-                  </label>
-                  <label className="flex h-10 flex-1 items-center gap-2 rounded-sm border-2 border-foreground bg-card px-3 py-2">
-                    <input
-                      name="lastName"
-                      value={signupForm.lastName}
-                      onChange={(event) =>
-                        updateSignupField("lastName", event.target.value)
-                      }
-                      placeholder="Efternamn *"
-                      className="w-full bg-transparent font-['DM_Sans'] text-base text-foreground outline-none placeholder:text-foreground/50"
-                    />
+                    <span
+                      className={`size-3.5 rounded-xs border-[1.50px] border-foreground flex items-center justify-center ${
+                        agreedToTerms ? "bg-foreground" : "bg-transparent"
+                      }`}
+                      aria-hidden="true"
+                    >
+                      {agreedToTerms ? (
+                        <span className="text-[8px] text-card leading-none">
+                          ✓
+                        </span>
+                      ) : null}
+                    </span>
+                    <span className="text-foreground text-sm font-normal font-['DM_Sans'] leading-4">
+                      Jag har läst och godkänner villkoren
+                    </span>
                   </label>
                 </div>
 
-                <label className="flex h-10 w-full items-center gap-2 rounded-sm border-2 border-foreground bg-card px-3 py-2">
-                  <input
-                    name="email"
-                    type="email"
-                    value={signupForm.email}
-                    onChange={(event) =>
-                      updateSignupField("email", event.target.value)
-                    }
-                    placeholder="E-post *"
-                    className="w-full bg-transparent font-['DM_Sans'] text-base text-foreground outline-none placeholder:text-foreground/50"
-                  />
-                </label>
-
-                <label className="flex h-10 w-full items-center gap-2 rounded-sm border-2 border-foreground bg-card px-3 py-2">
-                  <input
-                    name="password"
-                    type="password"
-                    value={signupForm.password}
-                    onChange={(event) =>
-                      updateSignupField("password", event.target.value)
-                    }
-                    placeholder="Lösenord *"
-                    className="w-full bg-transparent font-['DM_Sans'] text-base text-foreground outline-none placeholder:text-foreground/50"
-                  />
-                </label>
-
-                <label className="flex h-10 w-full items-center gap-2 rounded-sm border-2 border-foreground bg-card px-3 py-2">
-                  <input
-                    name="repeatPassword"
-                    type="password"
-                    value={signupForm.repeatPassword}
-                    onChange={(event) =>
-                      updateSignupField("repeatPassword", event.target.value)
-                    }
-                    placeholder="Upprepa lösenord *"
-                    className="w-full bg-transparent font-['DM_Sans'] text-base text-foreground outline-none placeholder:text-foreground/50"
-                  />
-                </label>
-
-                <label className="flex items-center gap-2 px-3 py-2">
-                  <input
-                    type="checkbox"
-                    checked={agreedToTerms}
-                    onChange={(event) => setAgreedToTerms(event.target.checked)}
-                    className="h-3.5 w-3.5 rounded-xs border-[1.5px] border-foreground accent-warm-foreground"
-                  />
-                  <span className="font-['DM_Sans'] text-sm text-foreground">
-                    Jag har läst och godkänner villkoren
-                  </span>
-                </label>
-
-                {signupStatus ? (
-                  <p className="w-80 text-center text-sm text-foreground/75">
-                    {signupStatus}
+                {statusMessage ? (
+                  <p className="w-80 text-sm text-center text-muted-foreground font-['DM_Sans']">
+                    {statusMessage}
                   </p>
                 ) : null}
 
                 <button
                   type="submit"
-                  disabled={isSigningUp}
-                  className="inline-flex items-center justify-center rounded-md border border-border bg-linear-to-r from-orange-300 to-red-400 px-12 py-3 text-base font-bold text-warm-foreground shadow-[0px_8px_24px_-8px_rgba(22,26,38,0.08),0px_1px_3px_0px_rgba(22,26,38,0.05)] transition-transform hover:-translate-y-px disabled:cursor-not-allowed disabled:opacity-70"
+                  disabled={isSubmitting || !agreedToTerms}
+                  className="self-stretch px-12 py-3 btn-volly-cta inline-flex justify-center items-center disabled:opacity-60"
                 >
-                  {isSigningUp ? "Skapar konto..." : "Skapa konto"}
+                  <span className="text-warm-foreground text-base font-bold font-['DM_Sans'] leading-4">
+                    {isSubmitting ? "Skapar konto..." : "Skapa konto"}
+                  </span>
                 </button>
               </form>
             </div>
-          </section>
+          </div>
+        </section>
 
-          <section
-            id="Funkar"
-            className="flex h-200 flex-col items-center justify-center bg-background px-20 pb-24"
-          >
-            <div className="flex flex-col items-center justify-center gap-12 overflow-hidden">
-              <div className="text-center font-['DM_Sans'] text-5xl font-semibold leading-13 text-icon-active">
-                Hur Volly fungerar
-              </div>
-              <div className="inline-flex w-full max-w-5xl items-start justify-start gap-7">
-                <div className="flex flex-1 flex-col items-start justify-start gap-4 overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm">
-                  <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-[50px] bg-primary-soft">
-                    <div className="flex h-14 w-14 items-center justify-center">
-                      <div className="h-8 w-8 rounded-full border-4 border-primary" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-start gap-1 overflow-hidden self-stretch">
-                    <div className="self-stretch font-['DM_Sans'] text-lg font-semibold text-forest">
-                      Hitta eller skapa ett inlägg
-                    </div>
-                    <div className="self-stretch font-['DM_Sans'] text-lg font-normal leading-6 text-muted-foreground">
-                      Utforska flödet för att hitta människor som söker eller
-                      erbjuder stöd - eller skapa ett eget inlägg för att be
-                      eller erbjuda hjälp till andra. <br />
-                      <br />
-                      När du hittar ett inlägg du vill svara på skickas en
-                      meddelandeförfrågan för att starta en privat chatt mellan
-                      er.
-                    </div>
-                  </div>
-                </div>
+        <HowVollyWorks />
+      </main>
 
-                <div className="flex flex-1 flex-col items-start justify-start gap-4 overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm">
-                  <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-[50px] bg-primary-soft">
-                    <div className="flex h-14 w-14 items-center justify-center">
-                      <div className="h-5 w-10 rounded-full border-4 border-primary" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-start gap-1 overflow-hidden self-stretch">
-                    <div className="self-stretch font-['DM_Sans'] text-lg font-semibold text-forest">
-                      Chatta &amp; videosamtala
-                    </div>
-                    <div className="self-stretch font-['DM_Sans'] text-lg font-normal leading-6 text-muted-foreground">
-                      Lär känna varandra tryggt direkt i Volly genom chatt och
-                      videosamtal. <br />
-                      <br />
-                      Videosamtal blir tillgängligt först efter att en chatt har
-                      startats, vilket fungerar som en extra säkerhetsåtgärd och
-                      ger båda parter möjlighet att känna sig bekväma innan
-                      vidare kontakt.
-                    </div>
-                  </div>
-                </div>
+      <button
+        onClick={scroll}
+        aria-label="Scroll to top"
+        className="fixed bottom-40 right-6 z-50 rounded-full bg-card p-2 shadow-lg hover:scale-105 transition-transform outline outline-1 outline-border"
+      >
+        <img src={upArrow} alt="pil" className="w-10 h-10 object-contain" />
+      </button>
 
-                <div className="flex flex-1 flex-col items-start justify-start gap-4 overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm">
-                  <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-[50px] bg-primary-soft">
-                    <div className="flex h-14 w-14 items-center justify-center">
-                      <div className="h-7 w-7 rounded-full border-4 border-primary" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-start gap-1 overflow-hidden self-stretch">
-                    <div className="self-stretch font-['DM_Sans'] text-lg font-semibold text-forest">
-                      Hjälp tryggt &amp; säkert
-                    </div>
-                    <div className="self-stretch font-['DM_Sans'] text-lg font-normal leading-6 text-muted-foreground">
-                      Verifierade konton, betyg och recensioner hjälper dig att
-                      skapa säkra kontakter, samtidigt som möjligheten att vara
-                      anonym ger extra integritet vid behov. <br />
-                      <br />
-                      För din säkerhet rekommenderar vi att du aldrig delar
-                      känsliga eller personliga uppgifter med andra användare.
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <footer className="flex w-full flex-col items-start justify-start gap-3.5 rounded-tl-[30px] rounded-tr-[30px] bg-primary-soft px-12 pb-6 pt-12">
-            <div className="inline-flex w-full items-start justify-start gap-24 p-8">
-              <div className="inline-flex flex-col items-start justify-start gap-4 self-stretch">
-                <div className="font-['DM_Sans'] text-3xl font-semibold leading-6 text-warm-foreground">
-                  Om oss
-                </div>
-                <div className="flex flex-col items-start justify-start gap-2.5">
-                  <button
-                    type="button"
-                    onClick={() => scrollToSection("Vision")}
-                    className="self-stretch font-['DM_Sans'] text-xl font-normal leading-6 text-warm-foreground underline"
-                  >
-                    Vår vision
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => scrollToSection("Funkar")}
-                    className="self-stretch font-['DM_Sans'] text-xl font-normal leading-6 text-warm-foreground underline"
-                  >
-                    Hur Volly fungerar
-                  </button>
-                  <Link
-                    to="/faq"
-                    className="self-stretch font-['DM_Sans'] text-xl font-normal leading-6 text-warm-foreground underline"
-                  >
-                    FAQ
-                  </Link>
-                </div>
-              </div>
-
-              <div className="inline-flex flex-col items-start justify-start gap-12 self-stretch">
-                <div className="flex flex-col items-start justify-start gap-4">
-                  <div className="w-64 font-['DM_Sans'] text-3xl font-semibold leading-6 text-warm-foreground">
-                    Kontakta oss
-                  </div>
-                  <a
-                    href="mailto:info@volly.nu"
-                    className="font-['DM_Sans'] text-xl font-normal leading-6 text-warm-foreground underline"
-                  >
-                    info@volly.nu
-                  </a>
-                </div>
-                <div className="flex flex-col items-start justify-start gap-4">
-                  <div className="font-['DM_Sans'] text-3xl font-semibold leading-6 text-warm-foreground">
-                    Säkerhet &amp; Villkor
-                  </div>
-                  <button
-                    type="button"
-                    className="font-['DM_Sans'] text-xl font-normal leading-6 text-warm-foreground underline"
-                  >
-                    Användarvillkor
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex flex-1 flex-col items-end justify-between self-stretch">
-                <div className="flex flex-col items-end justify-center gap-2.5 py-16">
-                  <div className="font-['Emblema_One'] text-7xl font-normal leading-6 text-primary opacity-70">
-                    Volly
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex w-full flex-col items-center justify-center gap-187.5">
-              <div className="inline-flex items-center justify-center gap-2.5">
-                <div className="font-['DM_Sans'] text-xl font-normal leading-6 text-muted-foreground">
-                  © 2026 Volly
-                </div>
-              </div>
-            </div>
-          </footer>
-
-          {children ? <div className="hidden">{children}</div> : null}
-        </div>
-      </div>
+      <Footer />
     </div>
   );
 }

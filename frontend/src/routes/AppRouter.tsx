@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
-import FAQ from "./faq";
+import FAQ from "../pages/FaqPage";
 
 export default function appRouter() {
   return createBrowserRouter([

@@ -26,9 +26,7 @@ type CategoryKey =
 const CATEGORY_CARDS: readonly {
   id: CategoryKey;
   label: string;
-  /** Ikon – byts till riktiga assets när du levererar dem */
   icon: string;
-  /** Matchar `post.category` från skapa-flödet; `null` = Allt */
   filterLabel: string | null;
 }[] = [
   { id: "allt", label: "Allt", icon: "✨", filterLabel: null },
@@ -66,6 +64,7 @@ function badgeForPost(post: CategoryPost): string {
 
 type Props = {
   posts: CategoryPost[];
+  onProfile?: (authorEmail?: string) => void;
 };
 
 function formatDisplayName(post: CategoryPost) {
@@ -84,7 +83,7 @@ function formatDisplayName(post: CategoryPost) {
   return "Okänt namn";
 }
 
-export default function CategoryPage({ posts }: Props) {
+export default function CategoryPage({ posts, onProfile }: Props) {
   const [activeCategory, setActiveCategory] = useState<CategoryKey>("allt");
   const [postKind, setPostKind] = useState<"seek" | "offer">("seek");
 
@@ -211,6 +210,10 @@ export default function CategoryPage({ posts }: Props) {
                 title={post.title}
                 body={post.content}
                 category={post.category}
+                tags={post.tags}
+                onProfile={
+                  onProfile ? () => onProfile(post.author_email) : undefined
+                }
               />
             ))
           )}

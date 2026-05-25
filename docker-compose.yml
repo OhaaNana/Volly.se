@@ -15,11 +15,11 @@ services:
   frontend:
     build: ./Frontend
     ports:
-      - "3000:3000"
+      - "4173:4173"
 
   database:
     image: postgres:16
-    container_name: gym-postgres
+    container_name: Volly-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
