@@ -20,6 +20,16 @@ variables:
       - Backend/node_modules/
       - frontend/node_modules/
 
+.bun_cache_pull:
+  cache:
+    key:
+      files:
+        - bun.lock
+    paths:
+      - Backend/node_modules/
+      - frontend/node_modules/
+    policy: pull
+
 .on_any_env:
   rules:
     - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master"
@@ -46,7 +56,7 @@ install:
 
 eslint:
   extends:
-    - .bun_cache
+    - .bun_cache_pull
     - .on_any_env
   stage: quality
   image: oven/bun:1
@@ -56,7 +66,7 @@ eslint:
 
 prettier:
   extends:
-    - .bun_cache
+    - .bun_cache_pull
     - .on_any_env
   stage: quality
   image: oven/bun:1

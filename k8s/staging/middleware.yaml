@@ -8,10 +8,6 @@ spec:
     frameDeny: true
     browserXssFilter: true
     contentTypeNosniff: true
-    forceSTSHeader: true
-    stsSeconds: 31536000
-    stsIncludeSubdomains: true
-    stsPreload: true
     customResponseHeaders:
       X-Robots-Tag: "noindex, nofollow"
       Server: ""
