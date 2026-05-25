@@ -19,7 +19,7 @@ export const useLogin = () => {
     try {
       console.log("LOGIN FETCH START");
 
-      const response = await fetch("http://localhost:5174/login", {
+      const response = await fetch("http://localhost:3001/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -76,7 +76,7 @@ export const useSignup = () => {
     try {
       console.log("REGISTER FETCH START");
 
-      const response = await fetch("http://localhost:5174/register", {
+      const response = await fetch("http://localhost:3001/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
