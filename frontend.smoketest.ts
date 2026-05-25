@@ -1,10 +1,10 @@
 const checkFrontend = async (): Promise<void> => {
-    try { 
+    try {
         const response = await fetch("http://localhost:3000")
         if (response.status === 200) console.log("Frontend is running")
         else console.log("Frontend returned unexpected status")
-    } catch { 
-        console.log("Could not reach frontend")
+    } catch {
+        console.log("Could not reach frontend") 
     }
 }
 
