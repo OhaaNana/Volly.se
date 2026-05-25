@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-dashboard
+  namespace: doe25-group-15
+  labels:
+    grafana_dashboard: "1"
+data:
+  backend-dashboard.json: |
+    {
+      "title": "Zero Bug Heroes – Backend (Staging)",
+      "uid": "zbh-backend-staging",
+      "schemaVersion": 36,
+      "version": 1,
+      "refresh": "15s",
+      "panels": [
+        {
+          "id": 1,
+          "title": "Request Rate (req/s)",
+          "type": "timeseries",
+          "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum(rate(http_request_duration_seconds_count{job=\"backend-staging\"}[1m]))",
+              "legendFormat": "requests/s"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "title": "Error Rate (5xx %)",
+          "type": "timeseries",
+          "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum(rate(http_request_duration_seconds_count{job=\"backend-staging\", statusCode=~\"5..\"}[1m])) / sum(rate(http_request_duration_seconds_count{job=\"backend-staging\"}[1m])) * 100",
+              "legendFormat": "5xx %"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "title": "Latency p95 (s)",
+          "type": "timeseries",
+          "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"backend-staging\"}[1m])) by (le))",
+              "legendFormat": "p95"
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "title": "Requests by Status Code",
+          "type": "timeseries",
+          "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum by (statusCode) (rate(http_request_duration_seconds_count{job=\"backend-staging\"}[1m]))",
+              "legendFormat": "{{ statusCode }}"
+            }
+          ]
+        }
+      ]
+    }

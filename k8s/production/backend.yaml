@@ -44,9 +44,12 @@ kind: Service
 metadata:
   name: backend-production
   namespace: doe25-group-15
+  labels:
+    app: backend-production
 spec:
   selector:
     app: backend-production
   ports:
-    - port: 3001
+    - name: http
+      port: 3001
       targetPort: 3001

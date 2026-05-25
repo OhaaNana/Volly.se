@@ -8,4 +8,9 @@ export default defineConfig({
     emptyOutDir: true,
     assetsInlineLimit: 0,
   },
+  server: {
+    proxy: {
+      "/api": "http://127.0.0.1:3001",
+    },
+  },
 });

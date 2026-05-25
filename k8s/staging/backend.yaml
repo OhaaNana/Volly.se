@@ -44,9 +44,12 @@ kind: Service
 metadata:
   name: backend-staging
   namespace: doe25-group-15
+  labels:
+    app: backend-staging
 spec:
   selector:
     app: backend-staging
   ports:
-    - port: 3001
+    - name: http
+      port: 3001
       targetPort: 3001

@@ -16,7 +16,7 @@ export const useLogin = () => {
 
     setIsLoading(true);
     try {
-      const res = await fetch("http://127.0.0.1:3001/login", {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
