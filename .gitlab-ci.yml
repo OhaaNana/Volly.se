@@ -16,7 +16,8 @@ variables:
       files:
         - bun.lock
     paths:
-      - node_modules/
+      - Backend/node_modules/
+      - frontend/node_modules/
 
 .on_any_env:
   rules:
