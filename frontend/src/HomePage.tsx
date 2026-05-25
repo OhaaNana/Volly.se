@@ -1,164 +1,99 @@
 import { useState, type FormEvent, type ReactNode } from "react";
-import { Link } from "react-router-dom";
+import Navbar from "./Navbar";
 import upArrow from "./assets/upArrow.png";
 import Footer from "./components/footer";
 import HowVollyWorks from "./components/HowVollyWorks";
 
 type HomePageProps = {
-  children?: ReactNode;
+  children: ReactNode;
   onSignupSuccess?: (email: string) => void;
 };
 
-const AUTH_REGISTER_URL = "http://localhost:3001/api/auth/register";
-const AUTH_LOGIN_URL = "http://localhost:3001/api/auth/login";
+const AUTH_URL = "http://localhost:3001/api/auth/register";
 
-type NavItem = {
-  id: string;
-  label: string;
-  href?: string;
+const scroll = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
 };
 
-const navItems: NavItem[] = [
-  { id: "Vision", label: "Vår vision" },
-  { id: "Funkar", label: "Hur Volly fungerar" },
-  { id: "FAQ", label: "FAQ", href: "/faq" },
-  { id: "Skapa konto", label: "Skapa konto" },
-] as const;
-
-function scrollToSection(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-}
-
 function HomePage({ children, onSignupSuccess }: HomePageProps) {
-  const [loginForm, setLoginForm] = useState({
-    email: "",
-    password: "",
-  });
-  const [signupForm, setSignupForm] = useState({
+  const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
     repeatPassword: "",
   });
-  const [showPassword, setShowPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-  const [loginStatus, setLoginStatus] = useState("");
-  const [signupStatus, setSignupStatus] = useState("");
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [isSigningUp, setIsSigningUp] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
 
-  const updateLoginField = (field: keyof typeof loginForm, value: string) => {
-    setLoginForm((current) => ({
-      ...current,
-      [field]: value,
-    }));
+  const updateField = (key: keyof typeof formData, value: string) => {
+    setFormData((current) => ({ ...current, [key]: value }));
+    setStatusMessage("");
   };
 
-  const updateSignupField = (field: keyof typeof signupForm, value: string) => {
-    setSignupForm((current) => ({
-      ...current,
-      [field]: value,
-    }));
-  };
-
-  const handleLoginSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSignup = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setLoginStatus("");
-    setIsLoggingIn(true);
-
-    try {
-      const response = await fetch(AUTH_LOGIN_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: loginForm.email,
-          password: loginForm.password,
-        }),
-      });
-
-      const payload = (await response.json()) as {
-        token?: string;
-        refreshToken?: string;
-        message?: string;
-        error?: string;
-      };
-
-      if (!response.ok) {
-        throw new Error(payload.message ?? payload.error ?? "Login failed");
-      }
-
-      if (payload.token) localStorage.setItem("token", payload.token);
-      if (payload.refreshToken)
-        localStorage.setItem("refreshToken", payload.refreshToken);
-
-      localStorage.setItem("currentUser", loginForm.email);
-      onSignupSuccess?.(loginForm.email);
-      setLoginStatus("Du är inloggad.");
-    } catch (error) {
-      setLoginStatus(error instanceof Error ? error.message : "Login failed");
-    } finally {
-      setIsLoggingIn(false);
-    }
-  };
-
-  const handleSignupSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSignupStatus("");
+    setStatusMessage("");
 
     if (!agreedToTerms) {
-      setSignupStatus("Du måste godkänna villkoren innan du kan skapa konto.");
+      setStatusMessage("Du måste godkänna villkoren för att skapa ett konto.");
       return;
     }
 
-    if (signupForm.password !== signupForm.repeatPassword) {
-      setSignupStatus("Lösenorden matchar inte.");
+    if (formData.password !== formData.repeatPassword) {
+      setStatusMessage("Lösenorden matchar inte.");
       return;
     }
 
-    setIsSigningUp(true);
-
+    setIsSubmitting(true);
     try {
-      const response = await fetch(AUTH_REGISTER_URL, {
+      const response = await fetch(AUTH_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          first_name: signupForm.firstName,
-          last_name: signupForm.lastName,
-          email: signupForm.email,
-          password: signupForm.password,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          password: formData.password,
         }),
       });
 
-      const payload = (await response.json()) as {
-        token?: string;
-        refreshToken?: string;
+      const payload = (await response.json().catch(() => null)) as {
         message?: string;
         error?: string;
         details?: string;
-      };
+      } | null;
 
       if (!response.ok) {
-        throw new Error(
-          payload.message ?? payload.details ?? payload.error ?? "Signup failed"
+        setStatusMessage(
+          payload?.message ??
+            payload?.error ??
+            "Det gick inte att skapa kontot."
         );
+        return;
       }
 
-      if (payload.token) localStorage.setItem("token", payload.token);
-      if (payload.refreshToken)
-        localStorage.setItem("refreshToken", payload.refreshToken);
-
-      localStorage.setItem("currentUser", signupForm.email);
-      onSignupSuccess?.(signupForm.email);
-      setSignupStatus("Kontot skapades.");
-    } catch (error) {
-      setSignupStatus(error instanceof Error ? error.message : "Signup failed");
+      localStorage.setItem("currentUser", formData.email);
+      onSignupSuccess?.(formData.email);
+      setStatusMessage("Kontot skapades.");
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        repeatPassword: "",
+      });
+      setAgreedToTerms(false);
+    } catch {
+      setStatusMessage("Det gick inte att skapa kontot. Försök igen.");
     } finally {
-      setIsSigningUp(false);
+      setIsSubmitting(false);
     }
   };
 
