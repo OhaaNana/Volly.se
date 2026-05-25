@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+/*
+  Volly design tokens
+  #00AB46 #113714 #161A26 #216826 #321A16 #5D646F
+  #D3FBD5 #D6E7D8 #E9E4DC #FDFAF4 #FFFFFF
+*/
+@theme {
+  --color-background: #fdfaf4;
+  --color-primary: #00ab46;
+  --color-primary-soft: #d3fbd5;
+  --color-primary-strong: #216826;
+  --color-warm-foreground: #321a16;
+  --color-foreground: #161a26;
+  --color-card: #ffffff;
+  --color-border: #e9e4dc;
+  --color-muted-foreground: #5d646f;
+  --color-icon-active: #216826;
+  --color-forest: #113714;
+  --color-neutral-300: #d6e7d8;
+  --color-muted: #f6f1e9;
+
+  --color-Colors-background: #fdfaf4;
+  --color-Colors-foreground: #161a26;
+  --color-Colors-muted-foreground: #5d646f;
+  --color-Colors-card: #ffffff;
+  --color-Colors-border: #e9e4dc;
+  --color-Colors-muted: #d6e7d8;
+  --color-Colors-warm-foreground: #321a16;
+  --color-Colors-primary: #00ab46;
+  --color-Colors-Forest: #113714;
+  --color-Colors-Pastel-Lime: #d3fbd5;
+  --color-background: #fdfaf4;
+  --color-primary: #00ab46;
+  --color-primary-dark: #216826;
+  --color-primary-soft: #d6e7d8;
+  --color-pastel-lime: #d3fbd5;
+  --color-warm-foreground: #321a16;
+  --color-icon-active: #00ab46;
+  --color-card: #ffffff;
+  --color-border: #e9e4dc;
+  --color-foreground: #161a26;
+  --color-muted-foreground: #5d646f;
+  --color-sidebar: #fdfaf4;
+  --color-Forest: #113714;
+  --color-neutral-300: #d6e7d8;
+  --font-emblema: "Emblema One", cursive;
+  --font-dm-sans: "DM Sans", sans-serif;
+}
+
+@layer base {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  #root {
+    min-height: 100dvh;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    background-color: #fdfaf4;
+  }
+}
+
+@layer utilities {
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .btn-volly-primary {
+    background-image: linear-gradient(180deg, #00ab46 0%, #216826 100%);
+    box-shadow:
+      0px 8px 24px -8px rgba(22, 26, 38, 0.08),
+      0px 1px 3px 0px rgba(22, 26, 38, 0.05);
+  }
+
+  .btn-volly-cta {
+    @apply bg-linear-to-b from-orange-300 to-red-400 rounded-md outline outline-1 -outline-offset-1 outline-border;
+    box-shadow:
+      0px 8px 24px -8px rgba(22, 26, 38, 0.08),
+      0px 1px 3px 0px rgba(22, 26, 38, 0.05);
+  }
+
+  .green-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #00ab46 #d6e7d8;
+  }
+
+  .green-scrollbar::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .green-scrollbar::-webkit-scrollbar-track {
+    background: #d6e7d8;
+    border-radius: 9999px;
+  }
+
+  .green-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00ab46 0%, #216826 100%);
+    border-radius: 9999px;
+    border: 2px solid #d6e7d8;
+  }
+
+  .green-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #00ab46 0%, #113714 100%);
+  }
+}
