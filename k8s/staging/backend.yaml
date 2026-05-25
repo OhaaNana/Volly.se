@@ -31,6 +31,11 @@ spec:
                 secretKeyRef:
                   name: backend-secrets
                   key: JWT_SECRET
+            - name: JWT_REFRESH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: JWT_REFRESH_SECRET
           ports:
             - containerPort: 3001
 ---

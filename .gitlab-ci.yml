@@ -39,7 +39,7 @@ install:
   image: oven/bun:1
   script:
     - cd Backend && bun install --frozen-lockfile && cd ..
-    - cd frontend && npm install
+    - cd frontend && bun install
 
 # Quality
 
