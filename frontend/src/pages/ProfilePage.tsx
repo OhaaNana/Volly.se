@@ -119,9 +119,12 @@ export default function ProfilePage({
       setIsEditing(false);
 
       try {
+        const token = localStorage.getItem("token");
         const response = await fetch(
           `${PROFILE_API_BASE}/${encodeURIComponent(userEmail)}`,
-          { mode: "cors", credentials: "include" }
+          {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          }
         );
 
         if (!response.ok) {
@@ -161,8 +164,7 @@ export default function ProfilePage({
 
       try {
         const response = await fetch(
-          `${POSTS_API_BASE}?author_email=${encodeURIComponent(userEmail)}`,
-          { mode: "cors", credentials: "include" }
+          `${POSTS_API_BASE}?author_email=${encodeURIComponent(userEmail)}`
         );
 
         if (!response.ok) {
@@ -244,14 +246,14 @@ export default function ProfilePage({
     setStatusMessage("");
 
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(
         `${PROFILE_API_BASE}/${encodeURIComponent(userEmail)}`,
         {
           method: "PUT",
-          mode: "cors",
-          credentials: "include",
           headers: {
             "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
           body: JSON.stringify({
             email: currentEmail,
