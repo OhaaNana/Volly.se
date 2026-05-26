@@ -72,6 +72,7 @@ export const register = async (
 
     res.status(201).send({
       message: "User created",
+      id: user.id,
       token: generateAccessToken(user.id),
       refreshToken: generateRefreshToken(user.id),
     });
@@ -110,6 +111,7 @@ export const login = async (
     }
 
     res.send({
+      id: user.id,
       token: generateAccessToken(user.id),
       refreshToken: generateRefreshToken(user.id),
     });

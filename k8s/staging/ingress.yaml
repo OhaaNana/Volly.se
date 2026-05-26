@@ -18,6 +18,20 @@ spec:
                 name: backend-staging
                 port:
                   number: 3001
+          - path: /chat
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-staging
+                port:
+                  number: 3001
+          - path: /ws
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-staging
+                port:
+                  number: 3001
           - path: /
             pathType: Prefix
             backend:

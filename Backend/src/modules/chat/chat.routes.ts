@@ -1,27 +1,13 @@
 import { getChatController } from "../auth/controllers/auth.chat.controller";
+import {
+  createChatHandler,
+  listMyChatsHandler,
+  updateChatStatusHandler,
+} from "./chat.controller";
+import { protect } from "../../middleware/auth.middleware";
 import type { FastifyInstance } from "fastify";
 
 export default async function chatRoutes(app: FastifyInstance) {
-  app.get("/chat/:roomId", {
-    schema: {
-      tags: ["Chat"],
-      params: {
-        type: "object",
-        properties: {
-          roomId: { type: "string", description: "Room ID" },
-        },
-      },
-      response: {
-        200: {
-          description: "Chat messages",
-          type: "object",
-        },
-      },
-    },
-    handler: getChatController,
-  });
-
-  // Test route
   app.get("/health", {
     schema: {
       tags: ["Health"],
@@ -38,4 +24,14 @@ export default async function chatRoutes(app: FastifyInstance) {
       return reply.send({ status: "ok" });
     },
   });
+
+  app.post("/chat", { preHandler: protect }, createChatHandler);
+  app.get("/my", { preHandler: protect }, listMyChatsHandler);
+  app.patch(
+    "/chat/:chatId/status",
+    { preHandler: protect },
+    updateChatStatusHandler
+  );
+
+  app.get("/chat/:roomId", { preHandler: protect }, getChatController);
 }
