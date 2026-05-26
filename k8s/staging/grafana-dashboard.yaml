@@ -1,123 +1,346 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: backend-dashboard-staging
+  name: zbh-dashboard-staging
   namespace: doe25-group-15
   labels:
     grafana_dashboard: "1"
 data:
-  backend-dashboard-staging.json: |
+  zbh-dashboard-staging.json: |
     {
-      "title": "Zero Bug Heroes – Backend (Staging)",
-      "uid": "zbh-backend-staging",
-      "schemaVersion": 36,
-      "version": 2,
+      "title": "zero-bug-heroes-staging",
+      "uid": "zbh-staging",
+      "schemaVersion": 39,
+      "version": 1,
       "refresh": "15s",
+      "time": { "from": "now-1h", "to": "now" },
+      "tags": ["chas-academy", "doe25", "doe25-group-15"],
       "panels": [
         {
           "id": 1,
-          "title": "Request Rate (req/s)",
-          "type": "timeseries",
-          "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+          "type": "stat",
+          "title": "Request Rate",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+          "options": {
+            "reduceOptions": { "calcs": ["lastNotNull"] },
+            "colorMode": "background",
+            "graphMode": "area"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "reqps",
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [{ "color": "green", "value": null }]
+              }
+            }
+          },
           "targets": [
             {
-              "expr": "sum(rate(http_request_duration_seconds_count{job=\"backend-staging\"}[1m]))",
-              "legendFormat": "requests/s"
+              "expr": "sum(rate(http_request_duration_seconds_count{namespace=\"doe25-group-15\",route!=\"/metrics\"}[1m]))",
+              "legendFormat": "req/s",
+              "refId": "A"
             }
           ]
         },
         {
           "id": 2,
-          "title": "Error Rate (5xx %)",
-          "type": "timeseries",
-          "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+          "type": "stat",
+          "title": "Error Rate (5xx)",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+          "options": {
+            "reduceOptions": { "calcs": ["lastNotNull"] },
+            "colorMode": "background",
+            "graphMode": "area"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "min": 0,
+              "max": 1,
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 0.01 },
+                  { "color": "red", "value": 0.05 }
+                ]
+              }
+            }
+          },
           "targets": [
             {
-              "expr": "sum(rate(http_request_duration_seconds_count{job=\"backend-staging\", statusCode=~\"5..\"}[1m])) / sum(rate(http_request_duration_seconds_count{job=\"backend-staging\"}[1m])) * 100",
-              "legendFormat": "5xx %"
+              "expr": "sum(rate(http_request_duration_seconds_count{namespace=\"doe25-group-15\",status_code=~\"5..\",route!=\"/metrics\"}[5m])) / clamp_min(sum(rate(http_request_duration_seconds_count{namespace=\"doe25-group-15\",route!=\"/metrics\"}[5m])), 1)",
+              "legendFormat": "5xx ratio",
+              "refId": "A"
             }
           ]
         },
         {
           "id": 3,
-          "title": "Latency p95 (s)",
-          "type": "timeseries",
-          "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+          "type": "stat",
+          "title": "p95 Latency",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
+          "options": {
+            "reduceOptions": { "calcs": ["lastNotNull"] },
+            "colorMode": "background",
+            "graphMode": "area"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 0.5 },
+                  { "color": "red", "value": 1 }
+                ]
+              }
+            }
+          },
           "targets": [
             {
-              "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"backend-staging\"}[1m])) by (le))",
-              "legendFormat": "p95"
+              "expr": "histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket{namespace=\"doe25-group-15\",route!=\"/metrics\"}[5m])))",
+              "legendFormat": "p95",
+              "refId": "A"
             }
           ]
         },
         {
           "id": 4,
-          "title": "Requests by Status Code",
-          "type": "timeseries",
-          "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+          "type": "stat",
+          "title": "Pod Restarts (1h)",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
+          "options": {
+            "reduceOptions": { "calcs": ["lastNotNull"] },
+            "colorMode": "background",
+            "graphMode": "none"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 1 },
+                  { "color": "red", "value": 5 }
+                ]
+              }
+            }
+          },
           "targets": [
             {
-              "expr": "sum by (statusCode) (rate(http_request_duration_seconds_count{job=\"backend-staging\"}[1m]))",
-              "legendFormat": "{{ statusCode }}"
+              "expr": "sum(increase(kube_pod_container_status_restarts_total{namespace=\"doe25-group-15\"}[1h]))",
+              "legendFormat": "restarts",
+              "refId": "A"
             }
           ]
         },
         {
           "id": 5,
-          "title": "Traefik Ingress",
           "type": "row",
-          "gridPos": { "x": 0, "y": 16, "w": 24, "h": 1 },
-          "collapsed": false
+          "title": "HTTP Traffic",
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 4 }
         },
         {
           "id": 6,
-          "title": "Traefik – Request Rate (req/s)",
           "type": "timeseries",
-          "gridPos": { "x": 0, "y": 17, "w": 12, "h": 8 },
+          "title": "Request Rate by Route (req/s)",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 5 },
+          "fieldConfig": { "defaults": { "unit": "reqps" } },
           "targets": [
             {
-              "expr": "sum(rate(traefik_service_requests_total{service=~\"doe25-group-15-backend-staging.*\"}[1m]))",
-              "legendFormat": "backend"
-            },
-            {
-              "expr": "sum(rate(traefik_service_requests_total{service=~\"doe25-group-15-frontend-staging.*\"}[1m]))",
-              "legendFormat": "frontend"
+              "expr": "sum by (route) (rate(http_request_duration_seconds_count{namespace=\"doe25-group-15\",route!=\"/metrics\"}[1m]))",
+              "legendFormat": "{{route}}",
+              "refId": "A"
             }
           ]
         },
         {
           "id": 7,
-          "title": "Traefik – Error Rate (5xx %)",
           "type": "timeseries",
-          "gridPos": { "x": 12, "y": 17, "w": 12, "h": 8 },
+          "title": "Error Rate by Route (5xx share)",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 5 },
+          "fieldConfig": { "defaults": { "unit": "percentunit", "min": 0 } },
           "targets": [
             {
-              "expr": "sum(rate(traefik_service_requests_total{service=~\"doe25-group-15-backend-staging.*\", code=~\"5..\"}[1m])) / sum(rate(traefik_service_requests_total{service=~\"doe25-group-15-backend-staging.*\"}[1m])) * 100",
-              "legendFormat": "5xx %"
+              "expr": "sum by (route) (rate(http_request_duration_seconds_count{namespace=\"doe25-group-15\",status_code=~\"5..\",route!=\"/metrics\"}[5m])) / clamp_min(sum by (route) (rate(http_request_duration_seconds_count{namespace=\"doe25-group-15\",route!=\"/metrics\"}[5m])), 1)",
+              "legendFormat": "{{route}}",
+              "refId": "A"
             }
           ]
         },
         {
           "id": 8,
-          "title": "Traefik – Latency p95 (s)",
+          "type": "row",
+          "title": "Latency",
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 13 }
+        },
+        {
+          "id": 9,
           "type": "timeseries",
-          "gridPos": { "x": 0, "y": 25, "w": 12, "h": 8 },
+          "title": "Latency Percentiles – p50 / p95 / p99",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 14 },
+          "fieldConfig": { "defaults": { "unit": "s" } },
           "targets": [
             {
-              "expr": "histogram_quantile(0.95, sum(rate(traefik_service_request_duration_seconds_bucket{service=~\"doe25-group-15-backend-staging.*\"}[1m])) by (le))",
-              "legendFormat": "p95"
+              "expr": "histogram_quantile(0.50, sum by (le) (rate(http_request_duration_seconds_bucket{namespace=\"doe25-group-15\",route!=\"/metrics\"}[5m])))",
+              "legendFormat": "p50",
+              "refId": "A"
+            },
+            {
+              "expr": "histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket{namespace=\"doe25-group-15\",route!=\"/metrics\"}[5m])))",
+              "legendFormat": "p95",
+              "refId": "B"
+            },
+            {
+              "expr": "histogram_quantile(0.99, sum by (le) (rate(http_request_duration_seconds_bucket{namespace=\"doe25-group-15\",route!=\"/metrics\"}[5m])))",
+              "legendFormat": "p99",
+              "refId": "C"
             }
           ]
         },
         {
-          "id": 9,
-          "title": "Traefik – Requests by Status Code",
+          "id": 10,
           "type": "timeseries",
-          "gridPos": { "x": 12, "y": 25, "w": 12, "h": 8 },
+          "title": "p95 Latency by Route",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 14 },
+          "fieldConfig": { "defaults": { "unit": "s" } },
           "targets": [
             {
-              "expr": "sum by (code) (rate(traefik_service_requests_total{service=~\"doe25-group-15-backend-staging.*\"}[1m]))",
-              "legendFormat": "{{ code }}"
+              "expr": "histogram_quantile(0.95, sum by (route, le) (rate(http_request_duration_seconds_bucket{namespace=\"doe25-group-15\",route!=\"/metrics\"}[5m])))",
+              "legendFormat": "{{route}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "type": "row",
+          "title": "Request Breakdown",
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 22 }
+        },
+        {
+          "id": 12,
+          "type": "timeseries",
+          "title": "Request Rate by Method",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 23 },
+          "fieldConfig": { "defaults": { "unit": "reqps" } },
+          "targets": [
+            {
+              "expr": "sum by (method) (rate(http_request_duration_seconds_count{namespace=\"doe25-group-15\",route!=\"/metrics\"}[1m]))",
+              "legendFormat": "{{method}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "type": "stat",
+          "title": "Requests Last 5m by Status Code",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 23 },
+          "options": {
+            "reduceOptions": { "calcs": ["lastNotNull"] },
+            "orientation": "vertical",
+            "colorMode": "background",
+            "graphMode": "none",
+            "textMode": "value_and_name"
+          },
+          "targets": [
+            {
+              "expr": "sum by (status_code) (increase(http_request_duration_seconds_count{namespace=\"doe25-group-15\",route!=\"/metrics\"}[5m]))",
+              "legendFormat": "{{status_code}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "id": 14,
+          "type": "bargauge",
+          "title": "Slowest Routes – p95 (now)",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 23 },
+          "options": {
+            "orientation": "horizontal",
+            "reduceOptions": { "calcs": ["lastNotNull"] },
+            "displayMode": "gradient"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 0.2 },
+                  { "color": "red", "value": 1 }
+                ]
+              }
+            }
+          },
+          "targets": [
+            {
+              "expr": "sort_desc(histogram_quantile(0.95, sum by (route, le) (rate(http_request_duration_seconds_bucket{namespace=\"doe25-group-15\",route!=\"/metrics\"}[5m]))))",
+              "legendFormat": "{{route}}",
+              "refId": "A",
+              "instant": true
+            }
+          ]
+        },
+        {
+          "id": 15,
+          "type": "row",
+          "title": "Kubernetes",
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 31 }
+        },
+        {
+          "id": 16,
+          "type": "timeseries",
+          "title": "Pod CPU Usage",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 32 },
+          "fieldConfig": { "defaults": { "unit": "cores" } },
+          "targets": [
+            {
+              "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"doe25-group-15\",container!=\"\"}[1m]))",
+              "legendFormat": "{{pod}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "id": 17,
+          "type": "timeseries",
+          "title": "Pod Memory – Working Set",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 32 },
+          "fieldConfig": { "defaults": { "unit": "bytes" } },
+          "targets": [
+            {
+              "expr": "sum by (pod) (container_memory_working_set_bytes{namespace=\"doe25-group-15\",container!=\"\"})",
+              "legendFormat": "{{pod}}",
+              "refId": "A"
             }
           ]
         }
