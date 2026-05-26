@@ -8,7 +8,7 @@ import MenuLoggedIn, {
 } from "./components/MenuLoggedIn";
 import CreatePostPage from "./pages/CreatePostPage";
 import LoggedInStartPage from "./pages/LoggedInStartPage";
-import CategoryPage from "./pages/CategoryPage";
+import CategoryPage, { type CategoryKey } from "./pages/CategoryPage";
 import InboxPage from "./pages/InboxPage";
 import ProfilePage from "./pages/ProfilePage";
 
@@ -40,6 +40,9 @@ export function App() {
   const [selectedProfileEmail, setSelectedProfileEmail] = useState<
     string | null
   >(null);
+  const [selectedCategory, setSelectedCategory] = useState<
+    CategoryKey | undefined
+  >(undefined);
 
   useEffect(() => {
     let mounted = true;
@@ -97,6 +100,9 @@ export function App() {
     setActiveLoggedInPage(nextPage);
     if (nextPage === "profil") {
       setSelectedProfileEmail(null);
+    }
+    if (nextPage === "kategorier") {
+      setSelectedCategory(undefined);
     }
   };
 
@@ -216,14 +222,21 @@ export function App() {
               }}
             />
           ) : activeLoggedInPage === "kategorier" ? (
-            <CategoryPage posts={posts} onProfile={openProfileFromPost} />
+            <CategoryPage
+              posts={posts}
+              onProfile={openProfileFromPost}
+              initialCategory={selectedCategory}
+            />
           ) : activeLoggedInPage === "inkorg" ? (
             <InboxPage />
           ) : (
             <LoggedInStartPage
               firstName={firstName}
               onCreatePost={() => setActiveLoggedInPage("skapa")}
-              onExploreCategories={() => setActiveLoggedInPage("kategorier")}
+              onExploreCategories={(category) => {
+                setSelectedCategory(category ?? "allt");
+                setActiveLoggedInPage("kategorier");
+              }}
             />
           )}
         </MenuLoggedIn>
