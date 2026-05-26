@@ -29,7 +29,13 @@ services:
       - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./Backend/src/database/migrations/000_create_users_table.sql:/docker-entrypoint-initdb.d/01_users.sql
+      - ./Backend/src/database/migrations/000_create_users_table.sql:/docker-entrypoint-initdb.d/01.sql
+      - ./Backend/src/database/migrations/001_create_post_table.sql:/docker-entrypoint-initdb.d/02.sql
+      - ./Backend/src/database/migrations/002_create_request_status_enum.sql:/docker-entrypoint-initdb.d/03.sql
+      - ./Backend/src/database/migrations/003_create_request_tabel.sql:/docker-entrypoint-initdb.d/04.sql
+      - ./Backend/src/database/migrations/004_create_messages_tabel.sql:/docker-entrypoint-initdb.d/05.sql
+      - ./Backend/src/database/migrations/005_add_post_category.sql:/docker-entrypoint-initdb.d/06.sql
+      - ./Backend/src/database/migrations/006_add_bio_to_users.sql:/docker-entrypoint-initdb.d/07.sql
 
 volumes:
   pgdata:
