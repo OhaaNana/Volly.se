@@ -1,6 +1,7 @@
 stages:
   - install
   - quality
+  - test
   - build
   - deploy
 
@@ -60,6 +61,19 @@ prettier:
   needs: [install]
   script:
     - bunx prettier --check .
+
+
+# Test
+
+smoke_test: 
+  stage: test 
+  image: oven/bun:1
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  needs: [eslint, prettier]
+  script: 
+    - bun run frontend.smoketest.ts
+    - bun run backend.smoketest.ts
 
 # Build
 
