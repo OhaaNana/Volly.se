@@ -1,22 +1,22 @@
 import { useState, useMemo } from "react";
-import StepRole from "./steps/StepRole";
-import StepExpertise from "./steps/StepExpertise";
-import StepHelpType from "./steps/StepHelpType";
-import StepPreference from "./steps/StepPreference";
-import StepToS from "./steps/StepToS";
+import StepRole from "./Steps/StepRole";
+import StepExpertise from "./Steps/StepExpertise";
+import StepHelpType from "./Steps/StepHelpType";
+import StepPreference from "./Steps/StepPreference";
+import StepToS from "./Steps/StepToS";
+import Header from "../../components/header";
+import Footer from "../../components/footer";
 
 export type OnboardingData = {
   role: string;
   expertise: string[];
   helpType: string;
-  preference: string;
+  preference: string[];
   tosAccepted: boolean;
 };
 
 interface OnboardingPageProps {
-  userEmail: string;
   onComplete: (data: OnboardingData) => void;
-  onSkip: () => void;
 }
 
 const ALL_STEPS = [
@@ -27,21 +27,16 @@ const ALL_STEPS = [
   { id: "tos", component: StepToS },
 ];
 
-export default function OnboardingPage({
-  userEmail,
-  onComplete,
-  onSkip,
-}: OnboardingPageProps) {
+export default function OnboardingPage({ onComplete }: OnboardingPageProps) {
   const [stepIndex, setStepIndex] = useState(0);
   const [data, setData] = useState<OnboardingData>({
     role: "",
     expertise: [],
     helpType: "",
-    preference: "",
+    preference: [],
     tosAccepted: false,
   });
 
-  // If role is "hjälpsökande", only show step 1 (role) → step 5 (ToS)
   const steps = useMemo(() => {
     if (data.role === "hjälpsökande") {
       return ALL_STEPS.filter((s) => s.id === "role" || s.id === "tos");
@@ -49,11 +44,15 @@ export default function OnboardingPage({
     return ALL_STEPS;
   }, [data.role]);
 
-  const currentStep = steps[stepIndex];
-  const isFirst = stepIndex === 0;
-  const isLast = stepIndex === steps.length - 1;
-  const progress = ((stepIndex + 1) / steps.length) * 100;
+  const safeStepIndex = Math.min(stepIndex, steps.length - 1);
+  if (safeStepIndex !== stepIndex) {
+    setStepIndex(safeStepIndex);
+  }
 
+  const currentStep = steps[safeStepIndex];
+  const isFirst = safeStepIndex === 0;
+  const isLast = safeStepIndex === steps.length - 1;
+  const progress = ((safeStepIndex + 1) / steps.length) * 100;
   const CurrentStepComponent = currentStep.component;
 
   const nextStep = () => {
@@ -64,66 +63,47 @@ export default function OnboardingPage({
     setStepIndex((s) => Math.min(s + 1, steps.length - 1));
   };
 
-  const prevStep = () => {
-    setStepIndex((s) => Math.max(s - 1, 0));
-  };
-
-  // When role changes to "hjälpsökande" and we're on step 1,
-  // the steps array shrinks — clamp index if needed
-  const safeStepIndex = Math.min(stepIndex, steps.length - 1);
-  if (safeStepIndex !== stepIndex) {
-    setStepIndex(safeStepIndex);
-  }
+  const prevStep = () => setStepIndex((s) => Math.max(s - 1, 0));
 
   return (
-    <div className="min-h-dvh w-full flex flex-col items-center justify-center px-4 py-10">
-      {/* Welcome header */}
-      <div className="w-full max-w-md mb-6 text-center">
-        <h1 className="text-3xl font-bold">
-          Hej, välkommen till <span className="italic">Volly</span> !
-        </h1>
-        <p className="text-gray-500 mt-2">
-          Här kommer {steps.length} steg innan vi skickar dig vidare
-        </p>
-      </div>
-
-      {/* Progress bar */}
-      <div className="w-full max-w-md mb-8">
+    <div className="min-h-dvh w-full flex flex-col items-center justify-center px-4 py-10 bg-[#F5F3EE] font-['DM_Sans']">
+      <Header />
+      <div className="w-full max-w-xl mb-10">
         <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-black rounded-full transition-all duration-500 ease-out"
+            className="h-full bg-[#2D6A4F] rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
       </div>
 
-      {/* Step content */}
-      <div className="w-full max-w-md">
+      {/* Card */}
+      <div className="w-full max-w-xl bg-white rounded-2xl shadow-sm border border-gray-100 px-10 py-8">
         <CurrentStepComponent data={data} setData={setData} />
-      </div>
 
-      {/* Navigation */}
-      <div className="w-full max-w-md mt-8 flex gap-3">
-        {!isFirst && (
+        {/* Navigation */}
+        <div className="mt-8 flex gap-3">
+          {!isFirst && (
+            <button
+              onClick={prevStep}
+              className="flex-1 py-3 bg-[#2D6A4F] text-white font-semibold rounded-full hover:bg-[#245a42] transition-colors"
+            >
+              Föregående Steg
+            </button>
+          )}
           <button
-            onClick={prevStep}
-            className="flex-1 py-3 bg-black text-white font-semibold rounded-xl hover:bg-gray-800 transition-colors"
+            onClick={isLast && !data.tosAccepted ? undefined : nextStep}
+            className={`flex-1 py-3 bg-[#E74C3C] text-white font-semibold rounded-full transition-colors ${
+              isLast && !data.tosAccepted
+                ? "opacity-40 cursor-not-allowed"
+                : "hover:bg-[#d44233]"
+            }`}
           >
-            Föregående Steg
+            {isLast ? "Gå vidare" : "Nästa Steg"}
           </button>
-        )}
-        <button
-          onClick={nextStep}
-          disabled={isLast && !data.tosAccepted}
-          className={`flex-1 py-3 bg-black text-white font-semibold rounded-xl transition-colors ${
-            isLast && !data.tosAccepted
-              ? "opacity-40 cursor-not-allowed"
-              : "hover:bg-gray-800"
-          }`}
-        >
-          {isLast ? "Gå vidare" : "Nästa Steg"}
-        </button>
+        </div>
       </div>
+      <Footer />
     </div>
   );
 }

@@ -7,12 +7,10 @@ interface StepProps {
 
 export default function StepToS({ data, setData }: StepProps) {
   return (
-    <div className="space-y-4">
-      <div>
-        <h2 className="text-lg font-bold text-gray-900">
-          Sist men inte minst, här är våra användarvillkor.
-        </h2>
-      </div>
+    <div>
+      <h2 className="text-base font-bold text-gray-900 mb-4">
+        Sist men inte minst, här är våra användarvillkor.
+      </h2>
 
       <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 text-sm text-gray-700 leading-relaxed max-h-80 overflow-y-auto space-y-4">
         <div>
@@ -107,14 +105,14 @@ export default function StepToS({ data, setData }: StepProps) {
         </div>
       </div>
 
-      <label className="flex items-center gap-3 cursor-pointer">
+      <label className="flex items-center gap-3 cursor-pointer mt-5">
         <input
           type="checkbox"
           checked={data.tosAccepted}
           onChange={(e) =>
             setData((prev) => ({ ...prev, tosAccepted: e.target.checked }))
           }
-          className="w-5 h-5 rounded border-gray-300 accent-black"
+          className="w-5 h-5 rounded border-gray-300 accent-[#2D6A4F]"
         />
         <span className="text-sm text-gray-700">
           Jag har läst och godkänner villkoren

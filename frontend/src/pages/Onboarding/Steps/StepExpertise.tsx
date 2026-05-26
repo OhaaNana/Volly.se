@@ -25,15 +25,13 @@ export default function StepExpertise({ data, setData }: StepProps) {
   };
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h2 className="text-lg font-bold text-gray-900">
-          Steg 2 : Välj dina kategoriområden
-        </h2>
-        <p className="text-sm text-gray-500 mt-1">
-          Du kan alltid ändra detta val under Mina sidor
-        </p>
-      </div>
+    <div>
+      <h2 className="text-base font-bold text-gray-900 mb-1">
+        Steg 2 : Välj dina kategoriområden
+      </h2>
+      <p className="text-xs text-gray-400 mb-6">
+        Du kan alltid ändra detta val under Mina sidor
+      </p>
 
       <div className="grid grid-cols-3 gap-3">
         {CATEGORY_OPTIONS.map((option) => {
@@ -44,8 +42,8 @@ export default function StepExpertise({ data, setData }: StepProps) {
               onClick={() => toggleExpertise(option.id)}
               className={`flex flex-col items-center gap-2 p-4 rounded-xl border text-sm font-medium transition-all ${
                 isSelected
-                  ? "bg-black text-white border-black"
-                  : "bg-white text-gray-700 border-gray-200 hover:border-gray-400"
+                  ? "bg-[#2D6A4F] text-white border-[#2D6A4F]"
+                  : "bg-white text-gray-700 border-gray-200 hover:border-[#2D6A4F]"
               }`}
             >
               <span className="text-2xl">{option.emoji}</span>

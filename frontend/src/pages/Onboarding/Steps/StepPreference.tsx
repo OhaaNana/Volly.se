@@ -6,39 +6,43 @@ interface StepProps {
 }
 
 const PREFERENCE_OPTIONS = [
-  { id: "teknisk", label: "Teknisk" },
-  { id: "läxhjälp", label: "Läxhjälp" },
-  { id: "översättning", label: "Översättning" },
-  { id: "datorer", label: "Datorer" },
-  { id: "sällskap", label: "Sällskap" },
-  { id: "annat", label: "Annat" },
+  { id: "vardagar", label: "Vardagar" },
+  { id: "helger", label: "Helger" },
+  { id: "dagtid", label: "Dagtid" },
+  { id: "kvällstid", label: "Kvällstid" },
+  { id: "flexibelt", label: "Flexibelt" },
 ];
 
 export default function StepPreference({ data, setData }: StepProps) {
+  const togglePreference = (id: string) => {
+    setData((prev) => ({
+      ...prev,
+      preference: prev.preference.includes(id)
+        ? prev.preference.filter((p) => p !== id)
+        : [...prev.preference, id],
+    }));
+  };
+
   return (
-    <div className="space-y-4">
-      <div>
-        <h2 className="text-lg font-bold text-gray-900">
-          Steg 4 : Placeholder — uppdatera senare
-        </h2>
-        <p className="text-sm text-gray-500 mt-1">
-          Du kan ändra på detta valet i Mina sidor
-        </p>
-      </div>
+    <div>
+      <h2 className="text-base font-bold text-gray-900 mb-1">
+        Steg 4 : När passar det dig bäst?
+      </h2>
+      <p className="text-xs text-gray-400 mb-6">
+        Du kan ändra detta val sedan under Mina sidor
+      </p>
 
       <div className="flex flex-wrap gap-3">
         {PREFERENCE_OPTIONS.map((option) => {
-          const isSelected = data.preference === option.id;
+          const isSelected = data.preference.includes(option.id);
           return (
             <button
               key={option.id}
-              onClick={() =>
-                setData((prev) => ({ ...prev, preference: option.id }))
-              }
-              className={`px-5 py-3 rounded-full border text-sm font-medium transition-all ${
+              onClick={() => togglePreference(option.id)}
+              className={`px-5 py-2.5 rounded-full border text-sm font-medium transition-all ${
                 isSelected
-                  ? "bg-black text-white border-black"
-                  : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
+                  ? "bg-[#2D6A4F] text-white border-[#2D6A4F]"
+                  : "bg-white text-gray-700 border-gray-300 hover:border-[#2D6A4F]"
               }`}
             >
               {option.label}
