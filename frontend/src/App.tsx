@@ -9,13 +9,8 @@ import MenuLoggedIn, {
 } from "./components/MenuLoggedIn";
 import CreatePostPage from "./pages/CreatePostPage";
 import LoggedInStartPage from "./pages/LoggedInStartPage";
-<<<<<<< Updated upstream
 import CategoryPage, { type CategoryKey } from "./pages/CategoryPage";
-import InboxPage from "./pages/InboxPage";
-=======
-import CategoryPage from "./pages/CategoryPage";
 import InboxPage, { type ChatPreview } from "./pages/InboxPage";
->>>>>>> Stashed changes
 import ProfilePage from "./pages/ProfilePage";
 
 type Post = {
@@ -47,13 +42,10 @@ export function App() {
   const [selectedProfileEmail, setSelectedProfileEmail] = useState<
     string | null
   >(null);
-<<<<<<< Updated upstream
   const [selectedCategory, setSelectedCategory] = useState<
     CategoryKey | undefined
   >(undefined);
-=======
   const [pendingChat, setPendingChat] = useState<ChatPreview | null>(null);
->>>>>>> Stashed changes
 
   useEffect(() => {
     let mounted = true;
@@ -290,11 +282,8 @@ export function App() {
             <CategoryPage
               posts={posts}
               onProfile={openProfileFromPost}
-<<<<<<< Updated upstream
               initialCategory={selectedCategory}
-=======
               onContact={openChatFromPost}
->>>>>>> Stashed changes
             />
           ) : activeLoggedInPage === "inkorg" ? (
             <InboxPage pendingChat={pendingChat} />
@@ -302,18 +291,10 @@ export function App() {
             <LoggedInStartPage
               firstName={firstName}
               onCreatePost={() => setActiveLoggedInPage("skapa")}
-<<<<<<< Updated upstream
               onExploreCategories={(category) => {
                 setSelectedCategory(category ?? "allt");
                 setActiveLoggedInPage("kategorier");
               }}
-=======
-              onExploreCategories={() => setActiveLoggedInPage("kategorier")}
-              onProfile={openProfileFromPost}
-              onContact={openChatFromPost}
-              posts={posts}
-              formatDisplayName={formatDisplayName}
->>>>>>> Stashed changes
             />
           )}
         </MenuLoggedIn>

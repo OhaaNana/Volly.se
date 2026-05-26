@@ -3,19 +3,7 @@ import type { CategoryKey } from "./CategoryPage";
 type Props = {
   firstName: string;
   onCreatePost: () => void;
-<<<<<<< Updated upstream
   onExploreCategories?: (category?: CategoryKey) => void;
-=======
-  onExploreCategories?: () => void;
-  onProfile?: (authorEmail?: string) => void;
-  onContact?: (post: Post) => void;
-  posts?: Post[];
-  formatDisplayName?: (
-    firstName?: string,
-    lastName?: string,
-    authorEmail?: string
-  ) => string;
->>>>>>> Stashed changes
 };
 
 const POPULAR_CATEGORIES: {
@@ -66,13 +54,6 @@ export default function LoggedInStartPage({
   firstName,
   onCreatePost,
   onExploreCategories,
-<<<<<<< Updated upstream
-=======
-  onProfile,
-  onContact,
-  posts,
-  formatDisplayName,
->>>>>>> Stashed changes
 }: Props) {
   return (
     <div className="w-full min-w-0 self-stretch overflow-x-hidden px-4 py-10 sm:px-6 sm:py-12 inline-flex flex-col justify-start items-center gap-8">
@@ -139,66 +120,6 @@ export default function LoggedInStartPage({
           ))}
         </div>
       </div>
-<<<<<<< Updated upstream
-=======
-
-      <div className="w-full max-w-[920px] inline-flex flex-wrap justify-start items-center gap-3">
-        <div className="px-7 py-1.5 bg-neutral-700 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-zinc-100 text-xs font-semibold font-['DM_Sans'] leading-5">
-            Allt
-          </div>
-        </div>
-        <div className="px-7 py-1.5 bg-white-2 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-neutral-700 text-xs font-semibold font-['DM_Sans'] leading-5">
-            Söker hjälp
-          </div>
-        </div>
-        <div className="px-7 py-1.5 bg-white-2 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-neutral-700 text-xs font-semibold font-['DM_Sans'] leading-5">
-            Erbjuder hjälp
-          </div>
-        </div>
-        <div className="px-7 py-1.5 bg-white-2 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-neutral-700 text-xs font-semibold font-['DM_Sans'] leading-5">
-            Video
-          </div>
-        </div>
-        <div className="px-7 py-1.5 bg-white-2 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-neutral-700 text-xs font-semibold font-['DM_Sans'] leading-5">
-            Chatt
-          </div>
-        </div>
-      </div>
-
-      <div
-        className={`w-full max-w-[920px] space-y-4 ${
-          posts && posts.length > 1
-            ? "overflow-y-auto max-h-[64vh] pr-2 green-scrollbar"
-            : ""
-        }`}
-      >
-        {posts && posts.length > 0 ? (
-          posts.map((post) => (
-            <PostCard
-              key={post.id}
-              authorName={getAuthorName(post)}
-              authorInitials={getInitials(post)}
-              timeLabel={formatTimeAgo(post.createdAt)}
-              badgeLabel={badgeForPost(post)}
-              title={post.title}
-              body={post.content}
-              tags={post.tags}
-              onProfile={
-                onProfile ? () => onProfile(post.author_email) : undefined
-              }
-              onContact={onContact ? () => onContact(post) : undefined}
-            />
-          ))
-        ) : (
-          <div className="p-6 text-center text-zinc-500">Inga inlägg än.</div>
-        )}
-      </div>
->>>>>>> Stashed changes
     </div>
   );
 }
