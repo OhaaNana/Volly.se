@@ -1,25 +1,34 @@
 import type { WebSocket } from "@fastify/websocket";
 import type { FastifyRequest } from "fastify";
 import { createPayload } from "./chat.service";
+import { getChatById, saveMessage } from "./chat.repo";
 import { users, rooms } from "./chat.rooms";
+
 
 export function registerChatevents(socket: WebSocket, request: FastifyRequest) {
   console.log("User has been connected to a room");
   socket.on("message", async (message: Buffer) => {
     try {
-      const text = message.toString();
+      const {text} = JSON.parse(message.toString());
       const user = users.get(socket);
-      if (!user) return;
+      if (!user || !text?.trim()) return;
 
-      const payload = createPayload(user, text);
-      // Needs post tabel
-      // await saveMessage(payload, request);
+      const chat = await getChatById(Number(user.roomId), request);
+      if (!chat || chat.status !== "accepted") {
+        socket.send(
+          JSON.stringify({ type: "error", message: "Chat is not accepted" })
+        );
+        return;
+      }
+
+      const draft = createPayload(user, text);
+      const saved = await saveMessage(draft, request);
 
       const roomClients = rooms.get(user.roomId) ?? new Set();
 
       for (const client of roomClients) {
         if (client !== socket && client.readyState === 1) {
-          client.send(JSON.stringify(payload));
+          client.send(JSON.stringify(saved));
         }
       }
     } catch (err) {

@@ -103,6 +103,9 @@ export const useSignup = () => {
       if (data?.token) {
         saveToken(data.token);
       }
+      if (data?.id != null) {
+        localStorage.setItem("userId", String(data.id));
+      }
 
       return { success: true, email: formData.email };
     } catch {

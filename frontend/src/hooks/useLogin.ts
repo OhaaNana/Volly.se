@@ -40,6 +40,9 @@ export const useLogin = () => {
 
       saveToken(token);
       localStorage.setItem("currentUser", email);
+      if (data?.id != null) {
+        localStorage.setItem("userId", String(data.id));
+      }
       return true;
     } catch {
       setErrorMessage("Login failed.");

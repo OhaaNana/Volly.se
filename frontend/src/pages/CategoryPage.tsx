@@ -65,7 +65,11 @@ function badgeForPost(post: CategoryPost): string {
 type Props = {
   posts: CategoryPost[];
   onProfile?: (authorEmail?: string) => void;
+<<<<<<< Updated upstream
   initialCategory?: CategoryKey;
+=======
+  onContact?: (post: CategoryPost) => void;
+>>>>>>> Stashed changes
 };
 
 function formatDisplayName(post: CategoryPost) {
@@ -84,6 +88,7 @@ function formatDisplayName(post: CategoryPost) {
   return "Okänt namn";
 }
 
+<<<<<<< Updated upstream
 export default function CategoryPage({
   posts,
   onProfile,
@@ -92,6 +97,10 @@ export default function CategoryPage({
   const [activeCategory, setActiveCategory] = useState<CategoryKey>(
     initialCategory ?? "allt"
   );
+=======
+export default function CategoryPage({ posts, onProfile, onContact }: Props) {
+  const [activeCategory, setActiveCategory] = useState<CategoryKey>("allt");
+>>>>>>> Stashed changes
   const [postKind, setPostKind] = useState<"seek" | "offer">("seek");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -272,6 +281,7 @@ export default function CategoryPage({
                 onProfile={
                   onProfile ? () => onProfile(post.author_email) : undefined
                 }
+                onContact={onContact ? () => onContact(post) : undefined}
               />
             ))
           )}

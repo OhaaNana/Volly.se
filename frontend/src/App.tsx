@@ -9,8 +9,13 @@ import MenuLoggedIn, {
 } from "./components/MenuLoggedIn";
 import CreatePostPage from "./pages/CreatePostPage";
 import LoggedInStartPage from "./pages/LoggedInStartPage";
+<<<<<<< Updated upstream
 import CategoryPage, { type CategoryKey } from "./pages/CategoryPage";
 import InboxPage from "./pages/InboxPage";
+=======
+import CategoryPage from "./pages/CategoryPage";
+import InboxPage, { type ChatPreview } from "./pages/InboxPage";
+>>>>>>> Stashed changes
 import ProfilePage from "./pages/ProfilePage";
 
 type Post = {
@@ -42,9 +47,13 @@ export function App() {
   const [selectedProfileEmail, setSelectedProfileEmail] = useState<
     string | null
   >(null);
+<<<<<<< Updated upstream
   const [selectedCategory, setSelectedCategory] = useState<
     CategoryKey | undefined
   >(undefined);
+=======
+  const [pendingChat, setPendingChat] = useState<ChatPreview | null>(null);
+>>>>>>> Stashed changes
 
   useEffect(() => {
     let mounted = true;
@@ -105,6 +114,49 @@ export function App() {
     }
     if (nextPage === "kategorier") {
       setSelectedCategory(undefined);
+    }
+  };
+
+  const openChatFromPost = async (post: Post) => {
+    if (post.author_email && post.author_email === currentUser) {
+      return;
+    }
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch("http://localhost:3001/api/chat/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ postId: Number(post.id) }),
+      });
+      if (!res.ok) {
+        console.error("Failed to start chat", res.status);
+        return;
+      }
+      const chat = await res.json();
+      const first = post.first_name?.trim() ?? "";
+      const last = post.last_name?.trim() ?? "";
+      const fullName = `${first} ${last}`.trim();
+      const fallbackName = post.author_email?.split("@")[0] ?? "Okänt namn";
+      const name = fullName || fallbackName;
+      const initials =
+        ((first[0] ?? "") + (last[0] ?? "")).toUpperCase() ||
+        name.slice(0, 2).toUpperCase();
+
+      setPendingChat({
+        id: String(chat.id),
+        name,
+        initials,
+        avatarClassName: "bg-orange-400",
+        threadTitle: post.title,
+        preview: post.content,
+        timeLabel: "",
+      });
+      setActiveLoggedInPage("inkorg");
+    } catch (e) {
+      console.error("Error starting chat", e);
     }
   };
 
@@ -238,18 +290,30 @@ export function App() {
             <CategoryPage
               posts={posts}
               onProfile={openProfileFromPost}
+<<<<<<< Updated upstream
               initialCategory={selectedCategory}
+=======
+              onContact={openChatFromPost}
+>>>>>>> Stashed changes
             />
           ) : activeLoggedInPage === "inkorg" ? (
-            <InboxPage />
+            <InboxPage pendingChat={pendingChat} />
           ) : (
             <LoggedInStartPage
               firstName={firstName}
               onCreatePost={() => setActiveLoggedInPage("skapa")}
+<<<<<<< Updated upstream
               onExploreCategories={(category) => {
                 setSelectedCategory(category ?? "allt");
                 setActiveLoggedInPage("kategorier");
               }}
+=======
+              onExploreCategories={() => setActiveLoggedInPage("kategorier")}
+              onProfile={openProfileFromPost}
+              onContact={openChatFromPost}
+              posts={posts}
+              formatDisplayName={formatDisplayName}
+>>>>>>> Stashed changes
             />
           )}
         </MenuLoggedIn>

@@ -21,7 +21,7 @@ export const postSchema = {
           "Socialt & sällskap",
           "Karriär",
           "Studier",
-          "Dokument & Byråkrati",
+          "Dokument & byråkrati",
           "Funktionsvariation & NPF",
           "Mental hälsa",
           "Vardag",
