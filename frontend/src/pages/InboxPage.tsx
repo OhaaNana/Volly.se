@@ -120,7 +120,7 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/chat/my", {
+        const response = await fetch("/api/chat/my", {
           headers: getAuthHeader(),
         });
         if (!response.ok) throw new Error("Failed to fetch chats");
