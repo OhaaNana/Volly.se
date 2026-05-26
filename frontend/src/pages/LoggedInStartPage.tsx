@@ -1,4 +1,5 @@
 import type { CategoryKey } from "./CategoryPage";
+import HowVollyWorks from "../components/HowVollyWorks";
 
 type Props = {
   firstName: string;
@@ -120,6 +121,7 @@ export default function LoggedInStartPage({
           ))}
         </div>
       </div>
+      <HowVollyWorks />
     </div>
   );
 }

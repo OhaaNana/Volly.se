@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { isTokenExpired, clearAuth } from "./utils/auth";
-import LoginPage from "./LogingPage";
-import HomePage from "./HomePage";
+import LoginPage from "./pages/LogingPage";
+import HomePage from "./pages/HomePage";
 import "./index.css";
 import MenuLoggedIn, {
   LOGGED_IN_MENU_ITEMS,
@@ -12,6 +12,7 @@ import LoggedInStartPage from "./pages/LoggedInStartPage";
 import CategoryPage, { type CategoryKey } from "./pages/CategoryPage";
 import InboxPage from "./pages/InboxPage";
 import ProfilePage from "./pages/ProfilePage";
+import ConfirmDialog from "./components/ConfirmDialog";
 
 type Post = {
   id: string;
@@ -45,6 +46,9 @@ export function App() {
   const [selectedCategory, setSelectedCategory] = useState<
     CategoryKey | undefined
   >(undefined);
+  const [pendingDeletePostId, setPendingDeletePostId] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -107,6 +111,37 @@ export function App() {
       setSelectedCategory(undefined);
     }
   };
+
+  const handleDeletePost = useCallback((postId: string) => {
+    setPendingDeletePostId(postId);
+  }, []);
+
+  const cancelDeletePost = useCallback(() => {
+    setPendingDeletePostId(null);
+  }, []);
+
+  const confirmDeletePost = useCallback(async () => {
+    const postId = pendingDeletePostId;
+    if (!postId) return;
+    setPendingDeletePostId(null);
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`/api/posts/${postId}`, {
+        method: "DELETE",
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      });
+
+      if (!res.ok) {
+        console.error("Failed to delete post", res.status);
+        return;
+      }
+
+      setPosts((prev) => prev.filter((p) => p.id !== postId));
+    } catch (e) {
+      console.error("Error deleting post", e);
+    }
+  }, [pendingDeletePostId]);
 
   const openProfileFromPost = (authorEmail?: string) => {
     if (!authorEmail || authorEmail === currentUser) {
@@ -238,6 +273,8 @@ export function App() {
             <CategoryPage
               posts={posts}
               onProfile={openProfileFromPost}
+              onDeletePost={handleDeletePost}
+              currentUserEmail={currentUser}
               initialCategory={selectedCategory}
             />
           ) : activeLoggedInPage === "inkorg" ? (
@@ -253,6 +290,15 @@ export function App() {
             />
           )}
         </MenuLoggedIn>
+        <ConfirmDialog
+          open={pendingDeletePostId !== null}
+          title="Ta bort inlägg?"
+          description="Inlägget tas bort permanent och går inte att återställa."
+          confirmLabel="Ta bort inlägg"
+          cancelLabel="Avbryt"
+          onConfirm={confirmDeletePost}
+          onCancel={cancelDeletePost}
+        />
       </div>
     );
   }

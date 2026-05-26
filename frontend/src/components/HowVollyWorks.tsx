@@ -25,12 +25,12 @@ function HowVollyWorks() {
       id="Funkar"
       className="w-full self-stretch min-h-[800px] bg-background"
     >
-      <div className="self-stretch h-[800px] pl-65 pr-8 pb-24 bg-background inline-flex flex-col justify-center items-end">
+      <div className="w-full h-[800px] px-8 pb-24 bg-background flex flex-col justify-center items-center">
         <div className="self-stretch flex flex-col justify-center items-center gap-12 overflow-hidden">
           <h2 className="text-center text-icon-active text-5xl font-semibold font-['DM_Sans'] leading-[52px]">
             Hur Volly fungerar
           </h2>
-          <div className="w-full max-w-[1024px] inline-flex justify-end items-center gap-7 flex-col lg:flex-row flex-wrap">
+          <div className="w-full max-w-[1024px] inline-flex justify-center items-center gap-7 flex-col lg:flex-row flex-wrap">
             {HOW_IT_WORKS_CARDS.map((card) => (
               <article
                 key={card.title}

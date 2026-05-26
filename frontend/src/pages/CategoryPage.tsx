@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import PostCard from "../components/PostCard";
 
 export type CategoryPost = {
@@ -65,6 +65,8 @@ function badgeForPost(post: CategoryPost): string {
 type Props = {
   posts: CategoryPost[];
   onProfile?: (authorEmail?: string) => void;
+  onDeletePost?: (postId: string) => void;
+  currentUserEmail?: string | null;
   initialCategory?: CategoryKey;
 };
 
@@ -87,19 +89,24 @@ function formatDisplayName(post: CategoryPost) {
 export default function CategoryPage({
   posts,
   onProfile,
+  onDeletePost,
+  currentUserEmail,
   initialCategory,
 }: Props) {
   const [activeCategory, setActiveCategory] = useState<CategoryKey>(
     initialCategory ?? "allt"
   );
+  const [prevInitialCategory, setPrevInitialCategory] =
+    useState(initialCategory);
   const [postKind, setPostKind] = useState<"seek" | "offer">("seek");
   const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
+  if (initialCategory !== prevInitialCategory) {
+    setPrevInitialCategory(initialCategory);
     if (initialCategory) {
       setActiveCategory(initialCategory);
     }
-  }, [initialCategory]);
+  }
 
   const activeFilterLabel =
     CATEGORY_CARDS.find((c) => c.id === activeCategory)?.filterLabel ?? null;
@@ -271,6 +278,13 @@ export default function CategoryPage({
                 tags={post.tags}
                 onProfile={
                   onProfile ? () => onProfile(post.author_email) : undefined
+                }
+                onDelete={
+                  onDeletePost &&
+                  currentUserEmail &&
+                  post.author_email === currentUserEmail
+                    ? () => onDeletePost(post.id)
+                    : undefined
                 }
               />
             ))

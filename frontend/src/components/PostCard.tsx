@@ -12,6 +12,7 @@ export type PostCardProps = {
   avatarBgClassName?: string;
   onContact?: () => void;
   onProfile?: () => void;
+  onDelete?: () => void;
   isSaved?: boolean;
   onToggleSave?: () => void;
 };
@@ -29,6 +30,7 @@ export default function PostCard({
   avatarBgClassName = "bg-sky-400",
   onContact,
   onProfile,
+  onDelete,
   tags,
 }: PostCardProps) {
   const resolvedAuthorName =
@@ -89,11 +91,23 @@ export default function PostCard({
         <p className="justify-end text-zinc-600 text-base font-normal font-['DM_Sans'] leading-6 line-clamp-3">
           {body}
         </p>
-        {category ? (
-          <div className="pt-1">
-            <span className="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-900 font-['DM_Sans']">
-              {category}
-            </span>
+        {category || (tags && tags.length > 0) ? (
+          <div className="pt-1 flex flex-wrap items-center gap-2">
+            {category ? (
+              <span className="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-900 font-['DM_Sans']">
+                {category}
+              </span>
+            ) : null}
+            {tags && tags.length > 0
+              ? tags.map((t) => (
+                  <span
+                    key={t}
+                    className="inline-flex rounded-full bg-Colors-muted/60 px-3 py-1 text-xs font-medium text-Colors-muted-foreground font-['DM_Sans']"
+                  >
+                    {t}
+                  </span>
+                ))
+              : null}
           </div>
         ) : null}
       </div>
@@ -114,16 +128,22 @@ export default function PostCard({
           </span>
         </button>
         <div className="flex items-center gap-3">
-          {tags && tags.length > 0
-            ? tags.map((t) => (
-                <div
-                  key={t}
-                  className="text-xs text-Colors-muted-foreground px-2 py-1 rounded-md bg-Colors-muted/60"
-                >
-                  {t}
-                </div>
-              ))
-            : null}
+          {onDelete ? (
+            <button
+              type="button"
+              onClick={onDelete}
+              aria-label="Ta bort inlägg"
+              title="Ta bort inlägg"
+              className="size-12 rounded-full bg-red-50 outline outline-1 -outline-offset-1 outline-red-200 flex justify-center items-center hover:bg-red-100 transition-colors"
+            >
+              <i
+                className="fi fi-rr-trash text-red-600 text-lg leading-none"
+                aria-hidden="true"
+              />
+            </button>
+          ) : (
+            <div className="size-12" aria-hidden="true" />
+          )}
           {onProfile ? (
             <button
               type="button"
