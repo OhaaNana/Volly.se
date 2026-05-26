@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { saveToken } from "../utils/auth";
 import type {
   EmailStatus,
   SignupFormData,
@@ -100,7 +101,7 @@ export const useSignup = () => {
       const data = await res.json();
       // backend returns token, store it
       if (data?.token) {
-        localStorage.setItem("token", data.token);
+        saveToken(data.token);
       }
 
       return { success: true, email: formData.email };

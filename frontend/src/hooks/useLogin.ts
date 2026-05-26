@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { saveToken } from "../utils/auth";
 
 export const useLogin = () => {
   const [email, setEmail] = useState("");
@@ -37,7 +38,7 @@ export const useLogin = () => {
         return false;
       }
 
-      localStorage.setItem("token", token);
+      saveToken(token);
       localStorage.setItem("currentUser", email);
       return true;
     } catch {

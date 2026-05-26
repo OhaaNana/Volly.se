@@ -1,4 +1,5 @@
 import { useState, type FormEvent, type ReactNode } from "react";
+import { saveToken } from "./utils/auth";
 import Navbar from "./Navbar";
 import upArrow from "./assets/upArrow.png";
 import Footer from "./components/footer";
@@ -80,7 +81,7 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
         return;
       }
 
-      if (payload?.token) localStorage.setItem("token", payload.token);
+      if (payload?.token) saveToken(payload.token);
       localStorage.setItem("currentUser", formData.email);
       onSignupSuccess?.(formData.email);
       setStatusMessage("Kontot skapades.");

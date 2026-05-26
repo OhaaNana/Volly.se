@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { isTokenExpired, clearAuth } from "./utils/auth";
 import LoginPage from "./LogingPage";
 import HomePage from "./HomePage";
 import "./index.css";
@@ -54,6 +55,7 @@ export function App() {
   const [currentUser, setCurrentUser] = useState<string | null>(() =>
     localStorage.getItem("currentUser")
   );
+  const [sessionExpired, setSessionExpired] = useState(false);
   const [prefillEmail] = useState("");
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedProfileEmail, setSelectedProfileEmail] = useState<
@@ -151,10 +153,21 @@ export function App() {
     setActiveLoggedInPage("profil");
   };
 
-  const logout = () => {
-    localStorage.removeItem("currentUser");
+  const logout = useCallback((expired = false) => {
+    clearAuth();
     setCurrentUser(null);
-  };
+    if (expired) setSessionExpired(true);
+  }, []);
+
+  useEffect(() => {
+    if (!currentUser) return;
+    const check = () => {
+      if (isTokenExpired()) logout(true);
+    };
+    check();
+    const interval = setInterval(check, 60 * 1000);
+    return () => clearInterval(interval);
+  }, [currentUser, logout]);
 
   const firstName =
     currentUser
@@ -279,9 +292,15 @@ export function App() {
   return (
     <HomePage
       onSignupSuccess={(email) => {
+        setSessionExpired(false);
         setCurrentUser(email);
       }}
     >
+      {sessionExpired && (
+        <div className="w-full bg-red-500 text-white text-sm font-medium text-center py-3 px-4">
+          Din session har gått ut. Logga in igen för att fortsätta.
+        </div>
+      )}
       <LoginPage
         initialEmail={prefillEmail}
         onLoginSuccess={(email) => setCurrentUser(email)}
