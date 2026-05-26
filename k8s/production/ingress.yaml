@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: volly.labb.k3s.chas-lab.dev
+    - host: volly.cc.k3s.chas-lab.dev
       http:
         paths:
           - path: /api

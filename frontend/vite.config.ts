@@ -19,5 +19,9 @@ export default defineConfig({
   preview: {
     port: 3000,
     host: true,
+    allowedHosts: [
+      "volly-staging.cc.k3s.chas-lab.dev",
+      "volly.cc.k3s.chas-lab.dev",
+    ],
   },
 });

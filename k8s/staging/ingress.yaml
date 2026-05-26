@@ -5,15 +5,11 @@ metadata:
   namespace: doe25-group-15
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls: "true"
     traefik.ingress.kubernetes.io/router.middlewares: doe25-group-15-security-headers-staging@kubernetescrd,doe25-group-15-api-rate-limit-staging@kubernetescrd
 spec:
   ingressClassName: traefik
-  tls:
-    - hosts:
-        - volly-staging.labb.k3s.chas-lab.dev
   rules:
-    - host: volly-staging.labb.k3s.chas-lab.dev
+    - host: volly-staging.cc.k3s.chas-lab.dev
       http:
         paths:
           - path: /api
