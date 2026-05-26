@@ -1,23 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-<<<<<<< Updated upstream
-import InboxConversationCard, {
-  type InboxConversationCardProps,
-} from "../components/InboxConversationCard";
-=======
 import { useNavigate } from "react-router-dom";
 import InboxConversationCard from "../components/InboxConversationCard";
->>>>>>> Stashed changes
 
 type ChatStatus = "pending" | "accepted" | "denied";
 
-<<<<<<< Updated upstream
-interface Message {
-  id: string;
-  text: string;
-  sender: string;
-  createdAt?: string;
-  chatId?: string;
-=======
 type ChatRow = {
   id: number;
   post_id: number;
@@ -58,7 +44,6 @@ interface Message {
   sender_email?: string | null;
   text_message: string;
   created_at?: string;
->>>>>>> Stashed changes
 }
 
 function SearchIcon() {
@@ -70,57 +55,6 @@ function SearchIcon() {
   );
 }
 
-<<<<<<< Updated upstream
-export default function InboxPage() {
-  const [query, setQuery] = useState("");
-
-  // Chats från backend
-  const [chats, setChats] = useState<ChatPreview[]>([]);
-
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-
-  const [messages, setMessages] = useState<Message[]>([]);
-
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [newMessage, setNewMessage] = useState("");
-
-  const [isConnected, setIsConnected] = useState(false);
-
-  const socketRef = useRef<WebSocket | null>(null);
-
-  const currentUser = localStorage.getItem("currentUser") ?? "";
-
-  // Olästa meddelanden
-  const [unread, setUnread] = useState<Record<string, number>>({});
-
-  const selectChat = (id: string) => {
-    setSelectedId(id);
-
-    setUnread((prev) => ({
-      ...prev,
-      [id]: 0,
-    }));
-  };
-
-  // Hämta alla chats
-  useEffect(() => {
-    const fetchChats = async () => {
-      try {
-        const response = await fetch("/api/chat/rooms");
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch chats");
-        }
-
-        const data = await response.json();
-
-        setChats(data);
-
-        // välj första chatten automatiskt
-        if (data.length > 0) {
-          setSelectedId(data[0].id);
-=======
 function buildPreview(chat: ChatRow, viewerId: number): ChatPreview {
   const isCreator = chat.creator_id === viewerId;
   const first = (
@@ -196,46 +130,13 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
         setChats(mapped);
         if (mapped.length > 0 && !selectedId) {
           setSelectedId(mapped[0].id);
->>>>>>> Stashed changes
         }
       } catch (error) {
         console.error("Error fetching chats:", error);
       }
     };
-<<<<<<< Updated upstream
-
     fetchChats();
-  }, []);
-
-  // Hämta chat historik
-  useEffect(() => {
-    if (!selectedId) return;
-
-    const fetchMessages = async () => {
-      setIsLoading(true);
-
-      try {
-        const response = await fetch(`/api/chat/${selectedId}`);
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch messages");
-        }
-
-        const data = await response.json();
-        const mapped = (data as Record<string, unknown>[]).map((m) => ({
-          id: String(m.id),
-          text: String(m.text_message ?? ""),
-          sender: String(m.sender_id ?? ""),
-          createdAt: m.created_at
-            ? new Date(m.created_at as string).toLocaleTimeString()
-            : undefined,
-          chatId: selectedId,
-        }));
-
-        setMessages(mapped);
-=======
-    fetchChats();
-  }, [refreshTick]);
+  }, [refreshTick, selectedId, userId]);
 
   useEffect(() => {
     if (!selectedId) return;
@@ -249,55 +150,12 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
         if (!response.ok) throw new Error("Failed to fetch messages");
         const data = await response.json();
         setMessages(Array.isArray(data) ? data : []);
->>>>>>> Stashed changes
       } catch (error) {
         console.error("Error fetching messages:", error);
       } finally {
         setIsLoading(false);
       }
     };
-<<<<<<< Updated upstream
-
-    fetchMessages();
-  }, [selectedId]);
-
-  // WebSocket connection
-  useEffect(() => {
-    const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const socket = new WebSocket(
-      `${wsProtocol}//${window.location.host}/api/chat`
-    );
-
-    socketRef.current = socket;
-
-    socket.onopen = () => {
-      console.log("WebSocket connected");
-      setIsConnected(true);
-    };
-
-    socket.onclose = () => {
-      console.log("WebSocket disconnected");
-      setIsConnected(false);
-    };
-
-    socket.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-
-      setMessages((prev) => [...prev, message]);
-
-      if (message.chatId && message.sender !== currentUser) {
-        setUnread((prev) => {
-          if (message.chatId === selectedId) {
-            return prev;
-          }
-
-          return {
-            ...prev,
-            [message.chatId]: (prev[message.chatId] || 0) + 1,
-          };
-        });
-      }
-=======
     fetchMessages();
   }, [selectedId]);
 
@@ -315,54 +173,27 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data) as Message;
       setMessages((prev) => [...prev, message]);
->>>>>>> Stashed changes
     };
 
     return () => {
       socket.close();
     };
-<<<<<<< Updated upstream
-  }, [currentUser, selectedId]);
-
-  // Skicka nytt meddelande
-  const sendMessage = () => {
-    if (!newMessage.trim() || !selectedId) return;
-
-    const newMsg: Message = {
-      id: Date.now().toString(),
-      text: newMessage,
-      sender: currentUser,
-      createdAt: new Date().toLocaleTimeString(),
-      chatId: selectedId,
-    };
-
-    // Skicka till websocket server
-    socketRef.current?.send(JSON.stringify(newMsg));
-
-    // Uppdatera UI direkt
-    setMessages((prev) => [...prev, newMsg]);
-
-    setNewMessage("");
-  };
-
-  // Filter för sökfältet
-=======
   }, [selectedId, status, userId]);
 
   const sendMessage = () => {
-  if (!newMessage.trim() || !selectedId || status !== "accepted") return;
-  const optimistic: Message = {
-    id: `tmp-${Date.now()}`,
-    request_id: selectedId,
-    sender_id: userId,
-    sender_email: localStorage.getItem("currentUser"),
-    text_message: newMessage,
-    created_at: new Date().toISOString(),
+    if (!newMessage.trim() || !selectedId || status !== "accepted") return;
+    const optimistic: Message = {
+      id: `tmp-${Date.now()}`,
+      request_id: selectedId,
+      sender_id: userId,
+      sender_email: localStorage.getItem("currentUser"),
+      text_message: newMessage,
+      created_at: new Date().toISOString(),
+    };
+    socketRef.current?.send(JSON.stringify({ text: newMessage }));
+    setMessages((prev) => [...prev, optimistic]);
+    setNewMessage("");
   };
-  socketRef.current?.send(JSON.stringify({ text: newMessage }));
-  setMessages((prev) => [...prev, optimistic]);
-  setNewMessage("");
-};
 
   const updateStatus = async (next: "accepted" | "denied") => {
     if (!selectedId) return;
@@ -389,8 +220,6 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
     if (!selectedId || status !== "accepted") return;
     navigate(`/room/${selectedId}`);
   };
-
->>>>>>> Stashed changes
   const filtered = chats.filter(
     (c) =>
       query.trim() === "" ||
@@ -420,10 +249,6 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
 
   return (
     <div className="inline-flex min-h-0 w-full flex-1 flex-row justify-start items-stretch self-stretch overflow-hidden">
-<<<<<<< Updated upstream
-      {/* Vänster: inkorgslista */}
-=======
->>>>>>> Stashed changes
       <div className="inline-flex w-96 shrink-0 flex-col items-start justify-start self-stretch overflow-hidden border-r border-border bg-sidebar">
         <div className="flex w-96 flex-col items-start justify-start gap-3 border-b border-border p-5">
           <div className="justify-start font-['DM_Sans'] text-2xl font-bold text-foreground">
@@ -453,32 +278,6 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
               Inga chattar hittades.
             </p>
           ) : (
-<<<<<<< Updated upstream
-            filtered.map((chat) => {
-              const unreadCount = unread[chat.id] ?? 0;
-
-              return (
-                <div key={chat.id} className="relative">
-                  <InboxConversationCard
-                    name={chat.name}
-                    initials={chat.initials}
-                    avatarClassName={chat.avatarClassName}
-                    threadTitle={chat.threadTitle}
-                    preview={chat.preview}
-                    timeLabel={chat.timeLabel}
-                    selected={selectedId === chat.id}
-                    onClick={() => selectChat(chat.id)}
-                  />
-
-                  {unreadCount > 0 && (
-                    <span className="absolute right-4 top-4 rounded-full bg-blue-500 px-2 py-1 text-[11px] font-semibold text-white">
-                      {unreadCount}
-                    </span>
-                  )}
-                </div>
-              );
-            })
-=======
             filtered.map((chat) => (
               <div key={chat.id} className="relative">
                 <InboxConversationCard
@@ -498,32 +297,14 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
                 )}
               </div>
             ))
->>>>>>> Stashed changes
           )}
         </div>
       </div>
 
-<<<<<<< Updated upstream
-      {/* Höger: chattvy */}
-=======
->>>>>>> Stashed changes
       <section
         className="flex min-h-0 min-w-0 flex-1 flex-col bg-Colors-background"
         aria-label="Chatt"
       >
-<<<<<<< Updated upstream
-        {/* Header */}
-        <div className="border-b border-border px-6 py-4">
-          <h2 className="text-xl font-bold text-foreground">Meddelanden</h2>
-
-          <p
-            className={`mt-1 text-sm ${
-              isConnected ? "text-green-500" : "text-red-500"
-            }`}
-          >
-            {isConnected ? "Connected" : "Disconnected"}
-          </p>
-=======
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <div>
             <h2 className="text-xl font-bold text-foreground">
@@ -612,61 +393,6 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
               onClick={sendMessage}
               disabled={status !== "accepted"}
               className="rounded-xl bg-black px-5 py-3 text-white disabled:opacity-40"
-            >
-              Skicka
-            </button>
-          </div>
->>>>>>> Stashed changes
-        </div>
-
-        {/* Messages */}
-        <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-6 py-6">
-          {isLoading ? (
-            <p className="text-Colors-muted-foreground">Loading messages...</p>
-          ) : messages.length === 0 ? (
-            <p className="text-Colors-muted-foreground">
-              Inga meddelanden hittades.
-            </p>
-          ) : (
-            messages
-              .filter((message) => message.chatId === selectedId)
-              .map((message) => (
-                <div
-                  key={message.id}
-                  className={`max-w-lg rounded-2xl p-4 shadow ${
-                    message.sender === currentUser
-                      ? "ml-auto bg-blue-500 text-white"
-                      : "bg-white text-black"
-                  }`}
-                >
-                  <p className="mb-1 font-bold">{message.sender}</p>
-
-                  <p className="text-sm">{message.text}</p>
-
-                  {message.createdAt && (
-                    <p className="mt-2 text-xs opacity-70">
-                      {message.createdAt}
-                    </p>
-                  )}
-                </div>
-              ))
-          )}
-        </div>
-
-        {/* Skicka meddelande */}
-        <div className="border-t border-border p-4">
-          <div className="flex gap-3">
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Skriv ett meddelande..."
-              className="flex-1 rounded-xl border border-border px-4 py-3 outline-none"
-            />
-
-            <button
-              onClick={sendMessage}
-              className="rounded-xl bg-black px-5 py-3 text-white"
             >
               Skicka
             </button>

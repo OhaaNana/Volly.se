@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import PostCard from "../components/PostCard";
 
 export type CategoryPost = {
@@ -65,11 +65,8 @@ function badgeForPost(post: CategoryPost): string {
 type Props = {
   posts: CategoryPost[];
   onProfile?: (authorEmail?: string) => void;
-<<<<<<< Updated upstream
   initialCategory?: CategoryKey;
-=======
   onContact?: (post: CategoryPost) => void;
->>>>>>> Stashed changes
 };
 
 function formatDisplayName(post: CategoryPost) {
@@ -88,27 +85,17 @@ function formatDisplayName(post: CategoryPost) {
   return "Okänt namn";
 }
 
-<<<<<<< Updated upstream
 export default function CategoryPage({
   posts,
   onProfile,
+  onContact,
   initialCategory,
 }: Props) {
   const [activeCategory, setActiveCategory] = useState<CategoryKey>(
     initialCategory ?? "allt"
   );
-=======
-export default function CategoryPage({ posts, onProfile, onContact }: Props) {
-  const [activeCategory, setActiveCategory] = useState<CategoryKey>("allt");
->>>>>>> Stashed changes
   const [postKind, setPostKind] = useState<"seek" | "offer">("seek");
   const [searchQuery, setSearchQuery] = useState("");
-
-  useEffect(() => {
-    if (initialCategory) {
-      setActiveCategory(initialCategory);
-    }
-  }, [initialCategory]);
 
   const activeFilterLabel =
     CATEGORY_CARDS.find((c) => c.id === activeCategory)?.filterLabel ?? null;
