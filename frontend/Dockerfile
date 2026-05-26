@@ -12,7 +12,6 @@ RUN npm run build
 
 ENV NODE_ENV=production
 
-EXPOSE 5173
+EXPOSE 3000
 
-# Run Vite preview server
-CMD ["npm", "run", "preview", "--", "--host"]
+CMD ["npm", "run", "preview"]
