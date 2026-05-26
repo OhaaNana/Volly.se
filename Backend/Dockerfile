@@ -12,4 +12,4 @@ COPY . .
 
 EXPOSE 3001
 
-CMD ["bun", "run", "dev"]
+CMD ["bun", "run", "start"]
