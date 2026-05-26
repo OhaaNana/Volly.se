@@ -3,10 +3,13 @@ import { isTokenExpired, clearAuth } from "./utils/auth";
 import LoginPage from "./LogingPage";
 import HomePage from "./HomePage";
 import "./index.css";
-import MenuLoggedIn, { type MenuItem } from "./components/MenuLoggedIn";
+import MenuLoggedIn, {
+  LOGGED_IN_MENU_ITEMS,
+  type LoggedInMenuId,
+} from "./components/MenuLoggedIn";
 import CreatePostPage from "./pages/CreatePostPage";
 import LoggedInStartPage from "./pages/LoggedInStartPage";
-import CategoryPage from "./pages/CategoryPage";
+import CategoryPage, { type CategoryKey } from "./pages/CategoryPage";
 import InboxPage from "./pages/InboxPage";
 import ProfilePage from "./pages/ProfilePage";
 
@@ -22,28 +25,6 @@ type Post = {
   first_name?: string;
   last_name?: string;
 };
-
-function formatDisplayName(
-  firstName?: string,
-  lastName?: string,
-  authorEmail?: string
-) {
-  const fullName = `${firstName ?? ""} ${lastName ?? ""}`.trim();
-  if (fullName) return fullName;
-
-  if (authorEmail) {
-    const localPart = authorEmail.split("@")[0] ?? "";
-    const parts = localPart.split(/[._-]/).filter(Boolean);
-    if (parts.length > 0) {
-      return parts
-        .slice(0, 2)
-        .map((part) => part.replace(/^\w/, (char) => char.toUpperCase()))
-        .join(" ");
-    }
-  }
-
-  return "Okänt namn";
-}
 
 function helpTypeToPostType(helpType: unknown): Post["postType"] {
   if (helpType === "getHelp") return "seek";
@@ -61,6 +42,9 @@ export function App() {
   const [selectedProfileEmail, setSelectedProfileEmail] = useState<
     string | null
   >(null);
+  const [selectedCategory, setSelectedCategory] = useState<
+    CategoryKey | undefined
+  >(undefined);
 
   useEffect(() => {
     let mounted = true;
@@ -111,29 +95,6 @@ export function App() {
       mounted = false;
     };
   }, []);
-  const loggedInMenuItems = [
-    { id: "start", label: "Start", flaticonClassName: "fi fi-rr-home" },
-    {
-      id: "kategorier",
-      label: "Kategorier",
-      flaticonClassName: "fi fi-rr-apps",
-    },
-    { id: "skapa", label: "Skapa", flaticonClassName: "fi fi-rr-edit" },
-    {
-      id: "inkorg",
-      label: "Inkorg",
-      flaticonClassName: "fi fi-rs-comment-dots",
-    },
-    { id: "sparat", label: "Sparat", flaticonClassName: "fi fi-rr-bookmark" },
-    {
-      id: "profil",
-      label: "Profil",
-      flaticonClassName: "fi fi-rr-circle-user",
-    },
-  ] as const satisfies readonly MenuItem<
-    "start" | "kategorier" | "skapa" | "inkorg" | "sparat" | "profil"
-  >[];
-  type LoggedInMenuId = (typeof loggedInMenuItems)[number]["id"];
   const [activeLoggedInPage, setActiveLoggedInPage] =
     useState<LoggedInMenuId>("start");
 
@@ -141,6 +102,9 @@ export function App() {
     setActiveLoggedInPage(nextPage);
     if (nextPage === "profil") {
       setSelectedProfileEmail(null);
+    }
+    if (nextPage === "kategorier") {
+      setSelectedCategory(undefined);
     }
   };
 
@@ -179,8 +143,8 @@ export function App() {
   if (currentUser) {
     return (
       <div className="min-h-dvh w-full bg-Colors-background">
-        <MenuLoggedIn
-          items={loggedInMenuItems}
+        <MenuLoggedIn<LoggedInMenuId>
+          items={LOGGED_IN_MENU_ITEMS}
           activeId={activeLoggedInPage}
           onNavigate={handleLoggedInNavigate}
           onLogout={logout}
@@ -271,17 +235,21 @@ export function App() {
               }}
             />
           ) : activeLoggedInPage === "kategorier" ? (
-            <CategoryPage posts={posts} onProfile={openProfileFromPost} />
+            <CategoryPage
+              posts={posts}
+              onProfile={openProfileFromPost}
+              initialCategory={selectedCategory}
+            />
           ) : activeLoggedInPage === "inkorg" ? (
             <InboxPage />
           ) : (
             <LoggedInStartPage
               firstName={firstName}
               onCreatePost={() => setActiveLoggedInPage("skapa")}
-              onExploreCategories={() => setActiveLoggedInPage("kategorier")}
-              onProfile={openProfileFromPost}
-              posts={posts}
-              formatDisplayName={formatDisplayName}
+              onExploreCategories={(category) => {
+                setSelectedCategory(category ?? "allt");
+                setActiveLoggedInPage("kategorier");
+              }}
             />
           )}
         </MenuLoggedIn>
