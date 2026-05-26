@@ -36,7 +36,6 @@ export type LoggedInMenuId = (typeof LOGGED_IN_MENU_ITEMS)[number]["id"];
 export type MenuLoggedInUser = {
   name: string;
   initials: string;
-  // rating removed
 };
 
 function SidebarItem<Id extends string>({
@@ -108,9 +107,13 @@ function Sidebar<Id extends string>({
   user?: MenuLoggedInUser;
 }) {
   return (
-    <aside className="w-72 shrink-0 min-h-dvh p-7 bg-Colors-background border-r border-Colors-border inline-flex flex-col justify-between items-start overflow-hidden">
+    <aside className="w-72 shrink-0 min-h-dvh p-7 bg-Colors-background border-r border-Colors-border inline-flex flex-col justify-start items-start gap-8 overflow-hidden">
       <div className="self-stretch flex flex-col justify-start items-start gap-2.5">
-        <div className="inline-flex justify-start items-center gap-2.5 overflow-hidden">
+        <button
+          type="button"
+          onClick={() => onNavigate("start" as Id)}
+          className="inline-flex justify-start items-center gap-2.5 overflow-hidden text-left"
+        >
           <div className="w-12 h-12 relative">
             <div className="w-12 h-12 left-0 top-0 absolute bg-green-400 rounded-full" />
             <div className="left-[17px] top-[15px] absolute justify-start text-white text-2xl font-semibold font-['DM_Sans'] leading-5">
@@ -121,7 +124,7 @@ function Sidebar<Id extends string>({
           <div className="justify-end text-dark-gray text-4xl font-extrabold font-['DM_Sans'] leading-5">
             {brandName}
           </div>
-        </div>
+        </button>
 
         <nav className="self-stretch py-5 flex flex-col justify-center items-start gap-[5px] overflow-hidden">
           {items.map((item) => (
@@ -135,9 +138,13 @@ function Sidebar<Id extends string>({
         </nav>
       </div>
 
-      <div className="self-stretch flex flex-col justify-start items-start gap-2">
+      <div className="self-stretch flex flex-col justify-start items-start gap-2 pt-2">
         {user ? (
-          <div className="self-stretch p-3.5 bg-gradient-to-b from-green-100 to-red-50 rounded-3xl outline outline-1 outline-offset-[-1px] outline-neutral-800/10 inline-flex justify-start items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => onNavigate("profil" as Id)}
+            className="self-stretch p-3.5 bg-gradient-to-b from-green-100 to-red-50 rounded-3xl outline outline-1 outline-offset-[-1px] outline-neutral-800/10 inline-flex justify-start items-center gap-2.5 text-left hover:opacity-95 transition-opacity"
+          >
             <div className="inline-flex flex-col justify-start items-start overflow-hidden">
               <div className="w-10 h-10 relative">
                 <div className="w-10 h-10 left-0 top-0 absolute bg-sky-400 rounded-full" />
@@ -151,10 +158,8 @@ function Sidebar<Id extends string>({
               <div className="justify-start text-dark-gray text-base font-semibold font-['DM_Sans'] leading-[10px]">
                 {user.name}
               </div>
-
-              {/* rating removed */}
             </div>
-          </div>
+          </button>
         ) : null}
 
         {onLogout ? (
