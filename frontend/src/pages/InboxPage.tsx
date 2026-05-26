@@ -143,10 +143,9 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
     const fetchMessages = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(
-          `http://localhost:3001/api/chat/chat/${selectedId}`,
-          { headers: getAuthHeader() }
-        );
+        const response = await fetch(`/api/chat/chat/${selectedId}`, {
+          headers: getAuthHeader(),
+        });
         if (!response.ok) throw new Error("Failed to fetch messages");
         const data = await response.json();
         setMessages(Array.isArray(data) ? data : []);
@@ -161,8 +160,9 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
 
   useEffect(() => {
     if (!selectedId || status !== "accepted" || !userId) return;
+    const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
     const url =
-      `ws://localhost:3001/chat?userId=${encodeURIComponent(String(userId))}` +
+      `${proto}//${window.location.host}/chat?userId=${encodeURIComponent(String(userId))}` +
       `&roomId=${encodeURIComponent(selectedId)}`;
     const socket = new WebSocket(url);
     socketRef.current = socket;
@@ -198,14 +198,11 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
   const updateStatus = async (next: "accepted" | "denied") => {
     if (!selectedId) return;
     try {
-      const res = await fetch(
-        `http://localhost:3001/api/chat/chat/${selectedId}/status`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json", ...getAuthHeader() },
-          body: JSON.stringify({ status: next }),
-        }
-      );
+      const res = await fetch(`/api/chat/chat/${selectedId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", ...getAuthHeader() },
+        body: JSON.stringify({ status: next }),
+      });
       if (!res.ok) {
         console.error("Failed to update status", res.status);
         return;
