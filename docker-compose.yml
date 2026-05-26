@@ -9,6 +9,8 @@ services:
       POSTGRES_URI: postgresql://postgres:postgres@database:5432/postgres
       DATABASE_URL: postgresql://postgres:postgres@database:5432/postgres
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-supersecretrefresh123}
+      TURN_SECRET: your_turn_secret_here
+      TURN_URL: turn:YOUR_SERVER_IP:3478
     depends_on:
       - database
 
@@ -36,6 +38,15 @@ services:
       - ./Backend/src/database/migrations/004_create_messages_tabel.sql:/docker-entrypoint-initdb.d/05.sql
       - ./Backend/src/database/migrations/005_add_post_category.sql:/docker-entrypoint-initdb.d/06.sql
       - ./Backend/src/database/migrations/006_add_bio_to_users.sql:/docker-entrypoint-initdb.d/07.sql
+
+  coturn:
+    image: coturn/coturn:latest
+    container_name: volly-coturn
+    restart: unless-stopped
+    network_mode: "host"
+    volumes:
+      - ./coturn/turnserver.conf:/etc/coturn/turnserver.conf
+    command: ["-c", "/etc/coturn/turnserver.conf"]
 
 volumes:
   pgdata:

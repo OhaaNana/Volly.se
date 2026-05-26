@@ -147,14 +147,8 @@ describe("Video chat", () => {
                       cy.visit("/");
                       cy.window().then((win) => {
                         win.localStorage.setItem("token", strangerToken);
-                        win.localStorage.setItem(
-                          "currentUser",
-                          stranger.email
-                        );
-                        win.localStorage.setItem(
-                          "userId",
-                          String(strangerId)
-                        );
+                        win.localStorage.setItem("currentUser", stranger.email);
+                        win.localStorage.setItem("userId", String(strangerId));
                       });
                       cy.visit(`/room/${chatId}`);
                       cy.contains(/connected|completed/i, {

@@ -5,6 +5,7 @@ import authRoutes from "./modules/auth/auth.routes";
 import userRoutes from "./modules/auth/auth.user.routes";
 import chatRoutes from "./modules/chat/chat.routes";
 import postsRoutes from "./modules/posts/posts.routes";
+import turnRoutes  from "./modules/video-chat/video-chat.turn";
 
 async function start() {
   const app = fastify({ logger: true });
@@ -15,6 +16,7 @@ async function start() {
   app.register(userRoutes, { prefix: "/api/users" });
   app.register(chatRoutes, { prefix: "/api/chat" });
   app.register(postsRoutes, { prefix: "/api" });
+  app.register(turnRoutes, { prefix: "/api/turn-credentials" });
   setupErrorHandlers(app);
 
   await app.listen({ port: 3001, host: "0.0.0.0" });
