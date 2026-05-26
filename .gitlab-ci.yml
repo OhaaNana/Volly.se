@@ -129,7 +129,7 @@ deploy_staging:
     - if: $CI_COMMIT_BRANCH == "master"
   environment:
     name: staging
-    url: https://staging-volly.labb.k3s.chas-lab.dev
+    url: https://volly-staging.labb.k3s.chas-lab.dev
   script:
     - kubectl apply -f k8s/staging/ -n doe25-group-15
     - kubectl rollout restart deployment/frontend-staging -n doe25-group-15
