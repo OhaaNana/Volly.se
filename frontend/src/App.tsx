@@ -14,7 +14,6 @@ import InboxPage, { type ChatPreview } from "./pages/InboxPage";
 import ProfilePage from "./pages/ProfilePage";
 import OnboardingPage from "./pages/Onboarding/OnboardingPage";
 
-
 type Post = {
   id: string;
   title: string;
@@ -188,18 +187,18 @@ export function App() {
       ?.trim()
       .replace(/^\w/, (c) => c.toUpperCase()) || "Anna";
 
-//show onboarding after signup
-if (currentUser && needsOnboarding) {
-  return (
-    <OnboardingPage
-      onComplete={(data) => {
-        // TODO: save onboarding data to your backend here
-        console.log("Onboarding complete:", data);
-        setNeedsOnboarding(false);
-      }}
-    />
-  );
-}
+  //show onboarding after signup
+  if (currentUser && needsOnboarding) {
+    return (
+      <OnboardingPage
+        onComplete={(data) => {
+          // TODO: save onboarding data to your backend here
+          console.log("Onboarding complete:", data);
+          setNeedsOnboarding(false);
+        }}
+      />
+    );
+  }
 
   if (currentUser) {
     return (
@@ -320,13 +319,13 @@ if (currentUser && needsOnboarding) {
   }
 
   return (
-<HomePage
-  onSignupSuccess={(email) => {
+    <HomePage
+      onSignupSuccess={(email) => {
         setSessionExpired(false);
-    setCurrentUser(email);
-    setNeedsOnboarding(true); //added the onboarding-after-signup trigger
-  }}
->
+        setCurrentUser(email);
+        setNeedsOnboarding(true); //added the onboarding-after-signup trigger
+      }}
+    >
       <div className="flex flex-col">
         {sessionExpired && (
           <div className="w-full bg-[var(--volly-forest-green)] font-['DM_Sans'] text-[var(--volly-white)] text-lg font-medium text-center py-1">
