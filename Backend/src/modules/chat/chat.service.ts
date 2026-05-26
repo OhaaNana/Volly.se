@@ -2,8 +2,8 @@ import type { Payload, UserMeta } from "../../shared/types/chat.types";
 
 export function createPayload(user: UserMeta, text: string): Payload {
   return {
-    userId: Number(user.userId),
-    roomId: Number(user.roomId),
+    request_id: Number(user.roomId),
+    sender_id: Number(user.userId),
     text_message: text,
     created_at: new Date().toISOString(),
   };

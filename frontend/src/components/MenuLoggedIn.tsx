@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- menu items co-located with layout */
 import type { ReactNode } from "react";
 
 export type MenuItem<Id extends string = string> = {
@@ -8,20 +9,44 @@ export type MenuItem<Id extends string = string> = {
   flaticonClassName?: string;
 };
 
+export const LOGGED_IN_MENU_ITEMS = [
+  { id: "start", label: "Start", flaticonClassName: "fi fi-rr-home" },
+  {
+    id: "kategorier",
+    label: "Kategorier",
+    flaticonClassName: "fi fi-rr-apps",
+  },
+  { id: "skapa", label: "Skapa", flaticonClassName: "fi fi-rr-edit" },
+  {
+    id: "inkorg",
+    label: "Inkorg",
+    flaticonClassName: "fi fi-rs-comment-dots",
+  },
+  {
+    id: "profil",
+    label: "Profil",
+    flaticonClassName: "fi fi-rr-circle-user",
+  },
+] as const satisfies readonly MenuItem<
+  "start" | "kategorier" | "skapa" | "inkorg" | "profil"
+>[];
+
+export type LoggedInMenuId = (typeof LOGGED_IN_MENU_ITEMS)[number]["id"];
+
 export type MenuLoggedInUser = {
   name: string;
   initials: string;
   // rating removed
 };
 
-function SidebarItem({
+function SidebarItem<Id extends string>({
   item,
   activePage,
   onNavigate,
 }: {
-  item: MenuItem<string>;
-  activePage: string;
-  onNavigate: (next: string) => void;
+  item: MenuItem<Id>;
+  activePage: Id;
+  onNavigate: (next: Id) => void;
 }) {
   const isActive = activePage === item.id;
 
@@ -65,7 +90,7 @@ function SidebarItem({
   );
 }
 
-function Sidebar({
+function Sidebar<Id extends string>({
   items,
   activePage,
   onNavigate,
@@ -74,9 +99,9 @@ function Sidebar({
   brandInitial,
   user,
 }: {
-  items: readonly MenuItem<string>[];
-  activePage: string;
-  onNavigate: (next: string) => void;
+  items: readonly MenuItem<Id>[];
+  activePage: Id;
+  onNavigate: (next: Id) => void;
   onLogout?: () => void;
   brandName: string;
   brandInitial: string;
@@ -178,9 +203,9 @@ export default function MenuLoggedIn<Id extends string>({
   return (
     <div className="flex min-h-dvh w-full bg-Colors-background">
       <Sidebar
-        items={items as readonly MenuItem<string>[]}
+        items={items}
         activePage={activeId}
-        onNavigate={onNavigate as (next: string) => void}
+        onNavigate={onNavigate}
         onLogout={onLogout}
         brandName={brandName}
         brandInitial={brandInitial}

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { saveToken } from "../utils/auth";
 
 export const useLogin = () => {
   const [email, setEmail] = useState("");
@@ -16,7 +17,7 @@ export const useLogin = () => {
 
     setIsLoading(true);
     try {
-      const res = await fetch("http://127.0.0.1:3001/login", {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -37,8 +38,11 @@ export const useLogin = () => {
         return false;
       }
 
-      localStorage.setItem("token", token);
+      saveToken(token);
       localStorage.setItem("currentUser", email);
+      if (data?.id != null) {
+        localStorage.setItem("userId", String(data.id));
+      }
       return true;
     } catch {
       setErrorMessage("Login failed.");

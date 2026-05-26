@@ -1,4 +1,5 @@
 import { useState, type FormEvent, type ReactNode } from "react";
+import { saveToken } from "./utils/auth";
 import Navbar from "./Navbar";
 import upArrow from "./assets/upArrow.png";
 import Footer from "./components/footer";
@@ -9,7 +10,7 @@ type HomePageProps = {
   onSignupSuccess?: (email: string) => void;
 };
 
-const AUTH_URL = "http://localhost:3001/api/auth/register";
+const AUTH_URL = "/api/auth/register";
 
 const scroll = () => {
   window.scrollTo({
@@ -68,6 +69,7 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
         message?: string;
         error?: string;
         details?: string;
+        token?: string;
       } | null;
 
       if (!response.ok) {
@@ -79,6 +81,7 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
         return;
       }
 
+      if (payload?.token) saveToken(payload.token);
       localStorage.setItem("currentUser", formData.email);
       onSignupSuccess?.(formData.email);
       setStatusMessage("Kontot skapades.");
