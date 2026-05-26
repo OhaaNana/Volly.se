@@ -296,15 +296,17 @@ export function App() {
         setCurrentUser(email);
       }}
     >
-      {sessionExpired && (
-        <div className="w-full bg-[var(--volly-forest-green)] font-['DM_Sans'] text-[var(--volly-white)] text-lg font-medium text-center py-1">
-          Din session har gått ut. Logga in igen för att fortsätta.
-        </div>
-      )}
-      <LoginPage
-        initialEmail={prefillEmail}
-        onLoginSuccess={(email) => setCurrentUser(email)}
-      />
+      <div className="flex flex-col">
+        {sessionExpired && (
+          <div className="w-full bg-[var(--volly-forest-green)] font-['DM_Sans'] text-[var(--volly-white)] text-lg font-medium text-center py-1">
+            Din session har gått ut. Logga in igen för att fortsätta.
+          </div>
+        )}
+        <LoginPage
+          initialEmail={prefillEmail}
+          onLoginSuccess={(email) => setCurrentUser(email)}
+        />
+      </div>
     </HomePage>
   );
 }
