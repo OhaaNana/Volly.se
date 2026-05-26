@@ -23,7 +23,9 @@ describe("Auth", () => {
 
       cy.contains('button[type="submit"]', "Skapa konto").click();
 
-      cy.contains("Välkommen tillbaka", { timeout: 10000 }).should("be.visible");
+      cy.contains("Välkommen tillbaka", { timeout: 10000 }).should(
+        "be.visible"
+      );
     });
   });
 
@@ -37,8 +39,13 @@ describe("Auth", () => {
       cy.get('input[type="password"]').first().type(user.password);
       cy.contains("button", "Logga in").click();
 
-      cy.contains("Välkommen tillbaka", { timeout: 10000 }).should("be.visible");
-      cy.window().its("localStorage").invoke("getItem", "token").should("exist");
+      cy.contains("Välkommen tillbaka", { timeout: 10000 }).should(
+        "be.visible"
+      );
+      cy.window()
+        .its("localStorage")
+        .invoke("getItem", "token")
+        .should("exist");
       cy.window()
         .its("localStorage")
         .invoke("getItem", "userId")

@@ -4,12 +4,11 @@ import { createPayload } from "./chat.service";
 import { getChatById, saveMessage } from "./chat.repo";
 import { users, rooms } from "./chat.rooms";
 
-
 export function registerChatevents(socket: WebSocket, request: FastifyRequest) {
   console.log("User has been connected to a room");
   socket.on("message", async (message: Buffer) => {
     try {
-      const {text} = JSON.parse(message.toString());
+      const { text } = JSON.parse(message.toString());
       const user = users.get(socket);
       if (!user || !text?.trim()) return;
 

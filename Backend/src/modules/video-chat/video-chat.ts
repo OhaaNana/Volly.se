@@ -16,10 +16,9 @@ export async function videoChat(app: FastifyInstance) {
 
     let userId: number;
     try {
-      const decoded = jwt.verify(
-        token,
-        process.env.JWT_SECRET as string
-      ) as { id: string };
+      const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
+        id: string;
+      };
       userId = Number(decoded.id);
     } catch {
       socket.close(1008, "Invalid token");

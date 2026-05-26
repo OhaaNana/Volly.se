@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface Chainable {
       registerUser(user: {
@@ -10,7 +11,10 @@ declare global {
         password: string;
       }): Chainable<{ id: number; token: string; email: string }>;
       loginAs(email: string, password: string): Chainable<void>;
-      apiLogin(email: string, password: string): Chainable<{
+      apiLogin(
+        email: string,
+        password: string
+      ): Chainable<{
         id: number;
         token: string;
       }>;

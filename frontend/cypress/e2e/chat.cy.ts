@@ -117,9 +117,11 @@ describe("Chat (per-pair conversation)", () => {
                   headers: { Authorization: `Bearer ${authorToken}` },
                 }).then((history) => {
                   expect(history.status).to.eq(200);
-                  const texts = (history.body as Array<{
-                    text_message: string;
-                  }>).map((m) => m.text_message);
+                  const texts = (
+                    history.body as Array<{
+                      text_message: string;
+                    }>
+                  ).map((m) => m.text_message);
                   expect(texts).to.include(authorMessage);
                 });
               });

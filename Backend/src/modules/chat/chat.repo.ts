@@ -1,18 +1,33 @@
-import type { ChatRow, ChatStatus, Payload } from "../../shared/types/chat.types";
+import type {
+  ChatRow,
+  ChatStatus,
+  Payload,
+} from "../../shared/types/chat.types";
 import type { FastifyRequest } from "fastify";
 
-export async function saveMessage(payload: Payload, request: FastifyRequest): Promise<Payload> {
+export async function saveMessage(
+  payload: Payload,
+  request: FastifyRequest
+): Promise<Payload> {
   const result = await request.server.pg.query<Payload>(
     `INSERT INTO messages (request_id, sender_id, text_message, created_at)
      VALUES ($1, $2, $3, $4)
      RETURNING id, request_id, sender_id, text_message, created_at,
        (SELECT email FROM users WHERE id = $2) AS sender_email`,
-    [payload.request_id, payload.sender_id, payload.text_message, payload.created_at]
+    [
+      payload.request_id,
+      payload.sender_id,
+      payload.text_message,
+      payload.created_at,
+    ]
   );
   return result.rows[0];
 }
 
-export async function getChat(request_id: number, request: FastifyRequest): Promise<Payload[]> {
+export async function getChat(
+  request_id: number,
+  request: FastifyRequest
+): Promise<Payload[]> {
   const result = await request.server.pg.query<Payload>(
     `SELECT id, request_id, sender_id, text_message, created_at
      FROM messages
@@ -36,9 +51,16 @@ export async function getChat(request_id: number, request: FastifyRequest): Prom
   return messages;
 }
 
-export async function getChatById(chatId: number, request: FastifyRequest): Promise<ChatRow | null> {
+export async function getChatById(
+  chatId: number,
+  request: FastifyRequest
+): Promise<ChatRow | null> {
   const chat = await request.server.pg.query<{
-    id: number; post_id: number; creator_id: number; status: ChatStatus; created_at: string;
+    id: number;
+    post_id: number;
+    creator_id: number;
+    status: ChatStatus;
+    created_at: string;
   }>(
     `SELECT id, post_id, creator_id, status, created_at FROM request WHERE id = $1`,
     [chatId]
@@ -46,22 +68,28 @@ export async function getChatById(chatId: number, request: FastifyRequest): Prom
   if (!chat.rows[0]) return null;
   const r = chat.rows[0];
 
-  const post = await request.server.pg.query<{ title: string; user_id: number }>(
-    `SELECT title, user_id FROM post WHERE id = $1`,
-    [r.post_id]
-  );
+  const post = await request.server.pg.query<{
+    title: string;
+    user_id: number;
+  }>(`SELECT title, user_id FROM post WHERE id = $1`, [r.post_id]);
   const p = post.rows[0];
 
-  const creator = await request.server.pg.query<{ first_name: string; last_name: string; email: string }>(
-    `SELECT first_name, last_name, email FROM users WHERE id = $1`,
-    [r.creator_id]
-  );
+  const creator = await request.server.pg.query<{
+    first_name: string;
+    last_name: string;
+    email: string;
+  }>(`SELECT first_name, last_name, email FROM users WHERE id = $1`, [
+    r.creator_id,
+  ]);
   const c = creator.rows[0];
 
-  const author = await request.server.pg.query<{ first_name: string; last_name: string; email: string }>(
-    `SELECT first_name, last_name, email FROM users WHERE id = $1`,
-    [p.user_id]
-  );
+  const author = await request.server.pg.query<{
+    first_name: string;
+    last_name: string;
+    email: string;
+  }>(`SELECT first_name, last_name, email FROM users WHERE id = $1`, [
+    p.user_id,
+  ]);
   const a = author.rows[0];
 
   return {
@@ -81,7 +109,11 @@ export async function getChatById(chatId: number, request: FastifyRequest): Prom
   };
 }
 
-export async function createOrGetChat(postId: number, creatorId: number, request: FastifyRequest): Promise<ChatRow | null> {
+export async function createOrGetChat(
+  postId: number,
+  creatorId: number,
+  request: FastifyRequest
+): Promise<ChatRow | null> {
   const result = await request.server.pg.query<{ id: number }>(
     `INSERT INTO request (post_id, creator_id, status)
      VALUES ($1, $2, 'pending')
@@ -92,7 +124,10 @@ export async function createOrGetChat(postId: number, creatorId: number, request
   return getChatById(result.rows[0].id, request);
 }
 
-export async function getMyChats(userId: number, request: FastifyRequest): Promise<ChatRow[]> {
+export async function getMyChats(
+  userId: number,
+  request: FastifyRequest
+): Promise<ChatRow[]> {
   const result = await request.server.pg.query<{ id: number }>(
     `SELECT id FROM request WHERE creator_id = $1 OR post_id IN (
        SELECT id FROM post WHERE user_id = $1
@@ -109,7 +144,12 @@ export async function getMyChats(userId: number, request: FastifyRequest): Promi
   return chats;
 }
 
-export async function updateChatStatus(chatId: number, recipientId: number, status: ChatStatus, request: FastifyRequest): Promise<ChatRow | null> {
+export async function updateChatStatus(
+  chatId: number,
+  recipientId: number,
+  status: ChatStatus,
+  request: FastifyRequest
+): Promise<ChatRow | null> {
   const chat = await getChatById(chatId, request);
   if (!chat || chat.post_author_id !== recipientId) return null;
 

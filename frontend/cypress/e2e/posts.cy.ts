@@ -20,7 +20,7 @@ describe("Posts", () => {
 
         cy.get('input[placeholder="Text"]').first().type(title);
         cy.get('textarea[placeholder="Text"]').type(body);
-        cy.contains('button[aria-pressed]', "Teknik").click();
+        cy.contains("button[aria-pressed]", "Teknik").click();
         cy.contains("button", "Publicera").click();
 
         cy.contains(title, { timeout: 10000 }).should("be.visible");
