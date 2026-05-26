@@ -19,7 +19,7 @@ export const postSchema = {
           "Teknik",
           "Språk",
           "Socialt & sällskap",
-          "karriär",
+          "Karriär",
           "Studier",
           "Dokument & Byråkrati",
           "Funktionsvariation & NPF",

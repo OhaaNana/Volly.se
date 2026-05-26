@@ -6,6 +6,26 @@
   #D3FBD5 #D6E7D8 #E9E4DC #FDFAF4 #FFFFFF
 */
 @theme {
+  --volly-white: #f6fff8;
+  --volly-black: #050505;
+  --volly-forest-green: rgb(3 30 0 / 92%);
+  --volly-khaki-green: #89a886;
+  --volly-beige: #ffecd5;
+
+  --color-background: #fdfaf4;
+  --color-primary: #00ab46;
+  --color-primary-soft: #d3fbd5;
+  --color-primary-strong: #216826;
+  --color-warm-foreground: #321a16;
+  --color-foreground: #161a26;
+  --color-card: #ffffff;
+  --color-border: #e9e4dc;
+  --color-muted-foreground: #5d646f;
+  --color-icon-active: #216826;
+  --color-forest: #113714;
+  --color-neutral-300: #d6e7d8;
+  --color-muted: #f6f1e9;
+
   --color-Colors-background: #fdfaf4;
   --color-Colors-foreground: #161a26;
   --color-Colors-muted-foreground: #5d646f;

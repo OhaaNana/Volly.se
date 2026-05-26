@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { isTokenExpired, clearAuth } from "./utils/auth";
 import LoginPage from "./LogingPage";
 import HomePage from "./HomePage";
 import "./index.css";
@@ -35,6 +36,7 @@ export function App() {
   const [currentUser, setCurrentUser] = useState<string | null>(() =>
     localStorage.getItem("currentUser")
   );
+  const [sessionExpired, setSessionExpired] = useState(false);
   const [prefillEmail] = useState("");
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedProfileEmail, setSelectedProfileEmail] = useState<
@@ -48,7 +50,7 @@ export function App() {
     let mounted = true;
     async function loadPosts() {
       try {
-        const res = await fetch("http://localhost:3001/posts");
+        const res = await fetch("/api/posts");
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (!mounted) return;
@@ -115,10 +117,21 @@ export function App() {
     setActiveLoggedInPage("profil");
   };
 
-  const logout = () => {
-    localStorage.removeItem("currentUser");
+  const logout = useCallback((expired = false) => {
+    clearAuth();
     setCurrentUser(null);
-  };
+    if (expired) setSessionExpired(true);
+  }, []);
+
+  useEffect(() => {
+    if (!currentUser) return;
+    const check = () => {
+      if (isTokenExpired()) logout(true);
+    };
+    check();
+    const interval = setInterval(check, 60 * 1000);
+    return () => clearInterval(interval);
+  }, [currentUser, logout]);
 
   const firstName =
     currentUser
@@ -158,7 +171,7 @@ export function App() {
                     tagg: (post.tags || []).join(","),
                   };
 
-                  const res = await fetch("http://127.0.0.1:3001/posts", {
+                  const res = await fetch("/api/posts", {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json",
@@ -247,13 +260,21 @@ export function App() {
   return (
     <HomePage
       onSignupSuccess={(email) => {
+        setSessionExpired(false);
         setCurrentUser(email);
       }}
     >
-      <LoginPage
-        initialEmail={prefillEmail}
-        onLoginSuccess={(email) => setCurrentUser(email)}
-      />
+      <div className="flex flex-col">
+        {sessionExpired && (
+          <div className="w-full bg-[var(--volly-forest-green)] font-['DM_Sans'] text-[var(--volly-white)] text-lg font-medium text-center py-1">
+            Din session har gått ut. Logga in igen för att fortsätta.
+          </div>
+        )}
+        <LoginPage
+          initialEmail={prefillEmail}
+          onLoginSuccess={(email) => setCurrentUser(email)}
+        />
+      </div>
     </HomePage>
   );
 }

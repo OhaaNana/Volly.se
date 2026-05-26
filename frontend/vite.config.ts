@@ -8,4 +8,20 @@ export default defineConfig({
     emptyOutDir: true,
     assetsInlineLimit: 0,
   },
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://127.0.0.1:3001",
+        ws: true,
+      },
+    },
+  },
+  preview: {
+    port: 3000,
+    host: true,
+    allowedHosts: [
+      "volly-staging.cc.k3s.chas-lab.dev",
+      "volly.cc.k3s.chas-lab.dev",
+    ],
+  },
 });

@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { createPost } from "./posts.repo";
+import { createPost, getPosts } from "./posts.repo";
 import type { CreatePostInput } from "../../shared/types/posts.types";
 
 type CreatePostBody = {
@@ -38,7 +38,6 @@ export async function getPostsHandler(
   reply: FastifyReply
 ) {
   try {
-    const { getPosts } = await import("./posts.repo");
     const authorEmail = (request.query as { author_email?: string })
       .author_email;
     const posts = await getPosts(request as FastifyRequest, authorEmail);
