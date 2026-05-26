@@ -5,7 +5,7 @@ import { getChatById } from "../chat/chat.repo";
 const rooms = new Map<string, Set<any>>();
 
 export async function videoChat(app: FastifyInstance) {
-  app.get("/ws/:roomId", { websocket: true }, async (socket, req) => {
+  app.get("/api/room/:roomId", { websocket: true }, async (socket, req) => {
     const { roomId } = req.params as { roomId: string };
     const { token } = req.query as { token?: string };
 

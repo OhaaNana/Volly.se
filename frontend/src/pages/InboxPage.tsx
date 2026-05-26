@@ -95,7 +95,18 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
   const [refreshTick, setRefreshTick] = useState(0);
   const socketRef = useRef<WebSocket | null>(null);
 
-  const userId = Number(localStorage.getItem("userId") ?? "0");
+  const userId = (() => {
+    const stored = Number(localStorage.getItem("userId"));
+    if (stored) return stored;
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return 0;
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      return Number(payload.id) || 0;
+    } catch {
+      return 0;
+    }
+  })();
 
   const getAuthHeader = (): Record<string, string> => {
     const token = localStorage.getItem("token");
@@ -162,7 +173,7 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
     if (!selectedId || status !== "accepted" || !userId) return;
     const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
     const url =
-      `${proto}//${window.location.host}/chat?userId=${encodeURIComponent(String(userId))}` +
+      `${proto}//${window.location.host}/api/chat/ws?userId=${encodeURIComponent(String(userId))}` +
       `&roomId=${encodeURIComponent(selectedId)}`;
     const socket = new WebSocket(url);
     socketRef.current = socket;

@@ -7,7 +7,7 @@ import { getChatById } from "./chat.repo";
 
 export async function connection(app: FastifyInstance) {
   app.get(
-    "/chat",
+    "/api/chat/ws",
     { websocket: true },
     async (socket: WebSocket, request: FastifyRequest) => {
       const { userId, roomId } = request.query as {

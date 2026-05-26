@@ -105,7 +105,7 @@ export default function Room() {
     const token = localStorage.getItem("token") ?? "";
     const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
     const ws = new WebSocket(
-      `${proto}//${window.location.host}/ws/${roomId}?token=${encodeURIComponent(token)}`
+      `${proto}//${window.location.host}/api/room/${roomId}?token=${encodeURIComponent(token)}`
     );
     wsRef.current = ws;
 
