@@ -12,6 +12,8 @@ import LoggedInStartPage from "./pages/LoggedInStartPage";
 import CategoryPage, { type CategoryKey } from "./pages/CategoryPage";
 import InboxPage, { type ChatPreview } from "./pages/InboxPage";
 import ProfilePage from "./pages/ProfilePage";
+import OnboardingPage from "./pages/Onboarding/OnboardingPage";
+
 
 type Post = {
   id: string;
@@ -37,6 +39,7 @@ export function App() {
     localStorage.getItem("currentUser")
   );
   const [sessionExpired, setSessionExpired] = useState(false);
+  const [needsOnboarding, setNeedsOnboarding] = useState(false); //added a new onboarding state-variable
   const [prefillEmail] = useState("");
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedProfileEmail, setSelectedProfileEmail] = useState<
@@ -164,6 +167,7 @@ export function App() {
   const logout = useCallback((expired = false) => {
     clearAuth();
     setCurrentUser(null);
+    setNeedsOnboarding(false); //added a onboarding flag on logout clear
     if (expired) setSessionExpired(true);
   }, []);
 
@@ -183,6 +187,19 @@ export function App() {
       ?.split(/[._-]/)[0]
       ?.trim()
       .replace(/^\w/, (c) => c.toUpperCase()) || "Anna";
+
+//show onboarding after signup
+if (currentUser && needsOnboarding) {
+  return (
+    <OnboardingPage
+      onComplete={(data) => {
+        // TODO: save onboarding data to your backend here
+        console.log("Onboarding complete:", data);
+        setNeedsOnboarding(false);
+      }}
+    />
+  );
+}
 
   if (currentUser) {
     return (
@@ -303,12 +320,13 @@ export function App() {
   }
 
   return (
-    <HomePage
-      onSignupSuccess={(email) => {
+<HomePage
+  onSignupSuccess={(email) => {
         setSessionExpired(false);
-        setCurrentUser(email);
-      }}
-    >
+    setCurrentUser(email);
+    setNeedsOnboarding(true); //added the onboarding-after-signup trigger
+  }}
+>
       <div className="flex flex-col">
         {sessionExpired && (
           <div className="w-full bg-[var(--volly-forest-green)] font-['DM_Sans'] text-[var(--volly-white)] text-lg font-medium text-center py-1">
