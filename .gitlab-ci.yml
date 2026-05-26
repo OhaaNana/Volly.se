@@ -4,7 +4,6 @@ stages:
   - test
   - build
   - deploy
-  - cleanup
 
 variables:
   FRONTEND_IMAGE: $CI_REGISTRY_IMAGE/frontend
@@ -18,18 +17,7 @@ variables:
       files:
         - bun.lock
     paths:
-      - Backend/node_modules/
-      - frontend/node_modules/
-
-.bun_cache_pull:
-  cache:
-    key:
-      files:
-        - bun.lock
-    paths:
-      - Backend/node_modules/
-      - frontend/node_modules/
-    policy: pull
+      - node_modules/
 
 .on_any_env:
   rules:
@@ -50,14 +38,13 @@ install:
   stage: install
   image: oven/bun:1
   script:
-    - cd Backend && bun install --frozen-lockfile && cd ..
-    - cd frontend && bun install
+    - bun install --frozen-lockfile
 
 # Quality
 
 eslint:
   extends:
-    - .bun_cache_pull
+    - .bun_cache
     - .on_any_env
   stage: quality
   image: oven/bun:1
@@ -67,7 +54,7 @@ eslint:
 
 prettier:
   extends:
-    - .bun_cache_pull
+    - .bun_cache
     - .on_any_env
   stage: quality
   image: oven/bun:1
@@ -143,7 +130,7 @@ deploy_staging:
     - if: $CI_COMMIT_BRANCH == "master"
   environment:
     name: staging
-    url: https://volly-staging.labb.k3s.chas-lab.dev
+    url: https://staging-volly.labb.k3s.chas-lab.dev
   script:
     - kubectl apply -f k8s/staging/ -n doe25-group-15
     - kubectl rollout restart deployment/frontend-staging -n doe25-group-15
@@ -162,26 +149,3 @@ deploy_production:
     - kubectl apply -f k8s/production/ -n doe25-group-15
     - kubectl rollout restart deployment/frontend-production -n doe25-group-15
     - kubectl rollout restart deployment/backend-production -n doe25-group-15
-
-# Cleanup
-
-cleanup_registry:
-  stage: cleanup
-  image: alpine:latest
-  needs: [deploy_staging]
-  rules:
-    - if: $CI_COMMIT_BRANCH == "master"
-  script:
-    - apk add --no-cache curl jq
-    - |
-      REPOS=$(curl -s --header "JOB-TOKEN: $CI_JOB_TOKEN" \
-        "$CI_API_V4_URL/projects/$CI_PROJECT_ID/registry/repositories")
-      for REPO_ID in $(echo $REPOS | jq -r '.[].id'); do
-        OLD_TAGS=$(curl -s --header "JOB-TOKEN: $CI_JOB_TOKEN" \
-          "$CI_API_V4_URL/projects/$CI_PROJECT_ID/registry/repositories/$REPO_ID/tags" | \
-          jq -r '[.[] | select(.name | test("^[0-9a-f]{8}$"))] | sort_by(.created_at) | reverse | .[5:] | .[].name')
-        for TAG in $OLD_TAGS; do
-          curl -s --request DELETE --header "JOB-TOKEN: $CI_JOB_TOKEN" \
-            "$CI_API_V4_URL/projects/$CI_PROJECT_ID/registry/repositories/$REPO_ID/tags/$TAG"
-        done
-      done

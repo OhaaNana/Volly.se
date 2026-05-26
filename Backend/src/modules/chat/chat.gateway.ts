@@ -3,37 +3,34 @@ import { users, rooms } from "./chat.rooms";
 import type { WebSocket } from "@fastify/websocket";
 
 import { registerChatevents } from "./chat.events";
-import { getChatById } from "./chat.repo";
 
 export async function connection(app: FastifyInstance) {
   app.get(
     "/chat",
     { websocket: true },
-    async (socket: WebSocket, request: FastifyRequest) => {
+    (socket: WebSocket, request: FastifyRequest) => {
       const { userId, roomId } = request.query as {
         userId: string;
         roomId: string;
       };
 
+      //if (!query || !query.userId || !query.roomId) {
+      //console.log("Invalid query:", request.query);
+      //socket.close(1009, "Invalid query parameters");
+      //return;
+      //}
+
       if (!userId || !roomId) {
-        socket.close(1008, "Missing userId/roomId");
+        console.log("Missing query params");
+        socket.close(1008, "Invalid query parameters bla");
         return;
       }
-
-      const chat = await getChatById(Number(roomId), request);
-      if (!chat) {
-        socket.close(1008, "Chat not found");
-        return;
-      }
-
-      const uid = Number(userId);
-      if (uid !== chat.creator_id && uid !== chat.post_author_id) {
-        socket.close(1008, "Not a participant");
-        return;
-      }
-
       users.set(socket, { userId, roomId });
-      if (!rooms.has(roomId)) rooms.set(roomId, new Set());
+
+      if (!rooms.has(roomId)) {
+        rooms.set(roomId, new Set());
+      }
+
       rooms.get(roomId)!.add(socket);
 
       registerChatevents(socket, request);

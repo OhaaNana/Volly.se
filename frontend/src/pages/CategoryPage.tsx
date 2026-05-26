@@ -14,7 +14,7 @@ export type CategoryPost = {
   last_name?: string;
 };
 
-export type CategoryKey =
+type CategoryKey =
   | "allt"
   | "mental"
   | "teknik"
@@ -65,8 +65,6 @@ function badgeForPost(post: CategoryPost): string {
 type Props = {
   posts: CategoryPost[];
   onProfile?: (authorEmail?: string) => void;
-  initialCategory?: CategoryKey;
-  onContact?: (post: CategoryPost) => void;
 };
 
 function formatDisplayName(post: CategoryPost) {
@@ -85,51 +83,23 @@ function formatDisplayName(post: CategoryPost) {
   return "Okänt namn";
 }
 
-export default function CategoryPage({
-  posts,
-  onProfile,
-  onContact,
-  initialCategory,
-}: Props) {
-  const [activeCategory, setActiveCategory] = useState<CategoryKey>(
-    initialCategory ?? "allt"
-  );
+export default function CategoryPage({ posts, onProfile }: Props) {
+  const [activeCategory, setActiveCategory] = useState<CategoryKey>("allt");
   const [postKind, setPostKind] = useState<"seek" | "offer">("seek");
-  const [searchQuery, setSearchQuery] = useState("");
 
   const activeFilterLabel =
     CATEGORY_CARDS.find((c) => c.id === activeCategory)?.filterLabel ?? null;
 
   const filteredPosts = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-
     return posts.filter((p) => {
       const typeOk = !p.postType || p.postType === postKind;
       if (!typeOk) return false;
-      if (activeFilterLabel !== null && p.category !== activeFilterLabel) {
-        return false;
-      }
-
-      if (!query) return true;
-
-      const authorName = formatDisplayName(p).toLowerCase();
-      return (
-        p.title.toLowerCase().includes(query) ||
-        p.content.toLowerCase().includes(query) ||
-        (p.category?.toLowerCase().includes(query) ?? false) ||
-        authorName.includes(query) ||
-        (p.author_email?.toLowerCase().includes(query) ?? false) ||
-        (p.first_name?.toLowerCase().includes(query) ?? false) ||
-        (p.last_name?.toLowerCase().includes(query) ?? false) ||
-        (p.tags?.some((tag) => tag.toLowerCase().includes(query)) ?? false)
-      );
+      if (activeFilterLabel === null) return true;
+      return p.category === activeFilterLabel;
     });
-  }, [posts, activeFilterLabel, postKind, searchQuery]);
+  }, [posts, activeFilterLabel, postKind]);
 
   const count = filteredPosts.length;
-  const emptyMessage = searchQuery.trim()
-    ? "Inga inlägg matchar din sökning."
-    : "Inga inlägg matchar filtret ännu.";
 
   return (
     <div className="w-full min-w-0 self-stretch px-6 py-10 inline-flex flex-col justify-start items-center gap-8">
@@ -143,7 +113,7 @@ export default function CategoryPage({
           </p>
         </header>
 
-        <div className="self-stretch pb-8 inline-flex justify-start items-start gap-3">
+        <div className="-mx-1 flex gap-3 overflow-x-auto pb-1 pt-0.5 [scrollbar-width:thin]">
           {CATEGORY_CARDS.map((cat) => {
             const selected = activeCategory === cat.id;
             return (
@@ -152,48 +122,24 @@ export default function CategoryPage({
                 type="button"
                 onClick={() => setActiveCategory(cat.id)}
                 aria-pressed={selected}
-                className={`flex-1 min-w-0 p-4 rounded-2xl outline outline-1 outline-offset-[-1px] inline-flex flex-col justify-center items-start font-['DM_Sans'] ${
+                className={`flex min-w-[104px] shrink-0 flex-col items-center gap-2 rounded-2xl px-4 py-4 font-['DM_Sans'] transition-[background-color,color,box-shadow,outline-color] ${
                   selected
-                    ? "bg-Colors-foreground outline-Colors-foreground"
-                    : "bg-Colors-card outline-Colors-border"
+                    ? "bg-Colors-foreground text-white shadow-md outline outline-2 -outline-offset-2 outline-Colors-foreground"
+                    : "bg-Colors-card text-Colors-foreground outline outline-1 -outline-offset-1 outline-Colors-border hover:bg-Colors-muted/60"
                 }`}
               >
-                <div className="pb-1 flex flex-col justify-center items-center">
-                  <div
-                    className="justify-start text-foreground text-2xl font-semibold font-['DM_Sans']"
-                    aria-hidden
-                  >
-                    {cat.icon}
-                  </div>
-                </div>
-                <div
-                  className={`justify-start text-sm font-semibold font-['DM_Sans'] ${
-                    selected
-                      ? "text-Colors-background"
-                      : "text-Colors-foreground"
-                  }`}
+                <span className="text-2xl leading-none" aria-hidden>
+                  {cat.icon}
+                </span>
+                <span
+                  className={`text-center text-sm font-semibold leading-tight ${selected ? "text-white" : "text-Colors-foreground"}`}
                 >
                   {cat.label}
-                </div>
+                </span>
               </button>
             );
           })}
         </div>
-
-        <label className="w-full p-2.5 bg-white-3 rounded-[40px] shadow-[0px_4px_12px_0px_rgba(0,0,0,0.07)] outline outline-1 outline-offset-[-1px] outline-stone-300/40 inline-flex justify-start items-center gap-3 overflow-hidden cursor-text">
-          <i
-            aria-hidden
-            className="fi fi-br-search-heart ml-1 shrink-0 text-[20px] leading-none text-zinc-500"
-          />
-          <span className="sr-only">Sök efter inlägg, ämnen, taggar</span>
-          <input
-            type="search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Sök efter inlägg, ämnen, taggar..."
-            className="flex-1 min-w-0 bg-transparent font-['DM_Sans'] text-base font-normal leading-5 text-foreground outline-none placeholder:text-zinc-500"
-          />
-        </label>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-Colors-foreground text-lg font-semibold font-['DM_Sans'] sm:text-xl">
@@ -234,7 +180,7 @@ export default function CategoryPage({
         <div className="flex w-full flex-col items-stretch gap-6">
           {filteredPosts.length === 0 ? (
             <p className="rounded-2xl bg-Colors-card px-5 py-8 text-center text-Colors-muted-foreground outline outline-1 -outline-offset-1 outline-Colors-border font-['DM_Sans'] text-sm font-medium">
-              {emptyMessage}
+              Inga inlägg matchar filtret ännu.
             </p>
           ) : (
             filteredPosts.map((post) => (
@@ -268,7 +214,6 @@ export default function CategoryPage({
                 onProfile={
                   onProfile ? () => onProfile(post.author_email) : undefined
                 }
-                onContact={onContact ? () => onContact(post) : undefined}
               />
             ))
           )}

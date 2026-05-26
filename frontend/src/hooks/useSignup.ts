@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { saveToken } from "../utils/auth";
 import type {
   EmailStatus,
   SignupFormData,
@@ -80,7 +79,7 @@ export const useSignup = () => {
 
     setIsLoading(true);
     try {
-      const res = await fetch("/api/auth/register", {
+      const res = await fetch("http://127.0.0.1:3001/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -101,10 +100,7 @@ export const useSignup = () => {
       const data = await res.json();
       // backend returns token, store it
       if (data?.token) {
-        saveToken(data.token);
-      }
-      if (data?.id != null) {
-        localStorage.setItem("userId", String(data.id));
+        localStorage.setItem("token", data.token);
       }
 
       return { success: true, email: formData.email };

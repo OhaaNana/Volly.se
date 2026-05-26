@@ -28,8 +28,8 @@ type ProfileResponse = {
   bio?: string | null;
 };
 
-const PROFILE_API_BASE = "/api/users/by-email";
-const POSTS_API_BASE = "/api/posts";
+const PROFILE_API_BASE = "http://localhost:3001/api/users/by-email";
+const POSTS_API_BASE = "http://localhost:3001/posts";
 
 function getDisplayName(email: string) {
   const localPart = email.split("@")[0] || "Anna Andersson";
@@ -119,12 +119,9 @@ export default function ProfilePage({
       setIsEditing(false);
 
       try {
-        const token = localStorage.getItem("token");
         const response = await fetch(
           `${PROFILE_API_BASE}/${encodeURIComponent(userEmail)}`,
-          {
-            headers: token ? { Authorization: `Bearer ${token}` } : {},
-          }
+          { mode: "cors", credentials: "include" }
         );
 
         if (!response.ok) {
@@ -148,7 +145,7 @@ export default function ProfilePage({
 
         setErrorMessage(
           msg.includes("Failed to fetch")
-            ? "Kunde inte nå servern. Försök igen senare."
+            ? "Kunde inte nå servern på http://localhost:3001 — kontrollera att backend körs."
             : msg
         );
         setCurrentEmail(userEmail);
@@ -164,7 +161,8 @@ export default function ProfilePage({
 
       try {
         const response = await fetch(
-          `${POSTS_API_BASE}?author_email=${encodeURIComponent(userEmail)}`
+          `${POSTS_API_BASE}?author_email=${encodeURIComponent(userEmail)}`,
+          { mode: "cors", credentials: "include" }
         );
 
         if (!response.ok) {
@@ -208,7 +206,7 @@ export default function ProfilePage({
         setPosts([]);
         setErrorMessage(
           msg.includes("Failed to fetch")
-            ? "Kunde inte nå servern. Försök igen senare."
+            ? "Kunde inte nå servern på http://localhost:3001 — kontrollera att backend körs."
             : "Det gick inte att hämta inlägg."
         );
       } finally {
@@ -246,14 +244,14 @@ export default function ProfilePage({
     setStatusMessage("");
 
     try {
-      const token = localStorage.getItem("token");
       const response = await fetch(
         `${PROFILE_API_BASE}/${encodeURIComponent(userEmail)}`,
         {
           method: "PUT",
+          mode: "cors",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
           body: JSON.stringify({
             email: currentEmail,

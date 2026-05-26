@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export type CreatePostPayload = {
   title: string;
@@ -85,46 +85,12 @@ export default function CreatePostPage({ onSubmit, onCancel }: Props) {
   const [postType, setPostType] = useState<"seek" | "offer">("seek");
   const [category, setCategory] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
-  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   const toggleTag = (label: string) => {
     setTags((prev) =>
       prev.includes(label) ? prev.filter((t) => t !== label) : [...prev, label]
     );
   };
-
-  const hasUnsavedChanges =
-    title.trim() !== "" ||
-    content.trim() !== "" ||
-    category !== null ||
-    tags.length > 0;
-
-  const handleCancelClick = () => {
-    if (hasUnsavedChanges) {
-      setShowCancelConfirm(true);
-    } else {
-      onCancel?.();
-    }
-  };
-
-  const confirmDiscard = () => {
-    setShowCancelConfirm(false);
-    setTitle("");
-    setContent("");
-    setPostType("seek");
-    setCategory(null);
-    setTags([]);
-    onCancel?.();
-  };
-
-  useEffect(() => {
-    if (!showCancelConfirm) return;
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setShowCancelConfirm(false);
-    };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [showCancelConfirm]);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -309,7 +275,7 @@ export default function CreatePostPage({ onSubmit, onCancel }: Props) {
           <div className="self-stretch pt-2 inline-flex justify-start items-stretch gap-3 max-sm:flex-col">
             <button
               type="button"
-              onClick={handleCancelClick}
+              onClick={onCancel}
               className="flex-1 h-12 p-2.5 rounded-3xl outline outline-1 -outline-offset-1 outline-Colors-border inline-flex flex-col justify-center items-center bg-transparent hover:bg-Colors-muted/50 transition-colors"
             >
               <span className="justify-start text-Colors-foreground text-base font-semibold font-['DM_Sans'] leading-5">
@@ -328,65 +294,6 @@ export default function CreatePostPage({ onSubmit, onCancel }: Props) {
           </div>
         </form>
       </div>
-
-      {showCancelConfirm && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="cancel-post-title"
-          aria-describedby="cancel-post-desc"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
-          onClick={() => setShowCancelConfirm(false)}
-        >
-          <div
-            className="w-96 max-w-full p-6 bg-Colors-card rounded-3xl shadow-[0px_8px_32px_0px_rgba(0,157,157,0.18)] inline-flex flex-col justify-start items-start"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="self-stretch pb-6 flex flex-col justify-start items-center gap-3 overflow-hidden">
-              <div className="size-14 bg-red-500/20 rounded-[50px] inline-flex justify-center items-center gap-2.5">
-                <i
-                  aria-hidden
-                  className="fi fi-rr-trash text-[24px] leading-none text-red-500"
-                />
-              </div>
-              <div className="flex flex-col justify-start items-center gap-2">
-                <div
-                  id="cancel-post-title"
-                  className="justify-start text-Colors-foreground text-xl font-bold font-['DM_Sans']"
-                >
-                  Avbryt inlägg?
-                </div>
-                <div
-                  id="cancel-post-desc"
-                  className="justify-start text-Colors-muted-foreground text-sm font-normal font-['DM_Sans']"
-                >
-                  Det du skrivit kommer inte att sparas.
-                </div>
-              </div>
-            </div>
-            <div className="self-stretch h-11 inline-flex justify-start items-start gap-2 overflow-hidden">
-              <button
-                type="button"
-                onClick={() => setShowCancelConfirm(false)}
-                className="flex-1 self-stretch rounded-3xl outline outline-1 -outline-offset-1 outline-Colors-border inline-flex flex-col justify-center items-center overflow-hidden hover:bg-Colors-muted/40 transition-colors"
-              >
-                <span className="text-center justify-center text-Colors-foreground text-base font-semibold font-['DM_Sans']">
-                  Fortsätt skriva
-                </span>
-              </button>
-              <button
-                type="button"
-                onClick={confirmDiscard}
-                className="flex-1 self-stretch bg-red-500 rounded-3xl shadow-[0px_4px_16px_0px_rgba(22,26,38,0.05),0px_1px_2px_0px_rgba(22,26,38,0.04)] outline outline-1 -outline-offset-1 outline-Colors-border inline-flex flex-col justify-center items-center hover:bg-red-600 transition-colors"
-              >
-                <span className="text-center justify-center text-Colors-card text-base font-semibold font-['DM_Sans']">
-                  Ta bort inlägg
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

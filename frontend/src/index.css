@@ -6,12 +6,6 @@
   #D3FBD5 #D6E7D8 #E9E4DC #FDFAF4 #FFFFFF
 */
 @theme {
-  --volly-white: #f6fff8;
-  --volly-black: #050505;
-  --volly-forest-green: rgb(3 30 0 / 92%);
-  --volly-khaki-green: #89a886;
-  --volly-beige: #ffecd5;
-
   --color-background: #fdfaf4;
   --color-primary: #00ab46;
   --color-primary-soft: #d3fbd5;
