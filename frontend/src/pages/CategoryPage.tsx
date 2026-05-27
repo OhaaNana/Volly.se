@@ -32,9 +32,9 @@ const CATEGORY_CARDS: readonly {
   { id: "allt", label: "Allt", icon: "✨", filterLabel: null },
   {
     id: "mental",
-    label: "Mental hälsa",
+    label: "Hälsa",
     icon: "🌿",
-    filterLabel: "Mental hälsa",
+    filterLabel: "Hälsa",
   },
   { id: "teknik", label: "Teknik", icon: "💻", filterLabel: "Teknik" },
   { id: "vardag", label: "Vardag", icon: "🤝", filterLabel: "Vardag" },
@@ -131,9 +131,15 @@ export default function CategoryPage({
     ? "Inga inlägg matchar din sökning."
     : "Inga inlägg matchar filtret ännu.";
 
+  const headingLabel =
+    activeCategory === "allt"
+      ? "Alla inlägg"
+      : (CATEGORY_CARDS.find((cat) => cat.id === activeCategory)?.label ??
+        "Alla inlägg");
+
   return (
     <div className="w-full min-w-0 self-stretch px-6 py-10 inline-flex flex-col justify-start items-center gap-8">
-      <div className="w-full max-w-[900px] flex flex-col gap-6">
+      <div className="w-full max-w-225 flex flex-col gap-6">
         <header className="flex flex-col gap-1">
           <h1 className="text-Colors-foreground text-3xl font-bold font-['DM_Sans'] tracking-tight sm:text-4xl">
             Kategorier
@@ -152,10 +158,10 @@ export default function CategoryPage({
                 type="button"
                 onClick={() => setActiveCategory(cat.id)}
                 aria-pressed={selected}
-                className={`flex-1 min-w-0 p-4 rounded-2xl outline outline-1 outline-offset-[-1px] inline-flex flex-col justify-center items-start font-['DM_Sans'] ${
+                className={`flex-1 min-w-0 p-4 rounded-2xl border inline-flex flex-col justify-center items-start font-['DM_Sans'] ${
                   selected
-                    ? "bg-Colors-foreground outline-Colors-foreground"
-                    : "bg-Colors-card outline-Colors-border"
+                    ? "bg-Colors-foreground border-foreground"
+                    : "bg-card border-border hover:bg-muted transition"
                 }`}
               >
                 <div className="pb-1 flex flex-col justify-center items-center">
@@ -180,10 +186,10 @@ export default function CategoryPage({
           })}
         </div>
 
-        <label className="w-full p-2.5 bg-white-3 rounded-[40px] shadow-[0px_4px_12px_0px_rgba(0,0,0,0.07)] outline outline-1 outline-offset-[-1px] outline-stone-300/40 inline-flex justify-start items-center gap-3 overflow-hidden cursor-text">
+        <label className="w-full p-3 bg-card rounded-full shadow-soft border border-border inline-flex justify-start items-center gap-3 overflow-hidden cursor-text">
           <i
             aria-hidden
-            className="fi fi-br-search-heart ml-1 shrink-0 text-[20px] leading-none text-zinc-500"
+            className="fi fi-br-search-heart ml-1 shrink-0 text-4 leading-none text-zinc-500"
           />
           <span className="sr-only">Sök efter inlägg, ämnen, taggar</span>
           <input
@@ -191,16 +197,16 @@ export default function CategoryPage({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Sök efter inlägg, ämnen, taggar..."
-            className="flex-1 min-w-0 bg-transparent font-['DM_Sans'] text-base font-normal leading-5 text-foreground outline-none placeholder:text-zinc-500"
+            className="flex-1 min-w-0 text-sm font-normal text-foreground outline-none placeholder:text-zinc-500"
           />
         </label>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-Colors-foreground text-lg font-semibold font-['DM_Sans'] sm:text-xl">
-            Alla inlägg ({count})
+            {headingLabel} ({count})
           </h2>
           <div
-            className="inline-flex w-fit rounded-full bg-Colors-muted/90 p-1 outline outline-1 -outline-offset-1 outline-Colors-border"
+            className="inline-flex w-fit rounded-full bg-Colors-muted/90 p-1 border border-border"
             role="group"
             aria-label="Filtrera på typ av hjälp"
           >
@@ -208,10 +214,10 @@ export default function CategoryPage({
               type="button"
               onClick={() => setPostKind("seek")}
               aria-pressed={postKind === "seek"}
-              className={`rounded-full px-5 py-2 text-sm font-semibold font-['DM_Sans'] transition-colors ${
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
                 postKind === "seek"
-                  ? "bg-white text-Colors-foreground shadow-sm"
-                  : "text-Colors-muted-foreground hover:text-Colors-foreground"
+                  ? "bg-card text-foreground shadow-soft"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Söker
@@ -220,10 +226,10 @@ export default function CategoryPage({
               type="button"
               onClick={() => setPostKind("offer")}
               aria-pressed={postKind === "offer"}
-              className={`rounded-full px-5 py-2 text-sm font-semibold font-['DM_Sans'] transition-colors ${
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
                 postKind === "offer"
-                  ? "bg-white text-Colors-foreground shadow-sm"
-                  : "text-Colors-muted-foreground hover:text-Colors-foreground"
+                  ? "bg-card text-foreground shadow-soft"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Erbjuder

@@ -57,7 +57,7 @@ export default function LoggedInStartPage({
   onExploreCategories,
 }: Props) {
   return (
-    <div className="max-w-3xl w-full mx-auto px-4 sm:px-6 py-6 lg:py-10 space-y-8">
+    <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 py-6 lg:py-10 space-y-8">
       <section className="w-full rounded-3xl p-6 sm:p-8 bg-gradient-card border border-border relative overflow-hidden">
         <div className="absolute -right-10 -top-10 size-48 rounded-full bg-warm/15 blur-3xl" />
         <div className="absolute -left-10 -bottom-10 size-48 rounded-full bg-primary/10 blur-3xl" />
@@ -67,7 +67,7 @@ export default function LoggedInStartPage({
         <h1 className="text-3xl sm:text-4xl font-bold leading-tight mb-2">
           Vad kan vi lösa tillsammans idag?
         </h1>
-        <p className="text-muted-foreground max-w-md">
+        <p className="text-muted-foreground lg:max-w-xl md:max-w-sm">
           Skriv ett inlägg och nå ut till någon med rätt kunskap - eller
           utforska vad du själv kan bidra med.
         </p>

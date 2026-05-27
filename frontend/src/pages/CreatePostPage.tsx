@@ -148,9 +148,9 @@ export default function CreatePostPage({ onSubmit, onCancel }: Props) {
     "flex-1 min-w-0 p-5 bg-Colors-card rounded-2xl outline outline-2 -outline-offset-2 outline-Colors-border inline-flex flex-col justify-start items-start text-left transition-[outline-color,outline-width]";
 
   return (
-    <div className="w-full max-w-[1000px] min-h-0 py-6 inline-flex flex-col justify-start items-center overflow-hidden">
-      <div className="w-full max-w-[672px] px-4 py-6 flex flex-col justify-start items-start gap-1">
-        <div className="w-full max-w-[672px] pb-6 flex flex-col justify-start items-start gap-1 overflow-hidden">
+    <div className="w-full max-w-250 min-h-0 py-6 inline-flex flex-col justify-start items-center overflow-hidden">
+      <div className="w-full max-w-2xl px-4 py-6 flex flex-col justify-start items-start gap-1">
+        <div className="w-full max-w-2xl pb-6 flex flex-col justify-start items-start gap-1 overflow-hidden">
           <div className="self-stretch pb-1 inline-flex justify-center items-center">
             <h1 className="flex-1 justify-start text-Colors-foreground text-3xl font-bold font-['DM_Sans']">
               Skapa nytt inlägg
