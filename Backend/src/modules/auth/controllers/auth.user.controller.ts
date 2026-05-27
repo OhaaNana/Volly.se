@@ -10,7 +10,7 @@ export const createUser = async (
     const { email, password } = request.body;
 
     const result = await pool.query(
-      "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email, first_name, last_name",
+      "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email, first_name, last_name, bio",
       [email, password]
     );
 
@@ -31,7 +31,7 @@ export const getUser = async (
     const { id } = request.params;
 
     const result = await pool.query(
-      "SELECT id, email, first_name, last_name FROM users WHERE id = $1",
+      "SELECT id, email, first_name, last_name, bio FROM users WHERE id = $1",
       [id]
     );
 
@@ -49,22 +49,28 @@ export const getUser = async (
 export const updateUser = async (
   request: FastifyRequest<{
     Params: { id: string };
-    Body: { email: string; first_name?: string; last_name?: string };
+    Body: {
+      email: string;
+      first_name?: string;
+      last_name?: string;
+      bio?: string;
+    };
   }>,
   reply: FastifyReply
 ) => {
   try {
     const { id } = request.params;
-    const { email, first_name, last_name } = request.body;
+    const { email, first_name, last_name, bio } = request.body;
 
     const result = await pool.query(
       `UPDATE users
        SET email = COALESCE($1, email),
            first_name = COALESCE($2, first_name),
-           last_name = COALESCE($3, last_name)
-       WHERE id = $4
-       RETURNING id, email, first_name, last_name`,
-      [email, first_name, last_name, id]
+           last_name = COALESCE($3, last_name),
+           bio = COALESCE($4, bio)
+         WHERE id = $5
+       RETURNING id, email, first_name, last_name, bio`,
+      [email, first_name, last_name, bio, id]
     );
 
     if (result.rows.length === 0) {
@@ -107,7 +113,7 @@ export const getUsers = async (
 ) => {
   try {
     const result = await pool.query(
-      "SELECT id, email, first_name, last_name FROM users"
+      "SELECT id, email, first_name, last_name, bio FROM users"
     );
 
     reply.send(result.rows);
@@ -124,7 +130,7 @@ export const getUserByEmail = async (
     const { email } = request.params;
 
     const result = await pool.query(
-      "SELECT id, email, first_name, last_name FROM users WHERE email = $1",
+      "SELECT id, email, first_name, last_name, bio FROM users WHERE email = $1",
       [email]
     );
 
@@ -141,22 +147,28 @@ export const getUserByEmail = async (
 export const updateUserByEmail = async (
   request: FastifyRequest<{
     Params: { email: string };
-    Body: { email?: string; first_name?: string; last_name?: string };
+    Body: {
+      email?: string;
+      first_name?: string;
+      last_name?: string;
+      bio?: string;
+    };
   }>,
   reply: FastifyReply
 ) => {
   try {
     const { email: currentEmail } = request.params;
-    const { email, first_name, last_name } = request.body;
+    const { email, first_name, last_name, bio } = request.body;
 
     const result = await pool.query(
       `UPDATE users
        SET email = COALESCE($1, email),
            first_name = COALESCE($2, first_name),
-           last_name = COALESCE($3, last_name)
-       WHERE email = $4
-       RETURNING id, email, first_name, last_name`,
-      [email, first_name, last_name, currentEmail]
+           last_name = COALESCE($3, last_name),
+           bio = COALESCE($4, bio)
+       WHERE email = $5
+       RETURNING id, email, first_name, last_name, bio`,
+      [email, first_name, last_name, bio, currentEmail]
     );
 
     if (result.rows.length === 0) {

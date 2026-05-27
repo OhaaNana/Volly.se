@@ -8,6 +8,7 @@ export type PostCardProps = {
   title: string;
   body: string;
   category?: string;
+  tags?: string[];
   /** Tailwind-klass för avatar-cirkelns bakgrund, t.ex. `bg-sky-400` */
   avatarBgClassName?: string;
   onContact?: () => void;
@@ -27,6 +28,7 @@ export default function PostCard({
   avatarBgClassName = "bg-sky-400",
   onContact,
   onProfile,
+  tags,
 }: PostCardProps) {
   const resolvedAuthorName =
     authorName ?? `${authorFirstName ?? ""} ${authorLastName ?? ""}`.trim();
@@ -123,6 +125,16 @@ export default function PostCard({
               {category}
             </div>
           ) : null}
+          {tags && tags.length > 0
+            ? tags.map((t) => (
+                <div
+                  key={t}
+                  className="text-xs text-Colors-muted-foreground px-2 py-1 rounded-md bg-Colors-muted/60"
+                >
+                  {t}
+                </div>
+              ))
+            : null}
           {onProfile ? (
             <button
               type="button"
