@@ -97,12 +97,11 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
   const socketRef = useRef<WebSocket | null>(null);
 
   const userId = (() => {
-    const stored = Number(localStorage.getItem("userId"));
-    if (stored) return stored;
     try {
       const token = localStorage.getItem("token");
       if (!token) return 0;
-      const payload = JSON.parse(atob(token.split(".")[1]));
+      const b64 = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+      const payload = JSON.parse(atob(b64));
       return Number(payload.id) || 0;
     } catch {
       return 0;

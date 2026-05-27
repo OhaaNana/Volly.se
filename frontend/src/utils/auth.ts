@@ -25,4 +25,5 @@ export function clearAuth() {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(EXPIRY_KEY);
   localStorage.removeItem(USER_KEY);
+  localStorage.removeItem("userId");
 }

@@ -98,8 +98,9 @@ export default function Room({ roomId, onDisconnect }: Props) {
 
   useEffect(() => {
     const token = localStorage.getItem("token") ?? "";
+    const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
     const ws = new WebSocket(
-      `ws://localhost:3001/ws/${roomId}?token=${encodeURIComponent(token)}`
+      `${proto}//${window.location.host}/api/room/${roomId}?token=${encodeURIComponent(token)}`
     );
     wsRef.current = ws;
 

@@ -80,6 +80,7 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
         error?: string;
         details?: string;
         token?: string;
+        id?: number;
       } | null;
 
       if (!response.ok) {
@@ -92,6 +93,8 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
       }
 
       if (payload?.token) saveToken(payload.token);
+      if (payload?.id != null)
+        localStorage.setItem("userId", String(payload.id));
       localStorage.setItem("currentUser", formData.email);
       onSignupSuccess?.(formData.email);
       setStatusMessage("Kontot skapades.");

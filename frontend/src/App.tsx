@@ -343,9 +343,6 @@ export function App() {
                 setSelectedCategory(category ?? "allt");
                 setActiveLoggedInPage("kategorier");
               }}
-              onProfile={openProfileFromPost}
-              onContact={openChatFromPost}
-              posts={posts}
             />
           )}
         </MenuLoggedIn>
