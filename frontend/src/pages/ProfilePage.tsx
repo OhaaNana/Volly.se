@@ -226,6 +226,20 @@ export default function ProfilePage({
     };
   }, [userEmail]);
 
+  const deletePost = async (postId: string | number) => {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(`${POSTS_API_BASE}/${postId}`, {
+        method: "DELETE",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!res.ok) return;
+      setPosts((prev) => prev.filter((p) => p.id !== postId));
+    } catch (e) {
+      console.error("Error deleting post", e);
+    }
+  };
+
   const displayName =
     `${firstName} ${lastName}`.trim() || getDisplayName(currentEmail);
   const initials =
@@ -560,27 +574,41 @@ export default function ProfilePage({
                     </p>
                   </div>
 
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {post.category ? (
-                      <span className="rounded-full bg-[#D3FBD5] px-2.5 py-1 text-xs font-medium text-[#166534]">
-                        {post.category}
-                      </span>
-                    ) : (
-                      <span className="rounded-full bg-[#D3FBD5] px-2.5 py-1 text-xs font-medium text-[#166534]">
-                        Okänd kategori
-                      </span>
-                    )}
-
-                    {post.tags && post.tags.length > 0
-                      ? post.tags.map((t) => (
-                          <span
-                            key={t}
-                            className="rounded-full bg-Colors-muted px-2.5 py-1 text-xs font-medium text-Colors-muted-foreground"
-                          >
-                            {t}
-                          </span>
-                        ))
-                      : null}
+                  <div className="mt-4 flex items-center justify-between gap-2">
+                    <div className="flex flex-wrap gap-2">
+                      {post.category ? (
+                        <span className="rounded-full bg-[#D3FBD5] px-2.5 py-1 text-xs font-medium text-[#166534]">
+                          {post.category}
+                        </span>
+                      ) : (
+                        <span className="rounded-full bg-[#D3FBD5] px-2.5 py-1 text-xs font-medium text-[#166534]">
+                          Okänd kategori
+                        </span>
+                      )}
+                      {post.tags && post.tags.length > 0
+                        ? post.tags.map((t) => (
+                            <span
+                              key={t}
+                              className="rounded-full bg-Colors-muted px-2.5 py-1 text-xs font-medium text-Colors-muted-foreground"
+                            >
+                              {t}
+                            </span>
+                          ))
+                        : null}
+                    </div>
+                    {!isReadOnly ? (
+                      <button
+                        type="button"
+                        onClick={() => deletePost(post.id)}
+                        aria-label="Ta bort inlägg"
+                        className="size-8 shrink-0 rounded-full bg-red-50 outline outline-1 -outline-offset-1 outline-red-200 flex items-center justify-center hover:bg-red-100 transition-colors"
+                      >
+                        <i
+                          className="fi fi-rr-trash text-red-600 text-sm leading-none"
+                          aria-hidden="true"
+                        />
+                      </button>
+                    ) : null}
                   </div>
                 </article>
               ))

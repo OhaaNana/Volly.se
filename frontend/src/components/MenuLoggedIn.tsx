@@ -104,7 +104,11 @@ function Sidebar<Id extends string>({
 }) {
   return (
     <aside className="w-64 flex flex-col h-screen border-r border-border bg-sidebar p-6 pt-8 sticky top-0">
-      <div className="flex items-center gap-2 mb-8">
+      <button
+        type="button"
+        onClick={() => onNavigate("start" as Id)}
+        className="flex items-center gap-2 mb-8 hover:opacity-80 transition-opacity"
+      >
         <div className="size-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold shadow-glow">
           {brandInitial}
         </div>
@@ -112,7 +116,7 @@ function Sidebar<Id extends string>({
         <div className="font-display text-3xl font-bold tracking-tight">
           {brandName}
         </div>
-      </div>
+      </button>
 
       <nav className="flex flex-col gap-1">
         {items.map((item) => (
@@ -128,18 +132,22 @@ function Sidebar<Id extends string>({
 
       <div className="mt-auto space-y-2">
         {user ? (
-          <div className="p-4 rounded-3xl bg-gradient-soft border border-border flex overflow-hidden">
+          <button
+            type="button"
+            onClick={() => onNavigate("profil" as Id)}
+            className="w-full p-4 rounded-3xl bg-gradient-soft border border-border flex overflow-hidden hover:bg-muted transition-colors"
+          >
             <div className="flex items-center gap-2 min-w-0">
               <div className="flex-none size-10 bg-warm rounded-full inline-flex justify-center items-center text-primary-foreground font-semibold">
                 {user.initials}
               </div>
               <div className="flex-1 min-w-0 overflow-hidden">
-                <div className="truncate whitespace-nowrap text-sm font-semibold">
+                <div className="truncate whitespace-nowrap text-sm font-semibold text-left">
                   {user.name}
                 </div>
               </div>
             </div>
-          </div>
+          </button>
         ) : null}
 
         {onLogout ? (

@@ -121,41 +121,20 @@ export default function PostCard({
           />
           Kontakta
         </button>
-        <div className="flex items-center gap-3">
-          {onDelete ? (
-            <button
-              type="button"
-              onClick={onDelete}
-              aria-label="Ta bort inlägg"
-              title="Ta bort inlägg"
-              className="size-12 rounded-full bg-red-50 outline outline-1 -outline-offset-1 outline-red-200 flex justify-center items-center hover:bg-red-100 transition-colors"
-            >
-              <i
-                className="fi fi-rr-trash text-red-600 text-lg leading-none"
-                aria-hidden="true"
-              />
-            </button>
-          ) : (
-            <div className="size-12" aria-hidden="true" />
-          )}
-          {onProfile ? (
-            <button
-              type="button"
-              onClick={onProfile}
-              className="px-6 py-3.5 bg-neutral-50 rounded-3xl outline outline-1 outline-offset-[-1px] outline-zinc-400/30 flex justify-center items-center gap-2.5 overflow-hidden"
-            >
-              <span className="w-5 h-5 flex justify-center items-center gap-2.5">
-                <i
-                  className="fi fi-rr-circle-user text-dark-gray"
-                  aria-hidden="true"
-                />
-              </span>
-              <span className="justify-center text-dark-gray text-base font-medium font-['DM_Sans'] leading-4">
-                Profil
-              </span>
-            </button>
-          ) : null}
-        </div>
+        {onDelete ? (
+          <button
+            type="button"
+            onClick={onDelete}
+            aria-label="Ta bort inlägg"
+            title="Ta bort inlägg"
+            className="size-10 shrink-0 rounded-full bg-red-50 outline outline-1 -outline-offset-1 outline-red-200 flex justify-center items-center hover:bg-red-100 transition-colors"
+          >
+            <i
+              className="fi fi-rr-trash text-red-600 text-base leading-none"
+              aria-hidden="true"
+            />
+          </button>
+        ) : null}
         {onProfile ? (
           <button
             type="button"

@@ -57,41 +57,32 @@ function HowVollyWorks({ compact = false }: HowVollyWorksProps) {
     );
   }
   return (
-    <section
-      id="Funkar"
-      className="w-full self-stretch min-h-200 bg-background"
-    >
-      <div className="self-stretch h-200 pl-65 pr-8 pb-24 bg-background inline-flex flex-col justify-center items-end">
-        <div className="self-stretch flex flex-col justify-center items-center gap-12 overflow-hidden">
-          <h2 className="text-center text-icon-active text-5xl font-semibold font-['DM_Sans'] leading-13">
-            Hur Volly fungerar
-          </h2>
-          <div className="w-full max-w-5xl inline-flex justify-end items-center gap-7 flex-col lg:flex-row flex-wrap">
-            {HOW_IT_WORKS_CARDS.map((card) => (
-              <article
-                key={card.title}
-                className="w-full lg:w-[320px] p-5 bg-card rounded-2xl outline -outline-offset-1 outline-border inline-flex flex-col justify-start items-start gap-4 overflow-hidden"
-              >
-                <div className="size-16 bg-pastel-lime rounded-[50px] flex flex-col justify-center items-center overflow-hidden">
-                  <div className="size-14 inline-flex justify-center items-center">
-                    <i
-                      className={`${card.icon} text-2xl text-primary`}
-                      aria-hidden="true"
-                    />
-                  </div>
-                </div>
-                <div className="self-stretch flex flex-col justify-start items-start gap-1 overflow-hidden">
-                  <h3 className="self-stretch text-Forest text-lg font-semibold font-['DM_Sans']">
-                    {card.title}
-                  </h3>
-                  <p className="self-stretch text-muted-foreground text-lg font-normal font-['DM_Sans'] leading-6 whitespace-pre-line">
-                    {card.description}
-                  </p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
+    <section id="Funkar" className="w-full py-12">
+      <h2 className="mb-8 text-3xl font-bold font-['DM_Sans']">
+        Hur Volly fungerar
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        {HOW_IT_WORKS_CARDS.map((card) => (
+          <article
+            key={card.title}
+            className="p-6 bg-card rounded-2xl border border-border flex flex-col gap-4"
+          >
+            <div className="size-14 rounded-full bg-accent inline-flex items-center justify-center shrink-0">
+              <i
+                className={`${card.icon} text-2xl text-primary leading-none`}
+                aria-hidden="true"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <h3 className="text-lg font-semibold font-['DM_Sans']">
+                {card.title}
+              </h3>
+              <p className="text-sm text-muted-foreground font-['DM_Sans'] leading-6 whitespace-pre-line">
+                {card.description}
+              </p>
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   );
