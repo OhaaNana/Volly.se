@@ -1,5 +1,9 @@
 # Volly 
 
+### Skapad av Zero Bug Heroes 
+
+https://volly-staging.cc.k3s.chas-lab.dev/ 
+
 Volly är en volontär app som kopplar ihop människor som behöver hjälp med vardagliga sysslor med människor som vill hjälpa till.
 Man ska kunna skapa inlägg där man antingen ber om hjälp eller erbjuder sig hjälpa andra. Det kan va allt från vanliga vardags sysslor men även tekniska grejer.
 När man fått kontakt med någon så kan man både chatta eller ha videosamtal med andra. 
