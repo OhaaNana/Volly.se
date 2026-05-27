@@ -24,6 +24,7 @@ export type PostCardProps = {
   avatarBgClassName?: string;
   onContact?: () => void;
   onProfile?: () => void;
+  onDelete?: () => void;
   isSaved?: boolean;
   onToggleSave?: () => void;
 };
@@ -41,6 +42,7 @@ export default function PostCard({
   avatarBgClassName = "bg-sky-400",
   onContact,
   onProfile,
+  onDelete,
   tags,
   isSaved,
   onToggleSave,
@@ -177,6 +179,19 @@ export default function PostCard({
             <span className="justify-center text-dark-gray text-base font-medium font-['DM_Sans'] leading-4">
               Profil
             </span>
+          </button>
+        ) : null}
+        {onDelete ? (
+          <button
+            type="button"
+            onClick={onDelete}
+            aria-label="Ta bort inlägg"
+            className="size-[52px] shrink-0 flex items-center justify-center rounded-full bg-red-50 outline outline-1 outline-offset-[-1px] outline-red-200 hover:bg-red-100 transition-colors"
+          >
+            <i
+              className="fi fi-rr-trash text-red-500 text-base leading-none"
+              aria-hidden="true"
+            />
           </button>
         ) : null}
       </div>

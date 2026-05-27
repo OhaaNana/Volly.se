@@ -15,6 +15,7 @@ import CategoryPage, { type CategoryKey } from "./pages/CategoryPage";
 import InboxPage, { type ChatPreview } from "./pages/InboxPage";
 import ProfilePage from "./pages/ProfilePage";
 import OnboardingPage from "./pages/Onboarding/OnboardingPage";
+import ConfirmDialog from "./components/ConfirmDialog";
 
 type Post = {
   id: string;
@@ -50,6 +51,9 @@ export function App() {
     CategoryKey | undefined
   >(undefined);
   const [pendingChat, setPendingChat] = useState<ChatPreview | null>(null);
+  const [pendingDeletePostId, setPendingDeletePostId] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -63,11 +67,9 @@ export function App() {
           id: String(p.id),
           title: String(p.title ?? ""),
           content: String(p.description ?? p.content ?? ""),
-          // normalize created_at which may be ISO string, ms number, or seconds number
           createdAt: (() => {
             const v = p.created_at as unknown;
             if (typeof v === "number") {
-              // if it's seconds (<=1e11) convert to ms
               return v < 1e12 ? v * 1000 : v;
             }
             if (typeof v === "string") return new Date(v).getTime();
@@ -156,6 +158,37 @@ export function App() {
     }
   };
 
+  const handleDeletePost = useCallback((postId: string) => {
+    setPendingDeletePostId(postId);
+  }, []);
+
+  const cancelDeletePost = useCallback(() => {
+    setPendingDeletePostId(null);
+  }, []);
+
+  const confirmDeletePost = useCallback(async () => {
+    const postId = pendingDeletePostId;
+    if (!postId) return;
+    setPendingDeletePostId(null);
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`/api/posts/${postId}`, {
+        method: "DELETE",
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      });
+
+      if (!res.ok) {
+        console.error("Failed to delete post", res.status);
+        return;
+      }
+
+      setPosts((prev) => prev.filter((p) => p.id !== postId));
+    } catch (e) {
+      console.error("Error deleting post", e);
+    }
+  }, [pendingDeletePostId]);
+
   const openProfileFromPost = (authorEmail?: string) => {
     if (!authorEmail || authorEmail === currentUser) {
       setSelectedProfileEmail(null);
@@ -227,7 +260,6 @@ export function App() {
             <CreatePostPage
               onCancel={() => setActiveLoggedInPage("start")}
               onSubmit={async (post) => {
-                // send to backend
                 try {
                   const token = localStorage.getItem("token");
                   const body = {
@@ -250,10 +282,8 @@ export function App() {
 
                   if (!res.ok) {
                     console.error("Failed to create post", res.status);
-                    // optionally show error to user
                   } else {
                     const created = await res.json();
-                    // prepend created post to UI list
                     setPosts((prev) => [
                       {
                         id: String(created.id ?? crypto.randomUUID()),
@@ -306,6 +336,8 @@ export function App() {
             <CategoryPage
               posts={posts}
               onProfile={openProfileFromPost}
+              onDeletePost={handleDeletePost}
+              currentUserEmail={currentUser}
               initialCategory={selectedCategory}
               onContact={openChatFromPost}
             />
@@ -319,9 +351,21 @@ export function App() {
                 setSelectedCategory(category ?? "allt");
                 setActiveLoggedInPage("kategorier");
               }}
+              onProfile={openProfileFromPost}
+              onContact={openChatFromPost}
+              posts={posts}
             />
           )}
         </MenuLoggedIn>
+        <ConfirmDialog
+          open={pendingDeletePostId !== null}
+          title="Ta bort inlägg?"
+          description="Inlägget tas bort permanent och går inte att återställa."
+          confirmLabel="Ta bort inlägg"
+          cancelLabel="Avbryt"
+          onConfirm={confirmDeletePost}
+          onCancel={cancelDeletePost}
+        />
       </div>
     );
   }

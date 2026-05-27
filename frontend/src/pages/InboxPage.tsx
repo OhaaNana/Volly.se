@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import InboxConversationCard from "../components/InboxConversationCard";
+import { VideoChatLobby } from "./VideoChatLobby";
+import VideoChatRoom from "./VideoChatRoom";
 
 type ChatStatus = "pending" | "accepted" | "denied";
 
@@ -84,7 +85,7 @@ function buildPreview(chat: ChatRow, viewerId: number): ChatPreview {
 }
 
 export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
-  const navigate = useNavigate();
+  const [videoState, setVideoState] = useState<null | "lobby" | "room">(null);
   const [query, setQuery] = useState("");
   const [chats, setChats] = useState<ChatPreview[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -226,7 +227,7 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
 
   const openVideo = () => {
     if (!selectedId || status !== "accepted") return;
-    navigate(`/room/${selectedId}`);
+    setVideoState("lobby");
   };
   const filtered = chats.filter(
     (c) =>
@@ -235,9 +236,11 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
       c.threadTitle.toLowerCase().includes(query.toLowerCase()) ||
       c.preview.toLowerCase().includes(query.toLowerCase())
   );
+
   const selectChat = (id: string) => {
     setSelectedId(id);
   };
+
   const getStatusText = () => {
     if (!selectedId) return "Välj en chatt";
     if (status === "accepted")
@@ -264,9 +267,7 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
           </div>
           <label className="inline-flex h-10 max-h-10 min-h-10 w-full cursor-text items-center justify-start gap-3 self-stretch rounded-3xl bg-Colors-card px-4 outline outline-1 -outline-offset-1 outline-Colors-border">
             <span className="sr-only">Sök bland chattar</span>
-
             <SearchIcon />
-
             <input
               type="search"
               value={query}
@@ -395,6 +396,7 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
                   : "Chatt inte aktiv"
               }
               disabled={status !== "accepted"}
+              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
               className="flex-1 rounded-xl border border-border px-4 py-3 outline-none disabled:opacity-50"
             />
             <button
@@ -407,6 +409,27 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
           </div>
         </div>
       </section>
+      {videoState === "lobby" && selectedId && (
+        <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+          <VideoChatLobby
+            roomId={selectedId}
+            userName={selectedChat?.name ?? "Okänd"}
+            onConnect={() => setVideoState("room")}
+            onCancel={() => setVideoState(null)}
+          />
+        </div>
+      )}
+
+      {videoState === "room" && selectedId && (
+        <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+          <div className="w-full max-w-[800px] h-[85vh] rounded-3xl overflow-hidden">
+            <VideoChatRoom
+              roomId={selectedId}
+              onDisconnect={() => setVideoState(null)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

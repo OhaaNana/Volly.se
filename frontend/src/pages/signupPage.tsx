@@ -1,6 +1,6 @@
-import MyTextInput from "./components/MyTextInput";
-import { useSignup } from "./hooks/useSignup";
-import type { SignupPageProps } from "./types";
+import MyTextInput from "../components/MyTextInput";
+import { useSignup } from "../hooks/useSignup";
+import type { SignupPageProps } from "../types";
 
 function SignupPage({ onBackToLogin, onSignupSuccess }: SignupPageProps) {
   const {

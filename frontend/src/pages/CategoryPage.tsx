@@ -65,6 +65,8 @@ function badgeForPost(post: CategoryPost): string {
 type Props = {
   posts: CategoryPost[];
   onProfile?: (authorEmail?: string) => void;
+  onDeletePost?: (postId: string) => void;
+  currentUserEmail?: string | null;
   initialCategory?: CategoryKey;
   onContact?: (post: CategoryPost) => void;
 };
@@ -88,20 +90,32 @@ function formatDisplayName(post: CategoryPost) {
 export default function CategoryPage({
   posts,
   onProfile,
+  onDeletePost,
+  currentUserEmail,
   onContact,
   initialCategory,
 }: Props) {
   const [activeCategory, setActiveCategory] = useState<CategoryKey>(
     initialCategory ?? "allt"
   );
+  const [prevInitialCategory, setPrevInitialCategory] =
+    useState(initialCategory);
   const [postKind, setPostKind] = useState<"all" | "seek" | "offer">("all");
   const [searchQuery, setSearchQuery] = useState("");
+
+  if (initialCategory !== prevInitialCategory) {
+    setPrevInitialCategory(initialCategory);
+    if (initialCategory) {
+      setActiveCategory(initialCategory);
+    }
+  }
   const [savedPosts, setSavedPosts] = useState<Set<string>>(new Set());
 
   const toggleSave = (id: string) =>
     setSavedPosts((prev) => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
 
@@ -292,6 +306,13 @@ export default function CategoryPage({
                 onContact={onContact ? () => onContact(post) : undefined}
                 isSaved={savedPosts.has(post.id)}
                 onToggleSave={() => toggleSave(post.id)}
+                onDelete={
+                  onDeletePost &&
+                  currentUserEmail &&
+                  post.author_email === currentUserEmail
+                    ? () => onDeletePost(post.id)
+                    : undefined
+                }
               />
             ))
           )}
