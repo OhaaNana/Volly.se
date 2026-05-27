@@ -8,6 +8,16 @@ import { protect } from "../../middleware/auth.middleware";
 import type { FastifyInstance } from "fastify";
 
 export default async function chatRoutes(app: FastifyInstance) {
+  app.post("/chat", { preHandler: protect }, createChatHandler);
+  app.get("/my", { preHandler: protect }, listMyChatsHandler);
+  app.patch(
+    "/chat/:chatId/status",
+    { preHandler: protect },
+    updateChatStatusHandler
+  );
+
+  app.get("/chat/:roomId", { preHandler: protect }, getChatController);
+
   app.get("/health", {
     schema: {
       tags: ["Health"],
@@ -24,14 +34,4 @@ export default async function chatRoutes(app: FastifyInstance) {
       return reply.send({ status: "ok" });
     },
   });
-
-  app.post("/chat", { preHandler: protect }, createChatHandler);
-  app.get("/my", { preHandler: protect }, listMyChatsHandler);
-  app.patch(
-    "/chat/:chatId/status",
-    { preHandler: protect },
-    updateChatStatusHandler
-  );
-
-  app.get("/chat/:roomId", { preHandler: protect }, getChatController);
 }

@@ -5,6 +5,6 @@ import { videoChat } from "../modules/video-chat/video-chat";
 
 export default async function websocketSetup(app: FastifyInstance) {
   await app.register(fastifyWebsocket);
-  await app.register(connection);
+  await app.register(connection, { prefix: "/api" });
   await app.register(videoChat);
 }

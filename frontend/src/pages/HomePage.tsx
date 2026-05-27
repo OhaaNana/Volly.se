@@ -1,9 +1,8 @@
-import { useState, type FormEvent, type ReactNode } from "react";
-import { saveToken } from "./utils/auth";
-import Navbar from "./Navbar";
-import upArrow from "./assets/upArrow.png";
-import Footer from "./components/footer";
-import HowVollyWorks from "./components/HowVollyWorks";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { saveToken } from "../utils/auth";
+import Navbar from "../components/Navbar";
+import Footer from "../components/footer";
+import HowVollyWorks from "../components/HowVollyWorks";
 
 type HomePageProps = {
   children: ReactNode;
@@ -30,6 +29,17 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const SHOW_THRESHOLD = 300;
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > SHOW_THRESHOLD);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const updateField = (key: keyof typeof formData, value: string) => {
     setFormData((current) => ({ ...current, [key]: value }));
@@ -260,9 +270,18 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
       <button
         onClick={scroll}
         aria-label="Scroll to top"
-        className="fixed bottom-20 right-6 z-50 rounded-full bg-card p-2 shadow-lg hover:scale-105 transition-transform outline outline-border"
+        aria-hidden={!showScrollTop}
+        tabIndex={showScrollTop ? 0 : -1}
+        className={`fixed bottom-20 right-6 z-50 size-12 rounded-full bg-card shadow-lg outline outline-border flex justify-center items-center transition-[opacity,transform] duration-200 hover:scale-105 ${
+          showScrollTop
+            ? "opacity-100 pointer-events-auto translate-y-0"
+            : "opacity-0 pointer-events-none translate-y-2"
+        }`}
       >
-        <img src={upArrow} alt="pil" className="w-10 h-10 object-contain" />
+        <i
+          className="fi fi-rr-arrow-up text-icon-active text-2xl leading-none"
+          aria-hidden="true"
+        />
       </button>
 
       <Footer />

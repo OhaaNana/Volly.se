@@ -36,7 +36,6 @@ export type LoggedInMenuId = (typeof LOGGED_IN_MENU_ITEMS)[number]["id"];
 export type MenuLoggedInUser = {
   name: string;
   initials: string;
-  // rating removed
 };
 
 function SidebarItem<Id extends string>({

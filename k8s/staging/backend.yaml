@@ -21,9 +21,9 @@ spec:
           imagePullPolicy: Always
           env:
             - name: DATABASE_URL
-              value: postgres://postgres:postgres@postgres:5432/postgres
+              value: postgres://postgres:postgres@postgres-staging:5432/postgres
             - name: POSTGRES_URI
-              value: postgres://postgres:postgres@postgres:5432/postgres
+              value: postgres://postgres:postgres@postgres-staging:5432/postgres
             - name: CORS_ORIGIN
               value: "https://staging-volly.labb.k3s.chas-lab.dev"
             - name: JWT_SECRET

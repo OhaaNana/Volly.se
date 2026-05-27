@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { isTokenExpired, clearAuth } from "./utils/auth";
-import LoginPage from "./LogingPage";
-import HomePage from "./HomePage";
+import LoginPage from "./pages/LogingPage";
+import HomePage from "./pages/HomePage";
 import "./index.css";
 import MenuLoggedIn, {
   LOGGED_IN_MENU_ITEMS,
@@ -12,6 +12,8 @@ import LoggedInStartPage from "./pages/LoggedInStartPage";
 import CategoryPage, { type CategoryKey } from "./pages/CategoryPage";
 import InboxPage, { type ChatPreview } from "./pages/InboxPage";
 import ProfilePage from "./pages/ProfilePage";
+import OnboardingPage from "./pages/Onboarding/OnboardingPage";
+import ConfirmDialog from "./components/ConfirmDialog";
 
 type Post = {
   id: string;
@@ -37,6 +39,7 @@ export function App() {
     localStorage.getItem("currentUser")
   );
   const [sessionExpired, setSessionExpired] = useState(false);
+  const [needsOnboarding, setNeedsOnboarding] = useState(false); //added a new onboarding state-variable
   const [prefillEmail] = useState("");
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedProfileEmail, setSelectedProfileEmail] = useState<
@@ -46,6 +49,9 @@ export function App() {
     CategoryKey | undefined
   >(undefined);
   const [pendingChat, setPendingChat] = useState<ChatPreview | null>(null);
+  const [pendingDeletePostId, setPendingDeletePostId] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -59,11 +65,9 @@ export function App() {
           id: String(p.id),
           title: String(p.title ?? ""),
           content: String(p.description ?? p.content ?? ""),
-          // normalize created_at which may be ISO string, ms number, or seconds number
           createdAt: (() => {
             const v = p.created_at as unknown;
             if (typeof v === "number") {
-              // if it's seconds (<=1e11) convert to ms
               return v < 1e12 ? v * 1000 : v;
             }
             if (typeof v === "string") return new Date(v).getTime();
@@ -115,7 +119,7 @@ export function App() {
     }
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch("http://localhost:3001/api/chat/chat", {
+      const res = await fetch("/api/chat/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -152,6 +156,37 @@ export function App() {
     }
   };
 
+  const handleDeletePost = useCallback((postId: string) => {
+    setPendingDeletePostId(postId);
+  }, []);
+
+  const cancelDeletePost = useCallback(() => {
+    setPendingDeletePostId(null);
+  }, []);
+
+  const confirmDeletePost = useCallback(async () => {
+    const postId = pendingDeletePostId;
+    if (!postId) return;
+    setPendingDeletePostId(null);
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`/api/posts/${postId}`, {
+        method: "DELETE",
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      });
+
+      if (!res.ok) {
+        console.error("Failed to delete post", res.status);
+        return;
+      }
+
+      setPosts((prev) => prev.filter((p) => p.id !== postId));
+    } catch (e) {
+      console.error("Error deleting post", e);
+    }
+  }, [pendingDeletePostId]);
+
   const openProfileFromPost = (authorEmail?: string) => {
     if (!authorEmail || authorEmail === currentUser) {
       setSelectedProfileEmail(null);
@@ -164,6 +199,7 @@ export function App() {
   const logout = useCallback((expired = false) => {
     clearAuth();
     setCurrentUser(null);
+    setNeedsOnboarding(false); //added a onboarding flag on logout clear
     if (expired) setSessionExpired(true);
   }, []);
 
@@ -184,6 +220,19 @@ export function App() {
       ?.trim()
       .replace(/^\w/, (c) => c.toUpperCase()) || "Anna";
 
+  //show onboarding after signup
+  if (currentUser && needsOnboarding) {
+    return (
+      <OnboardingPage
+        onComplete={(data) => {
+          // TODO: save onboarding data to your backend here
+          console.log("Onboarding complete:", data);
+          setNeedsOnboarding(false);
+        }}
+      />
+    );
+  }
+
   if (currentUser) {
     return (
       <div className="h-screen w-full overflow-hidden bg-background">
@@ -203,7 +252,6 @@ export function App() {
             <CreatePostPage
               onCancel={() => setActiveLoggedInPage("start")}
               onSubmit={async (post) => {
-                // send to backend
                 try {
                   const token = localStorage.getItem("token");
                   const body = {
@@ -226,10 +274,8 @@ export function App() {
 
                   if (!res.ok) {
                     console.error("Failed to create post", res.status);
-                    // optionally show error to user
                   } else {
                     const created = await res.json();
-                    // prepend created post to UI list
                     setPosts((prev) => [
                       {
                         id: String(created.id ?? crypto.randomUUID()),
@@ -282,6 +328,8 @@ export function App() {
             <CategoryPage
               posts={posts}
               onProfile={openProfileFromPost}
+              onDeletePost={handleDeletePost}
+              currentUserEmail={currentUser}
               initialCategory={selectedCategory}
               onContact={openChatFromPost}
             />
@@ -295,9 +343,21 @@ export function App() {
                 setSelectedCategory(category ?? "allt");
                 setActiveLoggedInPage("kategorier");
               }}
+              onProfile={openProfileFromPost}
+              onContact={openChatFromPost}
+              posts={posts}
             />
           )}
         </MenuLoggedIn>
+        <ConfirmDialog
+          open={pendingDeletePostId !== null}
+          title="Ta bort inlägg?"
+          description="Inlägget tas bort permanent och går inte att återställa."
+          confirmLabel="Ta bort inlägg"
+          cancelLabel="Avbryt"
+          onConfirm={confirmDeletePost}
+          onCancel={cancelDeletePost}
+        />
       </div>
     );
   }
@@ -307,6 +367,7 @@ export function App() {
       onSignupSuccess={(email) => {
         setSessionExpired(false);
         setCurrentUser(email);
+        setNeedsOnboarding(true); //added the onboarding-after-signup trigger
       }}
     >
       <div className="flex flex-col">

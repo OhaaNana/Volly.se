@@ -1,6 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
+const backendUrl = process.env.BACKEND_URL ?? "http://localhost:3001";
+
 export default defineConfig({
   plugins: [react()],
   build: {
@@ -11,14 +13,20 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://127.0.0.1:3001",
+        target: backendUrl,
         ws: true,
       },
     },
   },
   preview: {
-    port: 3000,
+    port: 4173,
     host: true,
+    proxy: {
+      "/api": {
+        target: backendUrl,
+        ws: true,
+      },
+    },
     allowedHosts: [
       "volly-staging.cc.k3s.chas-lab.dev",
       "volly.cc.k3s.chas-lab.dev",
