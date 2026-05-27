@@ -9,7 +9,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: volly.labb.k3s.chas-lab.dev
+    - host: volly.cc.k3s.chas-lab.dev
       http:
         paths:
           - path: /
@@ -18,7 +18,7 @@ spec:
               service:
                 name: frontend-production
                 port:
-                  number: 3000
+                  number: 4173
           - path: /api
             pathType: Prefix
             backend:
