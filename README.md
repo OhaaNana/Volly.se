@@ -39,6 +39,7 @@ bun install
 Starta databasen: 
 ```bash 
 docker compose up -d 
+```
 
 Starta backend:
 ```bash 
