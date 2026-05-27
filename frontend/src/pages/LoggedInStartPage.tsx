@@ -1,21 +1,13 @@
-import type { CategoryKey } from "./CategoryPage";
+import PostCard from "../components/PostCard";
+import type { CategoryKey, CategoryPost } from "./CategoryPage";
 
 type Props = {
   firstName: string;
   onCreatePost: () => void;
-<<<<<<< Updated upstream
   onExploreCategories?: (category?: CategoryKey) => void;
-=======
-  onExploreCategories?: () => void;
   onProfile?: (authorEmail?: string) => void;
-  onContact?: (post: Post) => void;
-  posts?: Post[];
-  formatDisplayName?: (
-    firstName?: string,
-    lastName?: string,
-    authorEmail?: string
-  ) => string;
->>>>>>> Stashed changes
+  onContact?: (post: CategoryPost) => void;
+  posts?: CategoryPost[];
 };
 
 const POPULAR_CATEGORIES: {
@@ -62,17 +54,67 @@ const POPULAR_CATEGORIES: {
   },
 ];
 
+function formatTimeAgo(createdAt: number): string {
+  if (typeof createdAt !== "number" || Number.isNaN(createdAt)) return "Okänt";
+  const normalized = createdAt < 1e12 ? createdAt * 1000 : createdAt;
+  const sec = Math.floor((Date.now() - normalized) / 1000);
+  if (sec < 60) return "nyss";
+  const min = Math.floor(sec / 60);
+  if (min < 60) return `${min} min sen`;
+  const h = Math.floor(min / 60);
+  if (h < 48) return `${h}h sen`;
+  const d = Math.floor(h / 24);
+  return `${d} d sen`;
+}
+
+function badgeForPost(post: CategoryPost): string {
+  if (post.postType === "seek") return "Söker hjälp";
+  if (post.postType === "offer") return "Erbjuder hjälp";
+  return "Inlägg";
+}
+
+function getAuthorName(post: CategoryPost): string {
+  const fullName = `${post.first_name ?? ""} ${post.last_name ?? ""}`.trim();
+  if (fullName) return fullName;
+  if (post.author_email) {
+    const localPart = post.author_email.split("@")[0] ?? "";
+    const parts = localPart.split(/[._-]/).filter(Boolean);
+    if (parts.length > 0) {
+      return parts
+        .slice(0, 2)
+        .map((part) => part.replace(/^\w/, (c) => c.toUpperCase()))
+        .join(" ");
+    }
+  }
+  return "Okänt namn";
+}
+
+function getInitials(post: CategoryPost): string {
+  if (post.first_name || post.last_name) {
+    return `${post.first_name ?? ""}${post.last_name ?? ""}`
+      .trim()
+      .slice(0, 2)
+      .toUpperCase();
+  }
+  if (post.author_email) {
+    return post.author_email
+      .split("@")[0]
+      .split(/[._-]/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? "")
+      .join("");
+  }
+  return "??";
+}
+
 export default function LoggedInStartPage({
   firstName,
   onCreatePost,
   onExploreCategories,
-<<<<<<< Updated upstream
-=======
   onProfile,
   onContact,
   posts,
-  formatDisplayName,
->>>>>>> Stashed changes
 }: Props) {
   return (
     <div className="w-full min-w-0 self-stretch overflow-x-hidden px-4 py-10 sm:px-6 sm:py-12 inline-flex flex-col justify-start items-center gap-8">
@@ -139,36 +181,6 @@ export default function LoggedInStartPage({
           ))}
         </div>
       </div>
-<<<<<<< Updated upstream
-=======
-
-      <div className="w-full max-w-[920px] inline-flex flex-wrap justify-start items-center gap-3">
-        <div className="px-7 py-1.5 bg-neutral-700 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-zinc-100 text-xs font-semibold font-['DM_Sans'] leading-5">
-            Allt
-          </div>
-        </div>
-        <div className="px-7 py-1.5 bg-white-2 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-neutral-700 text-xs font-semibold font-['DM_Sans'] leading-5">
-            Söker hjälp
-          </div>
-        </div>
-        <div className="px-7 py-1.5 bg-white-2 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-neutral-700 text-xs font-semibold font-['DM_Sans'] leading-5">
-            Erbjuder hjälp
-          </div>
-        </div>
-        <div className="px-7 py-1.5 bg-white-2 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-neutral-700 text-xs font-semibold font-['DM_Sans'] leading-5">
-            Video
-          </div>
-        </div>
-        <div className="px-7 py-1.5 bg-white-2 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-neutral-700 text-xs font-semibold font-['DM_Sans'] leading-5">
-            Chatt
-          </div>
-        </div>
-      </div>
 
       <div
         className={`w-full max-w-[920px] space-y-4 ${
@@ -198,7 +210,6 @@ export default function LoggedInStartPage({
           <div className="p-6 text-center text-zinc-500">Inga inlägg än.</div>
         )}
       </div>
->>>>>>> Stashed changes
     </div>
   );
 }

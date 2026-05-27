@@ -9,13 +9,8 @@ import MenuLoggedIn, {
 } from "./components/MenuLoggedIn";
 import CreatePostPage from "./pages/CreatePostPage";
 import LoggedInStartPage from "./pages/LoggedInStartPage";
-<<<<<<< Updated upstream
 import CategoryPage, { type CategoryKey } from "./pages/CategoryPage";
-import InboxPage from "./pages/InboxPage";
-=======
-import CategoryPage from "./pages/CategoryPage";
 import InboxPage, { type ChatPreview } from "./pages/InboxPage";
->>>>>>> Stashed changes
 import ProfilePage from "./pages/ProfilePage";
 
 type Post = {
@@ -47,13 +42,10 @@ export function App() {
   const [selectedProfileEmail, setSelectedProfileEmail] = useState<
     string | null
   >(null);
-<<<<<<< Updated upstream
   const [selectedCategory, setSelectedCategory] = useState<
     CategoryKey | undefined
   >(undefined);
-=======
   const [pendingChat, setPendingChat] = useState<ChatPreview | null>(null);
->>>>>>> Stashed changes
 
   useEffect(() => {
     let mounted = true;
@@ -67,11 +59,9 @@ export function App() {
           id: String(p.id),
           title: String(p.title ?? ""),
           content: String(p.description ?? p.content ?? ""),
-          // normalize created_at which may be ISO string, ms number, or seconds number
           createdAt: (() => {
             const v = p.created_at as unknown;
             if (typeof v === "number") {
-              // if it's seconds (<=1e11) convert to ms
               return v < 1e12 ? v * 1000 : v;
             }
             if (typeof v === "string") return new Date(v).getTime();
@@ -211,7 +201,6 @@ export function App() {
             <CreatePostPage
               onCancel={() => setActiveLoggedInPage("start")}
               onSubmit={async (post) => {
-                // send to backend
                 try {
                   const token = localStorage.getItem("token");
                   const body = {
@@ -234,10 +223,8 @@ export function App() {
 
                   if (!res.ok) {
                     console.error("Failed to create post", res.status);
-                    // optionally show error to user
                   } else {
                     const created = await res.json();
-                    // prepend created post to UI list
                     setPosts((prev) => [
                       {
                         id: String(created.id ?? crypto.randomUUID()),
@@ -290,11 +277,8 @@ export function App() {
             <CategoryPage
               posts={posts}
               onProfile={openProfileFromPost}
-<<<<<<< Updated upstream
               initialCategory={selectedCategory}
-=======
               onContact={openChatFromPost}
->>>>>>> Stashed changes
             />
           ) : activeLoggedInPage === "inkorg" ? (
             <InboxPage pendingChat={pendingChat} />
@@ -302,18 +286,13 @@ export function App() {
             <LoggedInStartPage
               firstName={firstName}
               onCreatePost={() => setActiveLoggedInPage("skapa")}
-<<<<<<< Updated upstream
               onExploreCategories={(category) => {
                 setSelectedCategory(category ?? "allt");
                 setActiveLoggedInPage("kategorier");
               }}
-=======
-              onExploreCategories={() => setActiveLoggedInPage("kategorier")}
               onProfile={openProfileFromPost}
               onContact={openChatFromPost}
               posts={posts}
-              formatDisplayName={formatDisplayName}
->>>>>>> Stashed changes
             />
           )}
         </MenuLoggedIn>

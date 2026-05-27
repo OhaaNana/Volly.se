@@ -16,7 +16,7 @@ async function start() {
   app.register(userRoutes, { prefix: "/api/users" });
   app.register(chatRoutes, { prefix: "/api/chat" });
   app.register(postsRoutes, { prefix: "/api" });
-  app.register(turnRoutes, { prefix: "/api/turn-credentials" });
+  app.register(turnRoutes, { prefix: "/api" });
   setupErrorHandlers(app);
 
   await app.listen({ port: 3001, host: "0.0.0.0" });

@@ -8,6 +8,7 @@ services:
     environment:
       POSTGRES_URI: postgresql://postgres:postgres@database:5432/postgres
       DATABASE_URL: postgresql://postgres:postgres@database:5432/postgres
+      JWT_SECRET: ${JWT_SECRET:-supersecretjwt123}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-supersecretrefresh123}
       TURN_SECRET: your_turn_secret_here
       TURN_URL: turn:YOUR_SERVER_IP:3478
@@ -15,9 +16,13 @@ services:
       - database
 
   frontend:
-    build: ./Frontend
+    build: ./frontend
     ports:
       - "4173:4173"
+    environment:
+      BACKEND_URL: http://backend:3001
+    depends_on:
+      - backend
 
   database:
     image: postgres:16

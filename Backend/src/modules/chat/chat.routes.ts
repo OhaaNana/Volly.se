@@ -8,8 +8,6 @@ import { protect } from "../../middleware/auth.middleware";
 import type { FastifyInstance } from "fastify";
 
 export default async function chatRoutes(app: FastifyInstance) {
-<<<<<<< Updated upstream
-=======
   app.post("/chat", { preHandler: protect }, createChatHandler);
   app.get("/my", { preHandler: protect }, listMyChatsHandler);
   app.patch(
@@ -20,8 +18,6 @@ export default async function chatRoutes(app: FastifyInstance) {
 
   app.get("/chat/:roomId", { preHandler: protect }, getChatController);
 
-  // Test route
->>>>>>> Stashed changes
   app.get("/health", {
     schema: {
       tags: ["Health"],
@@ -38,26 +34,4 @@ export default async function chatRoutes(app: FastifyInstance) {
       return reply.send({ status: "ok" });
     },
   });
-<<<<<<< Updated upstream
-
-  app.get("/:roomId", {
-    schema: {
-      tags: ["Chat"],
-      params: {
-        type: "object",
-        properties: {
-          roomId: { type: "string", description: "Room ID" },
-        },
-      },
-      response: {
-        200: {
-          description: "Chat messages",
-          type: "object",
-        },
-      },
-    },
-    handler: getChatController,
-  });
-=======
->>>>>>> Stashed changes
 }
