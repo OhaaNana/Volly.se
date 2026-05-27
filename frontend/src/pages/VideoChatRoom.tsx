@@ -18,7 +18,7 @@ export default function Room() {
   const [sharing, setSharing] = useState(false);
 
 
-  const createPC = async (ws: WebSocket) => {
+  const createPC = (ws: WebSocket) => {
 
   const res = await fetch("/api/turn-credentials");
   const data = await res.json()
