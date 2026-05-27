@@ -145,13 +145,13 @@ export default function CreatePostPage({ onSubmit, onCancel }: Props) {
     "flex-1 min-w-0 p-5 bg-Colors-card rounded-2xl  border-2 border-border inline-flex flex-col justify-start items-start text-left transition-[outline-color,outline-width]";
 
   return (
-    <div className="w-full min-w-0 self-stretch px-12 py-16 inline-flex flex-col justify-start items-center gap-8">
-      <div className="w-full max-w-225 flex flex-col gap-6">
-        <header className="flex flex-col gap-1">
-          <h1 className="text-Colors-foreground text-3xl font-bold tracking-tight sm:text-4xl">
+    <div className="w-full min-w-0 self-stretch inline-flex flex-col justify-start items-center gap-8">
+      <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 lg:py-10">
+        <header className="mb-6">
+          <h1 className="font-display mb-1 text-3xl font-bold tracking-tight">
             Skapa nytt inlägg
           </h1>
-          <p className="text-Colors-muted-foreground text-base font-medium">
+          <p className="text-muted-foreground">
             Berätta vad du behöver - eller vad du kan bidra med.
           </p>
         </header>
@@ -226,7 +226,7 @@ export default function CreatePostPage({ onSubmit, onCancel }: Props) {
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Beskriv kort vad ditt inlägg handlar om"
               required
-              className="self-stretch h-12 px-4 bg-card rounded-3xl border border-border text-foreground placeholder:text-muted-foreground text-base font-normal shadow-soft"
+              className="self-stretch h-12 px-4 bg-card rounded-3xl border border-border text-foreground placeholder:text-muted-foreground text-base font-normal shadow-soft focus:outline-none focus:ring focus:ring-ring"
             />
           </label>
 
@@ -240,7 +240,7 @@ export default function CreatePostPage({ onSubmit, onCancel }: Props) {
               placeholder="Berätta lite mer om vad du söker eller vill hjälpa till med."
               rows={4}
               required
-              className="self-stretch min-h-28 p-4 bg-Colors-card rounded-2xl border border-border text-foreground placeholder:text-muted-foreground text-base font-normal resize-y shadow-soft"
+              className="self-stretch min-h-28 p-4 bg-Colors-card rounded-2xl border border-border text-foreground placeholder:text-muted-foreground text-base font-normal resize-y shadow-soft focus:outline-none focus:ring focus:ring-ring"
             />
           </label>
 

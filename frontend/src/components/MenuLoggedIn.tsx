@@ -54,10 +54,10 @@ function SidebarItem<Id extends string>({
       type="button"
       onClick={() => onNavigate(item.id)}
       aria-current={isActive ? "page" : undefined}
-      className={`flex items-center gap-3 px-4 py-3 rounded-full text-sm font-medium transition-all ${
+      className={`flex items-center gap-3 px-4 py-3 rounded-full text-base font-medium transition-all ${
         isActive
           ? "bg-accent text-active"
-          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+          : "hover:bg-muted hover:text-foreground"
       }`}
     >
       <div className="size-5 flex justify-center items-center">
@@ -103,13 +103,13 @@ function Sidebar<Id extends string>({
   user?: MenuLoggedInUser;
 }) {
   return (
-    <aside className="w-64 flex flex-col h-screen border-r border-border bg-sidebar p-6 sticky top-0">
-      <div className="flex items-center gap-2 mb-10">
-        <div className="size-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold shadow-glow">
+    <aside className="w-64 flex flex-col h-screen border-r border-border bg-sidebar p-6 pt-8 sticky top-0">
+      <div className="flex items-center gap-2 mb-8">
+        <div className="size-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold shadow-glow">
           {brandInitial}
         </div>
 
-        <div className="font-display text-2xl font-bold tracking-tight">
+        <div className="font-display text-3xl font-bold tracking-tight">
           {brandName}
         </div>
       </div>
@@ -146,7 +146,7 @@ function Sidebar<Id extends string>({
           <button
             type="button"
             onClick={onLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-full text-foreground hover:bg-destructive/10 hover:text-destructive transition"
           >
             <div className="size-5 flex justify-center items-center">
               <i
@@ -154,7 +154,7 @@ function Sidebar<Id extends string>({
                 className="fi fi-rr-exit text-[16px] leading-none"
               />
             </div>
-            <div className="text-sm font-medium">Logga ut</div>
+            <div className="text-base font-medium">Logga ut</div>
           </button>
         ) : null}
       </div>

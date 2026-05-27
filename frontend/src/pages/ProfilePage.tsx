@@ -324,7 +324,7 @@ export default function ProfilePage({
 
             <div className="absolute inset-x-0 top-18 flex items-start justify-between px-5 pb-4 sm:px-7">
               <div className="flex items-end gap-4">
-                <div className="flex size-24 items-center justify-center overflow-hidden rounded-3xl border-4 border-Colors-card bg-[#D3FBD5] text-3xl font-bold text-[#166534] shadow-[0px_8px_24px_-8px_rgba(22,26,38,0.12)]">
+                <div className="flex size-24 items-center justify-center overflow-hidden rounded-3xl border-4 border-Colors-card bg-warm text-3xl font-bold text-card shadow-[0px_8px_24px_-8px_rgba(22,26,38,0.12)]">
                   {initials}
                 </div>
                 <div className="hidden flex-col gap-1 pb-1 sm:flex">

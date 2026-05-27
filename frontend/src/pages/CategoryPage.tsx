@@ -161,7 +161,7 @@ export default function CategoryPage({
         </p>
       </header>
 
-      <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {CATEGORY_CARDS.map((cat) => {
           const selected = activeCategory === cat.id;
           return (
@@ -219,7 +219,7 @@ export default function CategoryPage({
             type="button"
             onClick={() => setPostKind("seek")}
             aria-pressed={postKind === "seek"}
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+            className={`rounded-full px-3 py-1.5 text-sm font-semibold transition ${
               postKind === "seek"
                 ? "bg-card text-foreground shadow-soft"
                 : "text-muted-foreground hover:text-foreground"
@@ -231,7 +231,7 @@ export default function CategoryPage({
             type="button"
             onClick={() => setPostKind("offer")}
             aria-pressed={postKind === "offer"}
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+            className={`rounded-full px-3 py-1.5 text-sm font-semibold transition ${
               postKind === "offer"
                 ? "bg-card text-foreground shadow-soft"
                 : "text-muted-foreground hover:text-foreground"

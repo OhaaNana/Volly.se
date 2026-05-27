@@ -6,7 +6,7 @@ const HOW_IT_WORKS_CARDS = [
       "Utforska flödet för att hitta människor som söker eller erbjuder stöd - eller skapa ett eget inlägg för att be eller erbjuda hjälp till andra.\n\nNär du hittar ett inlägg du vill svara på skickas en meddelandeförfrågan för att starta en privat chatt mellan er.",
   },
   {
-    icon: "fi fi-rr-video-camera",
+    icon: "fi fi-rr-video-camera-alt",
     title: "Chatta & videosamtala",
     description:
       "Lär känna varandra tryggt direkt i Volly genom chatt och videosamtal.\n\nVideosamtal blir tillgängligt först efter att en chatt har startats, vilket fungerar som en extra säkerhetsåtgärd och ger båda parter möjlighet att känna sig bekväma innan vidare kontakt.",
@@ -28,7 +28,7 @@ function HowVollyWorks({ compact = false }: HowVollyWorksProps) {
     return (
       <section className="w-full">
         <div className="mx-auto">
-          <h2 className="font-display text-lg font-bold mb-3">
+          <h2 className="font-display text-xl font-bold mb-3">
             Hur Volly fungerar
           </h2>
 
@@ -38,15 +38,15 @@ function HowVollyWorks({ compact = false }: HowVollyWorksProps) {
                 key={card.title}
                 className="p-4 rounded-2xl bg-card border border-border"
               >
-                <div className="w-9 h-9 rounded-full bg-accent text-primary inline-flex items-center justify-center mb-3">
+                <div className="size-12 rounded-full bg-accent text-primary inline-flex items-center justify-center mb-3">
                   <i
                     className={`${card.icon} text-xl leading-0`}
                     aria-hidden="true"
                   />
                 </div>
 
-                <p className="font-semibold text-sm mb-1">{card.title}</p>
-                <p className="text-xs text-muted-foreground whitespace-pre-line">
+                <p className="font-semibold text-base mb-1">{card.title}</p>
+                <p className="text-sm text-muted-foreground whitespace-pre-line">
                   {card.description}
                 </p>
               </article>

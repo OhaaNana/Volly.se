@@ -442,7 +442,7 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
                       : "Chatt inte aktiv"
                   }
                   disabled={status !== "accepted"}
-                  className="flex-1 rounded-full focus:ring-2 focus:ring-ring border border-border bg-card px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted-foreground disabled:opacity-50"
+                  className="flex-1 rounded-full border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground disabled:opacity-50 focus:outline-none focus:ring focus:ring-ring"
                 />
                 <button
                   onClick={sendMessage}

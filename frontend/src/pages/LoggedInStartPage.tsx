@@ -122,7 +122,7 @@ export default function LoggedInStartPage({
       <section className="w-full rounded-3xl p-6 sm:p-8 bg-gradient-card border border-border relative overflow-hidden">
         <div className="absolute -right-10 -top-10 size-48 rounded-full bg-warm/15 blur-3xl" />
         <div className="absolute -left-10 -bottom-10 size-48 rounded-full bg-primary/10 blur-3xl" />
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-card text-xs font-semibold text-primary border border-border mb-4">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-card text-sm font-semibold text-primary border border-border mb-4">
           Välkommen tillbaka, {firstName}
         </div>
         <h1 className="text-3xl sm:text-4xl font-bold leading-tight mb-2">
@@ -153,10 +153,10 @@ export default function LoggedInStartPage({
       <section className="w-full">
         <div className="w-full inline-flex flex-col justify-center items-start gap-3">
           <div>
-            <h2 className="font-display text-lg font-bold">
+            <h2 className="font-display text-xl font-bold">
               Populära kategorier
             </h2>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Klicka på en kategori för att komma till flödet
             </p>
           </div>
@@ -168,7 +168,7 @@ export default function LoggedInStartPage({
                 onClick={() => onExploreCategories?.(cat.id)}
                 className={`flex-1 flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-full border border-border ${cat.bgClass} hover:bg-muted transition`}
               >
-                <span className={`${cat.textClass} text-xs font-medium`}>
+                <span className={`${cat.textClass} text-sm font-medium`}>
                   {cat.label}
                 </span>
               </button>
@@ -181,7 +181,7 @@ export default function LoggedInStartPage({
         <HowVollyWorks compact />
       </section>
       <div
-        className={`w-full max-w-[920px] space-y-4 ${
+        className={`w-full max-w-230 space-y-4 ${
           posts && posts.length > 1
             ? "overflow-y-auto max-h-[64vh] pr-2 green-scrollbar"
             : ""
