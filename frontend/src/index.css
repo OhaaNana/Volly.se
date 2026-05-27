@@ -74,12 +74,6 @@
   --color-ring: var(--ring);
   --color-sidebar: var(--sidebar);
   --color-active: var(--active);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-chart-6: var(--chart-5);
   --font-sans: "DM Sans", sans-serif;
 }
 
@@ -115,13 +109,6 @@
 
   --active: #216826;
 
-  --chart-1: oklch(0.62 0.13 195);
-  --chart-2: oklch(0.78 0.13 45);
-  --chart-3: oklch(0.72 0.13 155);
-  --chart-4: oklch(0.65 0.15 290);
-  --chart-5: oklch(0.7 0.15 60);
-  --chart-6: oklch(0.58 0.17 269);
-
   --gradient-warm: linear-gradient(135deg, #fc9b6f 0%, #f07f77 100%);
   --gradient-hero: linear-gradient(135deg, #00AB46/0.8 0%, #00C11D/0.7 100%);
   --gradient-soft: linear-gradient(180deg, #f1fff1 0%, #fef8ed 100%);
@@ -141,7 +128,7 @@
   html,
   body {
     overflow-x: hidden;
-    font-family: var(--font-dm-sans);
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
 
@@ -194,6 +181,7 @@
 
   .line-clamp-3 {
     display: -webkit-box;
+    line-clamp: 3;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -207,7 +195,7 @@
   }
 
   .btn-volly-cta {
-    @apply bg-linear-to-b from-orange-300 to-red-400 rounded-md outline outline-1 -outline-offset-1 outline-border;
+    @apply bg-linear-to-b from-orange-300 to-red-400 rounded-md outline -outline-offset-1 outline-border;
     box-shadow:
       0px 8px 24px -8px rgba(22, 26, 38, 0.08),
       0px 1px 3px 0px rgba(22, 26, 38, 0.05);

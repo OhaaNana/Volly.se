@@ -254,7 +254,7 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
           <div className="justify-start font-['DM_Sans'] text-2xl font-bold text-foreground">
             Inkorg
           </div>
-          <label className="inline-flex h-10 max-h-10 min-h-10 w-full cursor-text items-center justify-start gap-3 self-stretch rounded-3xl bg-Colors-card px-4 outline outline-1 -outline-offset-1 outline-Colors-border">
+          <label className="inline-flex h-10 max-h-10 min-h-10 w-full cursor-text items-center justify-start gap-3 self-stretch rounded-3xl bg-Colors-card px-4 outline -outline-offset-1 outline-Colors-border">
             <span className="sr-only">Sök bland chattar</span>
 
             <SearchIcon />

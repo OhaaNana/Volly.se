@@ -315,7 +315,7 @@ export default function ProfilePage({
   };
 
   return (
-    <div className="w-full min-w-0 px-4 py-8 sm:px-6 lg:px-8">
+    <div className="w-full min-w-0 px-10 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
         <section className="overflow-hidden rounded-[28px] border border-Colors-border bg-Colors-card shadow-[0px_8px_24px_-8px_rgba(22,26,38,0.08),0px_1px_3px_0px_rgba(22,26,38,0.05)]">
           <div className="relative h-44 overflow-hidden">
@@ -368,7 +368,7 @@ export default function ProfilePage({
 
           <div className="flex flex-col gap-5 px-5 pb-6 sm:px-7">
             <div className="flex flex-col gap-2">
-              <h2 className="text-2xl font-bold text-[#161a26] sm:text-3xl">
+              <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
                 {displayName}
               </h2>
               <p className="max-w-3xl text-base leading-7 text-Colors-muted-foreground">
@@ -380,33 +380,33 @@ export default function ProfilePage({
 
             <form className="grid gap-4 sm:grid-cols-2" onSubmit={saveProfile}>
               <label className="flex flex-col gap-2 sm:col-span-1">
-                <span className="text-sm font-semibold text-[#161a26]">
+                <span className="text-sm font-semibold text-foreground">
                   Förnamn
                 </span>
                 <input
                   value={firstName}
                   onChange={(event) => setFirstName(event.target.value)}
                   disabled={isFormLocked}
-                  className="h-12 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-base text-[#161a26] outline-none transition-shadow disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
+                  className="h-12 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-base text-foreground outline-none transition-shadow disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
                   placeholder="Förnamn"
                 />
               </label>
 
               <label className="flex flex-col gap-2 sm:col-span-1">
-                <span className="text-sm font-semibold text-[#161a26]">
+                <span className="text-sm font-semibold text-foreground">
                   Efternamn
                 </span>
                 <input
                   value={lastName}
                   onChange={(event) => setLastName(event.target.value)}
                   disabled={isFormLocked}
-                  className="h-12 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-base text-[#161a26] outline-none transition-shadow disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
+                  className="h-12 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-base text-foreground outline-none transition-shadow disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
                   placeholder="Efternamn"
                 />
               </label>
 
               <label className="flex flex-col gap-2 sm:col-span-2">
-                <span className="text-sm font-semibold text-[#161a26]">
+                <span className="text-sm font-semibold text-foreground">
                   E-post
                 </span>
                 <input
@@ -414,20 +414,20 @@ export default function ProfilePage({
                   value={currentEmail}
                   onChange={(event) => setCurrentEmail(event.target.value)}
                   disabled={isFormLocked}
-                  className="h-12 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-base text-[#161a26] outline-none transition-shadow disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
+                  className="h-12 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-base text-foreground outline-none transition-shadow disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
                   placeholder="namn@exempel.se"
                 />
               </label>
 
               <label className="flex flex-col gap-2 sm:col-span-2">
-                <span className="text-sm font-semibold text-[#161a26]">
+                <span className="text-sm font-semibold text-foreground">
                   Om dig själv
                 </span>
                 <textarea
                   value={bio}
                   onChange={(event) => setBio(event.target.value)}
                   disabled={isFormLocked}
-                  className="min-h-32 rounded-3xl border border-Colors-border bg-Colors-card px-4 py-3 text-base text-[#161a26] outline-none transition-shadow placeholder:text-Colors-muted-foreground disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
+                  className="min-h-32 rounded-3xl border border-Colors-border bg-Colors-card px-4 py-3 text-base text-foreground outline-none transition-shadow placeholder:text-Colors-muted-foreground disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
                   placeholder="Skriv något om vad du kan hjälpa till med, språk du talar eller vad du söker hjälp med."
                 />
               </label>
@@ -471,24 +471,24 @@ export default function ProfilePage({
             </form>
 
             <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl bg-orange-50/70 px-3 py-4 text-center ring-1 ring-inset ring-[#e9e4dc]">
-                <div className="text-lg font-bold text-[#161a26]">
+              <div className="rounded-2xl bg-orange-50/70 px-3 py-4 text-center ring-1 ring-inset ring-border">
+                <div className="text-lg font-bold text-foreground">
                   {posts.length}
                 </div>
                 <div className="mt-0.5 text-xs font-semibold uppercase tracking-wide text-Colors-muted-foreground">
                   Inlägg
                 </div>
               </div>
-              <div className="rounded-2xl bg-orange-50/70 px-3 py-4 text-center ring-1 ring-inset ring-[#e9e4dc]">
-                <div className="text-lg font-bold text-[#161a26]">
+              <div className="rounded-2xl bg-orange-50/70 px-3 py-4 text-center ring-1 ring-inset ring-border">
+                <div className="text-lg font-bold text-foreground">
                   {offeredPosts}
                 </div>
                 <div className="mt-0.5 text-xs font-semibold uppercase tracking-wide text-Colors-muted-foreground">
                   Erbjuder
                 </div>
               </div>
-              <div className="rounded-2xl bg-orange-50/70 px-3 py-4 text-center ring-1 ring-inset ring-[#e9e4dc]">
-                <div className="text-lg font-bold text-[#161a26]">
+              <div className="rounded-2xl bg-orange-50/70 px-3 py-4 text-center ring-1 ring-inset ring-border">
+                <div className="text-lg font-bold text-foreground">
                   {seekingPosts}
                 </div>
                 <div className="mt-0.5 text-xs font-semibold uppercase tracking-wide text-Colors-muted-foreground">
@@ -510,7 +510,7 @@ export default function ProfilePage({
 
         <section className="space-y-4">
           <div className="flex items-center justify-between gap-4">
-            <h3 className="text-xl font-bold text-[#161a26]">
+            <h3 className="text-xl font-bold text-foreground">
               {isReadOnly ? "Inlägg" : "Dina inlägg"}
             </h3>
             <span className="rounded-full bg-Colors-muted px-3 py-1 text-xs font-semibold text-Colors-muted-foreground">
@@ -534,7 +534,7 @@ export default function ProfilePage({
                         )}
                       </div>
                       <div className="min-w-0 pt-0.5">
-                        <div className="truncate text-sm font-semibold text-[#161a26]">
+                        <div className="truncate text-sm font-semibold text-foreground">
                           {`${post.first_name ?? firstName} ${post.last_name ?? lastName}`.trim() ||
                             displayName}
                         </div>
@@ -552,7 +552,7 @@ export default function ProfilePage({
                   </div>
 
                   <div className="mt-4 space-y-1.5">
-                    <h4 className="text-lg font-bold leading-6 text-[#161a26]">
+                    <h4 className="text-lg font-bold leading-6 text-foreground">
                       {post.title ?? "Utan rubrik"}
                     </h4>
                     <p className="text-sm leading-6 text-Colors-muted-foreground">

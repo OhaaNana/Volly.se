@@ -138,13 +138,13 @@ export default function CategoryPage({
         "Alla inlägg");
 
   return (
-    <div className="w-full min-w-0 self-stretch px-6 py-10 inline-flex flex-col justify-start items-center gap-8">
+    <div className="w-full min-w-0 self-stretch px-12 py-16 inline-flex flex-col justify-start items-center gap-8">
       <div className="w-full max-w-225 flex flex-col gap-6">
         <header className="flex flex-col gap-1">
-          <h1 className="text-Colors-foreground text-3xl font-bold font-['DM_Sans'] tracking-tight sm:text-4xl">
+          <h1 className="text-Colors-foreground text-3xl font-bold tracking-tight sm:text-4xl">
             Kategorier
           </h1>
-          <p className="text-Colors-muted-foreground text-base font-medium font-['DM_Sans']">
+          <p className="text-Colors-muted-foreground text-base font-medium">
             Hitta inlägg inom specifika kategorier
           </p>
         </header>
@@ -239,7 +239,7 @@ export default function CategoryPage({
 
         <div className="flex w-full flex-col items-stretch gap-6">
           {filteredPosts.length === 0 ? (
-            <p className="rounded-2xl bg-Colors-card px-5 py-8 text-center text-Colors-muted-foreground outline outline-1 -outline-offset-1 outline-Colors-border font-['DM_Sans'] text-sm font-medium">
+            <p className="rounded-2xl bg-Colors-card px-5 py-8 text-center text-Colors-muted-foreground outline -outline-offset-1 outline-Colors-border font-['DM_Sans'] text-sm font-medium">
               {emptyMessage}
             </p>
           ) : (

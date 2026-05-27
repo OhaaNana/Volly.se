@@ -195,7 +195,7 @@ export default function MenuLoggedIn<Id extends string>({
         brandInitial={brandInitial}
         user={user}
       />
-      <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-auto bg-Colors-background p-6">
+      <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-auto bg-Colors-background">
         {children ?? <h1>{activeId}</h1>}
       </main>
     </div>
