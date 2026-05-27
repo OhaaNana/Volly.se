@@ -138,112 +138,105 @@ export default function CategoryPage({
         "Alla inlägg");
 
   return (
-    <div className="w-full min-w-0 self-stretch px-12 py-16 inline-flex flex-col justify-start items-center gap-8">
-      <div className="w-full max-w-225 flex flex-col gap-6">
-        <header className="flex flex-col gap-1">
-          <h1 className="text-Colors-foreground text-3xl font-bold tracking-tight sm:text-4xl">
-            Kategorier
-          </h1>
-          <p className="text-Colors-muted-foreground text-base font-medium">
-            Hitta inlägg inom specifika kategorier
-          </p>
-        </header>
+    <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 lg:py-10">
+      <header className="mb-6">
+        <h1 className="font-display mb-1 text-3xl font-bold tracking-tight">
+          Kategorier
+        </h1>
+        <p className="text-muted-foreground">
+          Hitta hjälp inom ett ämne — eller erbjuda din egen.
+        </p>
+      </header>
 
-        <div className="self-stretch pb-8 inline-flex justify-start items-start gap-3">
-          {CATEGORY_CARDS.map((cat) => {
-            const selected = activeCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setActiveCategory(cat.id)}
-                aria-pressed={selected}
-                className={`flex-1 min-w-0 p-4 rounded-2xl border inline-flex flex-col justify-center items-start font-['DM_Sans'] ${
-                  selected
-                    ? "bg-Colors-foreground border-foreground"
-                    : "bg-card border-border hover:bg-muted transition"
-                }`}
-              >
-                <div className="pb-1 flex flex-col justify-center items-center">
-                  <div
-                    className="justify-start text-foreground text-2xl font-semibold font-['DM_Sans']"
-                    aria-hidden
-                  >
-                    {cat.icon}
-                  </div>
-                </div>
-                <div
-                  className={`justify-start text-sm font-semibold font-['DM_Sans'] ${
-                    selected
-                      ? "text-Colors-background"
-                      : "text-Colors-foreground"
-                  }`}
-                >
-                  {cat.label}
-                </div>
-              </button>
-            );
-          })}
-        </div>
+      <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        {CATEGORY_CARDS.map((cat) => {
+          const selected = activeCategory === cat.id;
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => setActiveCategory(cat.id)}
+              aria-pressed={selected}
+              className={`rounded-2xl border p-4 text-left transition ${
+                selected
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-border bg-card hover:bg-muted"
+              }`}
+            >
+              <div className="mb-1 text-2xl" aria-hidden>
+                {cat.icon}
+              </div>
+              <div className="text-sm font-semibold leading-tight">
+                {cat.label}
+              </div>
+            </button>
+          );
+        })}
+      </div>
 
-        <label className="w-full p-3 bg-card rounded-full shadow-soft border border-border inline-flex justify-start items-center gap-3 overflow-hidden cursor-text">
-          <i
-            aria-hidden
-            className="fi fi-br-search-heart ml-1 shrink-0 text-4 leading-none text-zinc-500"
-          />
-          <span className="sr-only">Sök efter inlägg, ämnen, taggar</span>
-          <input
-            type="search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Sök efter inlägg, ämnen, taggar..."
-            className="flex-1 min-w-0 text-sm font-normal text-foreground outline-none placeholder:text-zinc-500"
-          />
-        </label>
+      <label className="mb-6 inline-flex w-full items-center gap-3 overflow-hidden rounded-full border border-border bg-card p-3 shadow-soft">
+        <i
+          aria-hidden
+          className="fi fi-br-search-heart ml-1 shrink-0 text-4 leading-none text-zinc-500"
+        />
+        <span className="sr-only">Sök efter inlägg, ämnen, taggar</span>
+        <input
+          type="search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Sök efter inlägg, ämnen, taggar..."
+          className="min-w-0 flex-1 text-sm font-normal text-foreground outline-none placeholder:text-zinc-500"
+        />
+      </label>
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="text-Colors-foreground text-lg font-semibold font-['DM_Sans'] sm:text-xl">
-            {headingLabel} ({count})
-          </h2>
-          <div
-            className="inline-flex w-fit rounded-full bg-Colors-muted/90 p-1 border border-border"
-            role="group"
-            aria-label="Filtrera på typ av hjälp"
+      <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="font-display text-xl font-bold">
+          {headingLabel}{" "}
+          <span className="text-sm font-normal text-muted-foreground">
+            ({count})
+          </span>
+        </h2>
+
+        <div
+          className="inline-flex w-fit rounded-full border border-border bg-muted p-1"
+          role="group"
+          aria-label="Filtrera på typ av hjälp"
+        >
+          <button
+            type="button"
+            onClick={() => setPostKind("seek")}
+            aria-pressed={postKind === "seek"}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+              postKind === "seek"
+                ? "bg-card text-foreground shadow-soft"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
           >
-            <button
-              type="button"
-              onClick={() => setPostKind("seek")}
-              aria-pressed={postKind === "seek"}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
-                postKind === "seek"
-                  ? "bg-card text-foreground shadow-soft"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Söker
-            </button>
-            <button
-              type="button"
-              onClick={() => setPostKind("offer")}
-              aria-pressed={postKind === "offer"}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
-                postKind === "offer"
-                  ? "bg-card text-foreground shadow-soft"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Erbjuder
-            </button>
-          </div>
+            Söker
+          </button>
+          <button
+            type="button"
+            onClick={() => setPostKind("offer")}
+            aria-pressed={postKind === "offer"}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+              postKind === "offer"
+                ? "bg-card text-foreground shadow-soft"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Erbjuder
+          </button>
         </div>
+      </div>
 
-        <div className="flex w-full flex-col items-stretch gap-6">
-          {filteredPosts.length === 0 ? (
-            <p className="rounded-2xl bg-Colors-card px-5 py-8 text-center text-Colors-muted-foreground outline -outline-offset-1 outline-Colors-border font-['DM_Sans'] text-sm font-medium">
-              {emptyMessage}
-            </p>
-          ) : (
-            filteredPosts.map((post) => (
+      <div className="flex w-full flex-col items-stretch gap-6">
+        {filteredPosts.length === 0 ? (
+          <p className="rounded-2xl bg-card px-5 py-8 text-center text-sm font-medium text-muted-foreground outline -outline-offset-1 outline-border">
+            {emptyMessage}
+          </p>
+        ) : (
+          <div className="grid gap-4 lg:grid-cols-2">
+            {filteredPosts.map((post) => (
               <PostCard
                 key={post.id}
                 authorName={formatDisplayName(post)}
@@ -276,9 +269,9 @@ export default function CategoryPage({
                 }
                 onContact={onContact ? () => onContact(post) : undefined}
               />
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

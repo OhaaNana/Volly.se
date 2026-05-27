@@ -319,7 +319,7 @@ export default function ProfilePage({
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
         <section className="overflow-hidden rounded-[28px] border border-Colors-border bg-Colors-card shadow-[0px_8px_24px_-8px_rgba(22,26,38,0.08),0px_1px_3px_0px_rgba(22,26,38,0.05)]">
           <div className="relative h-44 overflow-hidden">
-            <div className="absolute inset-x-0 top-0 h-28 bg-linear-to-r from-[#0f766e] via-[#16a34a] to-[#15803d]" />
+            <div className="absolute inset-x-0 top-0 h-28 bg-gradient-hero" />
             <div className="absolute inset-x-0 top-28 h-16 bg-Colors-card" />
 
             <div className="absolute inset-x-0 top-18 flex items-start justify-between px-5 pb-4 sm:px-7">

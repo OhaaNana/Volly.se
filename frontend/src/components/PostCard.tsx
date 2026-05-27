@@ -45,103 +45,89 @@ export default function PostCard({
         "")
     ).toUpperCase();
 
-  const contactButtonClassName =
-    "flex-1 min-w-0 inline-flex items-center justify-center gap-2.5 rounded-full bg-green-400 px-6 py-3.5 outline outline-1 outline-offset-[-1px] outline-zinc-400/30";
+  const badgeToneClassName =
+    badgeLabel?.toLowerCase().includes("sök") ||
+    badgeLabel?.toLowerCase().includes("needs")
+      ? "bg-warm/20 text-warm-foreground"
+      : "bg-success/15 text-success";
 
   return (
-    <article className="w-full max-w-[750px] p-7 bg-white-3 rounded-[30px] outline outline-1 outline-offset-[-1px] outline-stone-300/40 flex flex-col justify-start items-start gap-2.5 overflow-hidden">
-      <div className="self-stretch inline-flex justify-between items-start overflow-hidden">
-        <div className="rounded-3xl flex justify-start items-center gap-2.5">
-          <div className="inline-flex flex-col justify-start items-start overflow-hidden">
-            <div className="w-10 h-10 relative">
-              <div
-                className={`w-10 h-10 left-0 top-0 absolute rounded-full ${avatarBgClassName}`}
-              />
-              <div className="left-[9px] top-[10px] absolute justify-start text-white text-base font-semibold font-['DM_Sans'] leading-5">
-                {resolvedInitials}
-              </div>
+    <article className="w-full rounded-3xl border border-border/60 bg-card p-5 shadow-card transition-shadow hover:shadow-glow sm:p-6">
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="size-11 shrink-0 rounded-full ring-2 ring-background">
+            <div
+              className={`size-11 rounded-full ${avatarBgClassName} flex items-center justify-center text-sm font-semibold text-white`}
+            >
+              {resolvedInitials}
             </div>
           </div>
-          <div className="self-stretch pt-1.5 inline-flex flex-col justify-center items-start gap-2 overflow-hidden">
-            <div className="justify-start text-dark-gray text-base font-medium font-['DM_Sans'] leading-[10px]">
+
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold text-foreground">
               {resolvedAuthorName}
-            </div>
-            <div className="inline-flex justify-start items-end gap-[5px]">
-              <div className="self-stretch flex justify-start items-end gap-1">
-                <div className="justify-end text-zinc-600 text-xs font-medium font-['DM_Sans'] leading-[10px]">
-                  {timeLabel}
-                </div>
-              </div>
-            </div>
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {timeLabel ?? "Nyss"} · {badgeLabel ?? "Inlägg"}
+            </p>
           </div>
         </div>
-        <div className="px-3.5 py-0.5 bg-orange-100 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-amber-900/80 text-xs font-semibold font-['DM_Sans'] leading-5">
-            {badgeLabel}
-          </div>
-        </div>
+
+        <span
+          className={`shrink-0 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${badgeToneClassName}`}
+        >
+          {badgeLabel ?? "Inlägg"}
+        </span>
       </div>
 
-      <div className="self-stretch py-2.5 flex flex-col justify-start items-start gap-[5px] overflow-hidden">
-        <h2 className="justify-end text-dark-gray text-lg font-semibold font-['DM_Sans'] leading-5">
-          {title}
-        </h2>
-        <p className="justify-end text-zinc-600 text-base font-normal font-['DM_Sans'] leading-6 line-clamp-3">
-          {body}
-        </p>
+      <h3 className="font-display mb-1.5 text-lg font-bold leading-snug">
+        {title}
+      </h3>
+      <p className="mb-4 text-sm leading-relaxed text-muted-foreground line-clamp-3">
+        {body}
+      </p>
+
+      <div className="mb-4 flex flex-wrap gap-2">
         {category ? (
-          <div className="pt-1">
-            <span className="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-900 font-['DM_Sans']">
-              {category}
-            </span>
-          </div>
+          <span className="inline-flex items-center rounded-full bg-primary-soft px-2.5 py-1 text-xs font-medium text-primary">
+            {category}
+          </span>
         ) : null}
+
+        {tags && tags.length > 0
+          ? tags.map((tag) => (
+              <span
+                key={tag}
+                className="inline-flex items-center rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground"
+              >
+                {tag}
+              </span>
+            ))
+          : null}
       </div>
 
-      <div className="self-stretch border-t border-stone-300/30 pt-4 flex items-center gap-2.5">
+      <div className="flex items-center gap-2 border-t border-border pt-3">
         <button
           type="button"
           onClick={onContact}
           disabled={!onContact}
-          className={contactButtonClassName}
+          className="flex flex-1 items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
         >
           <i
-            className="fi fi-rs-comment-dots text-white text-base leading-none"
+            className="fi fi-rs-comment-dots text-base leading-none"
             aria-hidden="true"
           />
-          <span className="text-white text-base font-semibold font-['DM_Sans'] leading-4">
-            Kontakta
-          </span>
+          Kontakta
         </button>
-        <div className="flex items-center gap-3">
-          {tags && tags.length > 0
-            ? tags.map((t) => (
-                <div
-                  key={t}
-                  className="text-xs text-Colors-muted-foreground px-2 py-1 rounded-md bg-Colors-muted/60"
-                >
-                  {t}
-                </div>
-              ))
-            : null}
-          {onProfile ? (
-            <button
-              type="button"
-              onClick={onProfile}
-              className="px-6 py-3.5 bg-neutral-50 rounded-3xl outline outline-1 outline-offset-[-1px] outline-zinc-400/30 flex justify-center items-center gap-2.5 overflow-hidden"
-            >
-              <span className="w-5 h-5 flex justify-center items-center gap-2.5">
-                <i
-                  className="fi fi-rr-circle-user text-dark-gray"
-                  aria-hidden="true"
-                />
-              </span>
-              <span className="justify-center text-dark-gray text-base font-medium font-['DM_Sans'] leading-4">
-                Profil
-              </span>
-            </button>
-          ) : null}
-        </div>
+        {onProfile ? (
+          <button
+            type="button"
+            onClick={onProfile}
+            className="inline-flex h-10 items-center rounded-full border border-border px-4 text-sm font-medium text-muted-foreground transition hover:bg-muted"
+          >
+            Profil
+          </button>
+        ) : null}
       </div>
     </article>
   );

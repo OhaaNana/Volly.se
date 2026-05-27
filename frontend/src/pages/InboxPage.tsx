@@ -50,7 +50,7 @@ function SearchIcon() {
   return (
     <i
       aria-hidden
-      className="fi fi-sr-member-search shrink-0 text-[16px] leading-none text-Colors-muted-foreground"
+      className="fi fi-sr-member-search shrink-0 text-[16px] leading-none text-muted-foreground"
     />
   );
 }
@@ -86,6 +86,7 @@ function buildPreview(chat: ChatRow, viewerId: number): ChatPreview {
 export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
+  const [tab, setTab] = useState<"chats" | "calendar">("chats");
   const [chats, setChats] = useState<ChatPreview[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -96,6 +97,7 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
   const socketRef = useRef<WebSocket | null>(null);
 
   const userId = Number(localStorage.getItem("userId") ?? "0");
+  const hasActiveChat = Boolean(selectedId);
 
   const getAuthHeader = (): Record<string, string> => {
     const token = localStorage.getItem("token");
@@ -220,6 +222,7 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
     if (!selectedId || status !== "accepted") return;
     navigate(`/room/${selectedId}`);
   };
+
   const filtered = chats.filter(
     (c) =>
       query.trim() === "" ||
@@ -227,9 +230,11 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
       c.threadTitle.toLowerCase().includes(query.toLowerCase()) ||
       c.preview.toLowerCase().includes(query.toLowerCase())
   );
+
   const selectChat = (id: string) => {
     setSelectedId(id);
   };
+
   const getStatusText = () => {
     if (!selectedId) return "Välj en chatt";
     if (status === "accepted")
@@ -248,156 +253,226 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
   };
 
   return (
-    <div className="inline-flex min-h-0 w-full flex-1 flex-row justify-start items-stretch self-stretch overflow-hidden">
-      <div className="inline-flex w-96 shrink-0 flex-col items-start justify-start self-stretch overflow-hidden border-r border-border bg-sidebar">
-        <div className="flex w-96 flex-col items-start justify-start gap-3 border-b border-border p-5">
-          <div className="justify-start font-['DM_Sans'] text-2xl font-bold text-foreground">
+    <div className="h-[calc(100vh-3.5rem)] lg:h-screen flex">
+      <aside
+        className={`w-full lg:w-96 border-r border-border bg-sidebar flex flex-col ${hasActiveChat ? "hidden lg:flex" : ""}`}
+      >
+        <div className="border-b border-border p-5">
+          <h1 className="mb-3 font-display text-2xl font-bold text-foreground">
             Inkorg
-          </div>
-          <label className="inline-flex h-10 max-h-10 min-h-10 w-full cursor-text items-center justify-start gap-3 self-stretch rounded-3xl bg-Colors-card px-4 outline -outline-offset-1 outline-Colors-border">
-            <span className="sr-only">Sök bland chattar</span>
+          </h1>
 
+          <label className="mb-3 inline-flex h-10 w-full items-center gap-3 rounded-full border border-border bg-card px-4 shadow-soft">
             <SearchIcon />
-
             <input
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Sök bland chattar..."
-              className="min-h-0 min-w-0 flex-1 self-stretch bg-transparent font-['DM_Sans'] text-sm font-normal leading-4 text-foreground outline-none placeholder:text-Colors-muted-foreground"
+              className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
             />
           </label>
-        </div>
 
-        <div
-          className="flex min-h-0 w-96 flex-1 flex-col overflow-y-auto"
-          role="list"
-        >
-          {filtered.length === 0 ? (
-            <p className="p-4 text-sm text-Colors-muted-foreground">
-              Inga chattar hittades.
-            </p>
-          ) : (
-            filtered.map((chat) => (
-              <div key={chat.id} className="relative">
-                <InboxConversationCard
-                  name={chat.name}
-                  initials={chat.initials}
-                  avatarClassName={chat.avatarClassName}
-                  threadTitle={chat.threadTitle}
-                  preview={chat.preview}
-                  timeLabel={chat.timeLabel}
-                  selected={selectedId === chat.id}
-                  onClick={() => selectChat(chat.id)}
-                />
-                {chat.status && chat.status !== "accepted" && (
-                  <span className="absolute right-3 top-3 rounded-full bg-yellow-400 px-2 py-0.5 text-[10px] font-semibold text-yellow-900">
-                    {chat.status === "pending" ? "Väntar" : "Avböjd"}
-                  </span>
-                )}
-              </div>
-            ))
-          )}
-        </div>
-      </div>
-
-      <section
-        className="flex min-h-0 min-w-0 flex-1 flex-col bg-Colors-background"
-        aria-label="Chatt"
-      >
-        <div className="flex items-center justify-between border-b border-border px-6 py-4">
-          <div>
-            <h2 className="text-xl font-bold text-foreground">
-              {selectedChat?.threadTitle ?? "Meddelanden"}
-            </h2>
-            <p className="mt-1 text-sm text-Colors-muted-foreground">
-              {getStatusText()}
-            </p>
-          </div>
-          {status === "accepted" && (
+          <div className="flex gap-1 rounded-full bg-muted p-1">
             <button
               type="button"
-              onClick={openVideo}
-              className="rounded-3xl bg-green-500 px-5 py-2 text-sm font-semibold text-white hover:bg-green-600"
+              onClick={() => setTab("chats")}
+              className={`flex-1 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                tab === "chats"
+                  ? "bg-card text-foreground shadow-soft"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
-              Starta videosamtal
+              Chattar
             </button>
-          )}
+            <button
+              type="button"
+              onClick={() => setTab("calendar")}
+              className={`flex-1 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                tab === "calendar"
+                  ? "bg-card text-foreground shadow-soft"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Kalender
+            </button>
+          </div>
         </div>
 
-        {status === "pending" && amRecipient && (
-          <div className="flex items-center gap-3 border-b border-border bg-yellow-50 px-6 py-4">
-            <p className="flex-1 text-sm text-yellow-900">
-              {selectedChat?.name} vill chatta med dig om "
-              {selectedChat?.threadTitle}".
-            </p>
-            <button
-              onClick={() => updateStatus("accepted")}
-              className="rounded-xl bg-green-500 px-4 py-2 text-sm font-semibold text-white"
-            >
-              Acceptera
-            </button>
-            <button
-              onClick={() => updateStatus("denied")}
-              className="rounded-xl bg-red-500 px-4 py-2 text-sm font-semibold text-white"
-            >
-              Avböj
-            </button>
+        {tab === "chats" ? (
+          <div className="flex-1 overflow-y-auto">
+            {filtered.length === 0 ? (
+              <p className="p-4 text-sm text-muted-foreground">
+                Inga chattar hittades.
+              </p>
+            ) : (
+              filtered.map((chat) => (
+                <div key={chat.id} className="border-b border-border/60">
+                  <InboxConversationCard
+                    name={chat.name}
+                    initials={chat.initials}
+                    avatarClassName={chat.avatarClassName}
+                    threadTitle={chat.threadTitle}
+                    preview={chat.preview}
+                    timeLabel={chat.timeLabel}
+                    selected={selectedId === chat.id}
+                    onClick={() => selectChat(chat.id)}
+                  />
+                </div>
+              ))
+            )}
+          </div>
+        ) : (
+          <div className="flex-1 space-y-3 overflow-y-auto p-4">
+            <h3 className="px-1 text-xs font-bold uppercase tracking-wide text-muted-foreground">
+              Kommande
+            </h3>
+            <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
+              <p className="text-xs font-semibold text-primary">Video</p>
+              <p className="mt-1 text-sm font-semibold">Stödjande samtal</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                med Maja · 14:00 idag
+              </p>
+            </div>
+            <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
+              <p className="text-xs font-semibold text-primary">Chatt</p>
+              <p className="mt-1 text-sm font-semibold">Språkstöd</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                med Leo · 16:30 imorgon
+              </p>
+            </div>
+
+            <h3 className="px-1 pt-3 text-xs font-bold uppercase tracking-wide text-muted-foreground">
+              Tidigare
+            </h3>
+            <div className="rounded-2xl border border-border bg-muted/40 p-4 opacity-80">
+              <p className="text-sm font-semibold">Teknikhjälp</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                med Emma · 10:00 förra veckan
+              </p>
+            </div>
           </div>
         )}
+      </aside>
 
-        <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-6 py-6">
-          {isLoading ? (
-            <p className="text-Colors-muted-foreground">Laddar...</p>
-          ) : !selectedId ? (
-            <p className="text-Colors-muted-foreground">
-              Välj en chatt för att visa meddelanden.
-            </p>
-          ) : messages.length === 0 ? (
-            <p className="text-Colors-muted-foreground">{getEmptyText()}</p>
-          ) : (
-            messages.map((message) => (
-              <div
-                key={message.id}
-                className={`max-w-lg rounded-2xl p-4 shadow ${message.sender_id === userId ? "ml-auto bg-blue-500 text-white" : "bg-white text-black"}`}
-              >
-                <p className="mb-1 font-bold">
-                  {message.sender_email ?? "Okänd"}
+      <section
+        className={`min-w-0 flex-1 ${!hasActiveChat ? "hidden lg:flex" : "flex"}`}
+      >
+        {hasActiveChat ? (
+          <div className="flex min-h-0 flex-1 flex-col bg-background">
+            <div className="flex items-center justify-between border-b border-border px-6 py-4">
+              <div>
+                <h2 className="text-xl font-bold text-foreground">
+                  {selectedChat?.threadTitle ?? "Meddelanden"}
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {getStatusText()}
                 </p>
-                <p className="text-sm">{message.text_message}</p>
-                {message.created_at && (
-                  <p className="mt-2 text-xs opacity-70">
-                    {new Date(message.created_at).toLocaleTimeString()}
-                  </p>
-                )}
               </div>
-            ))
-          )}
-        </div>
+              {status === "accepted" && (
+                <button
+                  type="button"
+                  onClick={openVideo}
+                  className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+                >
+                  Starta videosamtal
+                </button>
+              )}
+            </div>
 
-        <div className="border-t border-border p-4">
-          <div className="flex gap-3">
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder={
-                status === "accepted"
-                  ? "Skriv ett meddelande..."
-                  : "Chatt inte aktiv"
-              }
-              disabled={status !== "accepted"}
-              className="flex-1 rounded-xl border border-border px-4 py-3 outline-none disabled:opacity-50"
-            />
-            <button
-              onClick={sendMessage}
-              disabled={status !== "accepted"}
-              className="rounded-xl bg-black px-5 py-3 text-white disabled:opacity-40"
-            >
-              Skicka
-            </button>
+            {status === "pending" && amRecipient && (
+              <div className="flex items-center gap-3 border-b border-border bg-yellow-50 px-6 py-4">
+                <p className="flex-1 text-sm text-yellow-900">
+                  {selectedChat?.name} vill chatta med dig om "
+                  {selectedChat?.threadTitle}".
+                </p>
+                <button
+                  onClick={() => updateStatus("accepted")}
+                  className="rounded-full bg-success px-4 py-2 text-sm font-semibold text-white"
+                >
+                  Acceptera
+                </button>
+                <button
+                  onClick={() => updateStatus("denied")}
+                  className="rounded-full bg-destructive px-4 py-2 text-sm font-semibold text-white"
+                >
+                  Avböj
+                </button>
+              </div>
+            )}
+
+            <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-6 py-6">
+              {isLoading ? (
+                <p className="text-muted-foreground">Laddar...</p>
+              ) : messages.length === 0 ? (
+                <p className="text-muted-foreground">{getEmptyText()}</p>
+              ) : (
+                messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`max-w-lg rounded-2xl p-4 shadow-soft ${
+                      message.sender_id === userId
+                        ? "ml-auto bg-primary text-primary-foreground"
+                        : "bg-card text-foreground"
+                    }`}
+                  >
+                    <p className="mb-1 text-sm font-semibold">
+                      {message.sender_email ?? "Okänd"}
+                    </p>
+                    <p className="text-sm">{message.text_message}</p>
+                    {message.created_at && (
+                      <p className="mt-2 text-xs opacity-70">
+                        {new Date(message.created_at).toLocaleTimeString()}
+                      </p>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="border-t border-border p-4">
+              <div className="flex gap-3">
+                <input
+                  type="text"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  placeholder={
+                    status === "accepted"
+                      ? "Skriv ett meddelande..."
+                      : "Chatt inte aktiv"
+                  }
+                  disabled={status !== "accepted"}
+                  className="flex-1 rounded-full focus:ring-2 focus:ring-ring border border-border bg-card px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted-foreground disabled:opacity-50"
+                />
+                <button
+                  onClick={sendMessage}
+                  disabled={status !== "accepted"}
+                  className="rounded-full bg-foreground px-5 py-3 text-sm font-semibold text-background disabled:opacity-40"
+                >
+                  Skicka
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="hidden flex-1 items-center justify-center p-10 text-center lg:flex">
+            <div>
+              <div className="mx-auto mb-4 flex size-20 items-center justify-center rounded-full bg-accent">
+                <i
+                  aria-hidden
+                  className="fi fi-rr-comment-dots text-3xl leading-0 text-primary"
+                />
+              </div>
+              <h2 className="mb-1 font-display text-xl font-bold text-foreground">
+                Välj en konversation
+              </h2>
+              <p className="max-w-xs text-sm text-muted-foreground">
+                Eller starta en ny genom att kontakta någon från ett inlägg -
+                ett litet meddelande kan betyda mycket.
+              </p>
+            </div>
+          </div>
+        )}
       </section>
     </div>
   );
