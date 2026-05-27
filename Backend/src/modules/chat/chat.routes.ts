@@ -34,14 +34,4 @@ export default async function chatRoutes(app: FastifyInstance) {
       return reply.send({ status: "ok" });
     },
   });
-
-  app.post("/chat", { preHandler: protect }, createChatHandler);
-  app.get("/my", { preHandler: protect }, listMyChatsHandler);
-  app.patch(
-    "/chat/:chatId/status",
-    { preHandler: protect },
-    updateChatStatusHandler
-  );
-
-  app.get("/chat/:roomId", { preHandler: protect }, getChatController);
 }
