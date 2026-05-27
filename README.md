@@ -4,6 +4,10 @@ Volly är en volontär app som kopplar ihop människor som behöver hjälp med v
 Man ska kunna skapa inlägg där man antingen ber om hjälp eller erbjuder sig hjälpa andra. Det kan va allt från vanliga vardags sysslor men även tekniska grejer.
 När man fått kontakt med någon så kan man både chatta eller ha videosamtal med andra. 
 
+## Skärmdump 
+
+![Volly](Skärmavbild_2026-05-27_kl._14.14.45.png)
+
 ## Kom igång 
 
 ### Krav 
