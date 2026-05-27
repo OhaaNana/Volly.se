@@ -25,7 +25,7 @@ När man fått kontakt med någon så kan man både chatta eller ha videosamtal 
 
 Klona repot:
 ```bash 
-git clone 
+git clone https://git.chas-lab.dev/chas-challenge-2026/grupp-15/zero-bug-heroes/zero-bug-heroes.git
 cd zero-bug-heroes 
 ``` 
 
