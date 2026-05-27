@@ -57,70 +57,64 @@ export default function LoggedInStartPage({
   onExploreCategories,
 }: Props) {
   return (
-    <div className="w-full min-w-0 self-stretch overflow-x-hidden px-4 py-10 sm:px-6 sm:py-12 inline-flex flex-col justify-start items-center gap-8">
-      <div className="w-full max-w-[920px] p-6 sm:p-10 bg-gradient-to-b from-green-100 to-red-50 rounded-[30px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 flex flex-col justify-start items-start gap-5 overflow-hidden shadow-[0px_10px_24px_-14px_rgba(22,26,38,0.35)]">
-        <div className="px-3.5 py-[5px] bg-white rounded-[20px] outline outline-1 outline-offset-[-1px] outline-stone-300/60 flex flex-col justify-center items-start gap-2.5 overflow-hidden">
-          <div className="justify-center text-green-600 text-sm font-semibold font-['DM_Sans'] leading-5">
-            Välkommen tillbaka, {firstName}
-          </div>
+    <div className="max-w-4xl w-full mx-auto px-10 sm:px-10 py-12 lg:py-10 space-y-8">
+      <section className="w-full rounded-3xl p-6 sm:p-8 bg-gradient-card border border-border relative overflow-hidden">
+        <div className="absolute -right-10 -top-10 size-48 rounded-full bg-warm/15 blur-3xl" />
+        <div className="absolute -left-10 -bottom-10 size-48 rounded-full bg-primary/10 blur-3xl" />
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-card text-sm font-semibold text-primary border border-border mb-4">
+          Välkommen tillbaka, {firstName}
         </div>
-        <div className="self-stretch py-2.5 flex flex-col justify-start items-start gap-2.5">
-          <div className="justify-start text-dark-gray text-3xl sm:text-4xl font-bold font-['DM_Sans'] leading-10">
-            Vad kan vi lösa tillsammans idag?
-          </div>
-          <div className="self-stretch justify-start text-neutral-500 text-base sm:text-lg font-normal font-['DM_Sans'] leading-7">
-            Skriv ett inlägg och nå ut till någon med rätt kunskap - eller
-            utforska vad du själv kan bidra med.
-          </div>
-        </div>
-        <div className="inline-flex flex-wrap justify-start items-center gap-3">
+        <h1 className="text-3xl sm:text-4xl font-bold leading-tight mb-2">
+          Vad kan vi lösa tillsammans idag?
+        </h1>
+        <p className="text-muted-foreground lg:max-w-xl md:max-w-sm">
+          Skriv ett inlägg och nå ut till någon med rätt kunskap - eller
+          utforska vad du själv kan bidra med.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-3">
           <button
             type="button"
             onClick={onCreatePost}
-            className="px-6 py-3.5 bg-orange-300 rounded-3xl outline outline-1 outline-offset-[-1px] outline-zinc-400/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden"
+            className="inline-flex items-center justify-center h-11 px-5 rounded-full bg-gradient-warm text-warm-foreground font-semibold shadow-soft hover:shadow-glow transition"
           >
-            <div className="justify-start text-dark-gray text-base font-semibold font-['DM_Sans'] leading-5">
-              Skriv ett inlägg
-            </div>
+            Skriv ett inlägg
           </button>
           <button
             type="button"
             onClick={() => onExploreCategories?.()}
-            className="px-6 py-3.5 bg-white-2 rounded-3xl outline outline-1 outline-offset-[-1px] outline-zinc-400/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden"
+            className="inline-flex items-center justify-center h-11 px-5 rounded-full bg-card border border-border font-semibold hover:bg-muted transition"
           >
-            <div className="justify-start text-dark-gray text-base font-semibold font-['DM_Sans'] leading-5">
-              Utforska kategorier
-            </div>
+            Utforska kategorier
           </button>
         </div>
-      </div>
+      </section>
 
-      <div className="w-full max-w-[920px] flex flex-col items-start">
-        <div className="flex flex-col gap-1">
-          <h2 className="text-foreground text-lg font-bold font-['DM_Sans'] leading-7">
-            Populära kategorier
-          </h2>
-          <p className="text-muted-foreground text-xs font-normal font-['DM_Sans'] leading-4">
-            Klicka på en kategori för att komma till flödet
-          </p>
-        </div>
-        <div className="mt-6 self-stretch inline-flex justify-start items-center gap-2">
-          {POPULAR_CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              type="button"
-              onClick={() => onExploreCategories?.(cat.id)}
-              className={`flex-1 min-w-0 px-5 py-2.5 ${cat.bgClass} rounded-full outline outline-1 outline-offset-[-1px] outline-Colors-border inline-flex flex-col justify-center items-center`}
-            >
-              <span
-                className={`${cat.textClass} text-xs font-medium font-['DM_Sans'] leading-4`}
+      <section className="w-full">
+        <div className="w-full inline-flex flex-col justify-center items-start gap-3">
+          <div>
+            <h2 className="font-display text-xl font-bold">
+              Populära kategorier
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Klicka på en kategori för att komma till flödet
+            </p>
+          </div>
+          <div className="w-full flex gap-2">
+            {POPULAR_CATEGORIES.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => onExploreCategories?.(cat.id)}
+                className={`flex-1 flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-full border border-border ${cat.bgClass} hover:bg-muted transition`}
               >
-                {cat.label}
-              </span>
-            </button>
-          ))}
+                <span className={`${cat.textClass} text-sm font-medium`}>
+                  {cat.label}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
 
       <HowVollyWorks />
     </div>

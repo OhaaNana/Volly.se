@@ -235,7 +235,7 @@ export function App() {
 
   if (currentUser) {
     return (
-      <div className="min-h-dvh w-full bg-Colors-background">
+      <div className="h-screen w-full overflow-hidden bg-background">
         <MenuLoggedIn<LoggedInMenuId>
           items={LOGGED_IN_MENU_ITEMS}
           activeId={activeLoggedInPage}
@@ -369,7 +369,7 @@ export function App() {
     >
       <div className="flex flex-col">
         {sessionExpired && (
-          <div className="w-full bg-[var(--volly-forest-green)] font-['DM_Sans'] text-[var(--volly-white)] text-lg font-medium text-center py-1">
+          <div className="w-full bg-(--volly-forest-green) text-primary-foreground text-lg font-medium text-center py-1">
             Din session har gått ut. Logga in igen för att fortsätta.
           </div>
         )}

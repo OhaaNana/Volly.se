@@ -36,10 +36,10 @@ function LoginPage({ onLoginSuccess, initialEmail = "" }: LoginPageProps) {
   };
 
   return (
-    <section className="w-full bg-gradient-to-b from-primary-soft to-neutral-300 rounded-bl-[30px] rounded-br-[30px]">
-      <div className="w-full max-w-[1280px] mx-auto p-32 flex justify-between items-center gap-12">
+    <section className="w-full bg-linear-to-b from-primary-soft to-neutral-300 rounded-bl-[30px] rounded-br-[30px]">
+      <div className="w-full max-w-7xl mx-auto p-32 flex justify-between items-center gap-12">
         <div className="flex-1 flex justify-center items-center gap-2.5">
-          <h1 className="flex-1 text-center text-warm-foreground font-['DM_Sans'] leading-[120px]">
+          <h1 className="flex-1 text-center text-warm-foreground font-['DM_Sans'] leading-30">
             <span className="text-7xl font-medium">Enklare vardag. </span>
             <span className="text-7xl font-bold">Tillsammans</span>
             <span className="text-7xl font-medium">.</span>
@@ -59,7 +59,7 @@ function LoginPage({ onLoginSuccess, initialEmail = "" }: LoginPageProps) {
                 onSubmit={handleSubmit}
                 className="self-stretch flex flex-col justify-start items-start gap-4"
               >
-                <div className="self-stretch p-3 bg-card rounded-md outline outline-2 outline-offset-[-2px] outline-foreground inline-flex justify-start items-center">
+                <div className="self-stretch p-3 bg-card rounded-md outline-2 -outline-offset-2 outline-foreground inline-flex justify-start items-center">
                   <MyTextInput
                     type="email"
                     value={email}
@@ -72,7 +72,7 @@ function LoginPage({ onLoginSuccess, initialEmail = "" }: LoginPageProps) {
                   />
                 </div>
 
-                <div className="self-stretch p-3 bg-card rounded-md outline outline-2 outline-offset-[-2px] outline-foreground inline-flex justify-start items-center">
+                <div className="self-stretch p-3 bg-card rounded-md outline-2 -outline-offset-2 outline-foreground inline-flex justify-start items-center">
                   <MyTextInput
                     type={showPassword ? "text" : "password"}
                     value={password}
