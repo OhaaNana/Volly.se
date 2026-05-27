@@ -176,6 +176,12 @@
   .bg-gradient-soft {
     background-image: var(--gradient-soft);
   }
+  .bg-gradient-primary-soft {
+    background-image: var(--gradient-primary-soft);
+  }
+  .bg-gradient-card {
+    background-image: var(--gradient-card);
+  }
   .shadow-soft {
     box-shadow: var(--shadow-soft);
   }

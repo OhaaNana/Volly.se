@@ -107,13 +107,10 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
       <main className="w-full flex flex-col gap-24">
         {children}
 
-        <section
-          id="Vision"
-          className="w-full min-h-[672px] py-28 bg-background"
-        >
-          <div className="w-full max-w-[1280px] mx-auto px-20 flex justify-center items-start">
-            <div className="w-full max-w-[900px] flex flex-col justify-start items-start gap-6">
-              <h2 className="self-stretch text-icon-active text-5xl font-semibold font-['DM_Sans'] leading-[68px]">
+        <section id="Vision" className="w-full min-h-168 py-28 bg-background">
+          <div className="w-full max-w-7xl mx-auto px-20 flex justify-center items-start">
+            <div className="w-full max-w-225 flex flex-col justify-start items-start gap-6">
+              <h2 className="self-stretch text-icon-active text-5xl font-semibold font-['DM_Sans'] leading-17">
                 Vår Vision
               </h2>
               <p className="self-stretch text-foreground text-xl font-normal font-['DM_Sans'] leading-8">
@@ -129,12 +126,12 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
                 och formell socialtjänst, för att säkerställa att alla har lika
                 tillgång till stöd.
               </p>
-              <div className="pt-6 inline-flex justify-start items-center gap-[5px]">
+              <div className="pt-6 inline-flex justify-start items-center gap-1.25">
                 <span className="text-icon-active text-xl font-medium font-['DM_Sans'] leading-8">
                   Läs mer
                 </span>
                 <span
-                  className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-[8px] border-l-transparent border-r-transparent border-t-icon-active"
+                  className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-8 border-l-transparent border-r-transparent border-t-icon-active"
                   aria-hidden="true"
                 />
               </div>
@@ -146,7 +143,7 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
           id="Skapa konto"
           className="w-full py-48 bg-primary-soft flex flex-col justify-center items-center gap-12"
         >
-          <div className="w-full max-w-[1280px] mx-auto px-10 flex flex-col items-center">
+          <div className="w-full max-w-7xl mx-auto px-10 flex flex-col items-center">
             <div className="w-80 flex flex-col justify-start items-center gap-8">
               <div className="self-stretch flex flex-col justify-start items-start gap-2">
                 <h2 className="self-stretch text-center text-warm-foreground text-3xl font-semibold font-['DM_Sans'] leading-9">
@@ -160,7 +157,7 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
               >
                 <div className="w-80 max-w-80 min-w-64 flex flex-col justify-center items-start gap-4">
                   <div className="self-stretch inline-flex justify-start items-center gap-3 overflow-hidden">
-                    <div className="flex-1 h-10 px-3 py-2 bg-card rounded-sm outline outline-2 outline-offset-[-2px] outline-foreground flex justify-start items-center gap-2">
+                    <div className="flex-1 h-10 px-3 py-2 bg-card rounded-sm outline-2 -outline-offset-2 outline-foreground flex justify-start items-center gap-2">
                       <input
                         name="firstName"
                         value={formData.firstName}
@@ -171,7 +168,7 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
                         className="flex-1 w-full opacity-50 text-foreground text-base font-normal font-['DM_Sans'] leading-4 bg-transparent border-none outline-none placeholder:text-foreground"
                       />
                     </div>
-                    <div className="flex-1 h-10 px-3 py-2 bg-card rounded-sm outline outline-2 outline-offset-[-2px] outline-foreground flex justify-start items-center gap-2">
+                    <div className="flex-1 h-10 px-3 py-2 bg-card rounded-sm outline-2 -outline-offset-2 outline-foreground flex justify-start items-center gap-2">
                       <input
                         name="lastName"
                         value={formData.lastName}
@@ -188,7 +185,7 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
                     (field) => (
                       <div
                         key={field}
-                        className="self-stretch h-10 px-3 py-2 bg-card rounded-sm outline outline-2 outline-offset-[-2px] outline-foreground inline-flex justify-start items-center gap-2"
+                        className="self-stretch h-10 px-3 py-2 bg-card rounded-sm outline-2 -outline-offset-2 outline-foreground inline-flex justify-start items-center gap-2"
                       >
                         <input
                           name={field}
@@ -263,7 +260,7 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
       <button
         onClick={scroll}
         aria-label="Scroll to top"
-        className="fixed bottom-40 right-6 z-50 rounded-full bg-card p-2 shadow-lg hover:scale-105 transition-transform outline outline-1 outline-border"
+        className="fixed bottom-20 right-6 z-50 rounded-full bg-card p-2 shadow-lg hover:scale-105 transition-transform outline outline-border"
       >
         <img src={upArrow} alt="pil" className="w-10 h-10 object-contain" />
       </button>
