@@ -7,7 +7,7 @@ function Footer() {
 
   return (
     <footer className="w-full bg-primary-soft rounded-tl-[30px] rounded-tr-[30px]">
-      <div className="w-full max-w-[1280px] mx-auto px-12 pt-12 pb-6 flex flex-col gap-3.5">
+      <div className="w-full max-w-7xl mx-auto px-12 pt-12 pb-6 flex flex-col gap-3.5">
         <div className="p-8 flex justify-start items-start gap-24 flex-wrap">
           <div className="inline-flex flex-col justify-start items-start gap-4">
             <div className="text-warm-foreground text-3xl font-semibold font-['DM_Sans'] leading-6">
@@ -62,7 +62,7 @@ function Footer() {
             </div>
           </div>
 
-          <div className="flex-1 min-w-[200px] inline-flex flex-col justify-between items-end">
+          <div className="flex-1 min-w-50 inline-flex flex-col justify-between items-end">
             <div className="py-16 flex flex-col justify-center items-end gap-2.5">
               <div className="opacity-70 text-primary text-7xl font-normal font-emblema leading-6">
                 Volly

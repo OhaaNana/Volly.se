@@ -15,12 +15,12 @@ function Navbar() {
 
   return (
     <header className="w-full relative bg-primary-soft">
-      <div className="w-full max-w-[1280px] mx-auto h-32 pl-14 pr-12 py-10 flex justify-between items-center">
+      <div className="w-full max-w-7xl mx-auto h-32 pl-14 pr-12 py-10 flex justify-between items-center">
         <div className="h-12 flex justify-start items-center gap-3">
           <button
             type="button"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="justify-start text-primary text-5xl font-normal font-emblema leading-[48px]"
+            className="justify-start text-primary text-5xl font-normal font-emblema leading-12"
           >
             Volly
           </button>

@@ -2,7 +2,7 @@ export default function header() {
   return (
     <div className="self-stretch h-32 px-14 py-10 relative bg-neutral-200 inline-flex justify-between items-center">
       <div className="h-12 flex justify-start items-center gap-3">
-        <div className="justify-start text-black text-5xl font-normal font-['Emblema_One'] leading-[48px]">
+        <div className="justify-start text-black text-5xl font-normal font-['Emblema_One'] leading-12">
           Volly
         </div>
       </div>
@@ -20,7 +20,7 @@ export default function header() {
           Skapa konto
         </div>
       </div>
-      <div className="w-[1600px] h-0 left-[-80px] top-[128px] absolute outline outline-2 outline-offset-[-1px] outline-black/50" />
+      <div className="w-400 h-0 -left-20 top-32 absolute outline-2 -outline-offset-1 outline-black/50" />
     </div>
   );
 }

@@ -20,7 +20,7 @@ export const LOGGED_IN_MENU_ITEMS = [
   {
     id: "inkorg",
     label: "Inkorg",
-    flaticonClassName: "fi fi-rs-comment-dots",
+    flaticonClassName: "fi fi-rr-comment-dots",
   },
   {
     id: "profil",
@@ -54,16 +54,18 @@ function SidebarItem<Id extends string>({
       type="button"
       onClick={() => onNavigate(item.id)}
       aria-current={isActive ? "page" : undefined}
-      className={`self-stretch px-5 py-3.5 rounded-3xl inline-flex justify-start items-center gap-2.5 overflow-hidden ${
-        isActive ? "bg-[#D3FBD5]" : ""
+      className={`flex items-center gap-3 px-4 py-3 rounded-full text-base font-medium transition-all ${
+        isActive
+          ? "bg-accent text-active"
+          : "hover:bg-muted hover:text-foreground"
       }`}
     >
-      <div className="w-5 h-5 flex justify-center items-center gap-2.5">
+      <div className="size-5 flex justify-center items-center">
         {item.flaticonClassName ? (
           <i
             aria-hidden="true"
             className={`${item.flaticonClassName} text-[16px] leading-none ${
-              isActive ? "text-green-800" : "text-Forest"
+              isActive ? "" : ""
             }`}
           />
         ) : (
@@ -71,20 +73,14 @@ function SidebarItem<Id extends string>({
             className={`w-4 h-4 ${
               isActive
                 ? (item.activeIcon ??
-                  "outline outline-2 outline-offset-[-1px] outline-green-800")
+                  "outline-2 -outline-offset-1 outline-active")
                 : (item.icon ?? "")
             }`}
           />
         )}
       </div>
 
-      <div
-        className={`justify-start text-base font-medium font-['DM_Sans'] leading-5 ${
-          isActive ? "text-green-800" : "text-Forest"
-        }`}
-      >
-        {item.label}
-      </div>
+      <div>{item.label}</div>
     </button>
   );
 }
@@ -107,76 +103,58 @@ function Sidebar<Id extends string>({
   user?: MenuLoggedInUser;
 }) {
   return (
-    <aside className="w-72 shrink-0 min-h-dvh p-7 bg-Colors-background border-r border-Colors-border inline-flex flex-col justify-start items-start gap-8 overflow-hidden">
-      <div className="self-stretch flex flex-col justify-start items-start gap-2.5">
-        <button
-          type="button"
-          onClick={() => onNavigate("start" as Id)}
-          className="inline-flex justify-start items-center gap-2.5 overflow-hidden text-left"
-        >
-          <div className="w-12 h-12 relative">
-            <div className="w-12 h-12 left-0 top-0 absolute bg-green-400 rounded-full" />
-            <div className="left-[17px] top-[15px] absolute justify-start text-white text-2xl font-semibold font-['DM_Sans'] leading-5">
-              {brandInitial}
-            </div>
-          </div>
+    <aside className="w-64 flex flex-col h-screen border-r border-border bg-sidebar p-6 pt-8 sticky top-0">
+      <div className="flex items-center gap-2 mb-8">
+        <div className="size-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold shadow-glow">
+          {brandInitial}
+        </div>
 
-          <div className="justify-end text-dark-gray text-4xl font-extrabold font-['DM_Sans'] leading-5">
-            {brandName}
-          </div>
-        </button>
-
-        <nav className="self-stretch py-5 flex flex-col justify-center items-start gap-[5px] overflow-hidden">
-          {items.map((item) => (
-            <SidebarItem
-              key={item.id}
-              item={item}
-              activePage={activePage}
-              onNavigate={onNavigate}
-            />
-          ))}
-        </nav>
+        <div className="font-display text-3xl font-bold tracking-tight">
+          {brandName}
+        </div>
       </div>
 
-      <div className="self-stretch flex flex-col justify-start items-start gap-2 pt-2">
+      <nav className="flex flex-col gap-1">
+        {items.map((item) => (
+          <SidebarItem
+            key={item.id}
+            item={item}
+            activePage={activePage}
+            onNavigate={onNavigate}
+          />
+        ))}
+      </nav>
+      {/* </div> */}
+
+      <div className="mt-auto space-y-2">
         {user ? (
-          <button
-            type="button"
-            onClick={() => onNavigate("profil" as Id)}
-            className="self-stretch p-3.5 bg-gradient-to-b from-green-100 to-red-50 rounded-3xl outline outline-1 outline-offset-[-1px] outline-neutral-800/10 inline-flex justify-start items-center gap-2.5 text-left hover:opacity-95 transition-opacity"
-          >
-            <div className="inline-flex flex-col justify-start items-start overflow-hidden">
-              <div className="w-10 h-10 relative">
-                <div className="w-10 h-10 left-0 top-0 absolute bg-sky-400 rounded-full" />
-                <div className="left-[9px] top-[10px] absolute justify-start text-white text-base font-semibold font-['DM_Sans'] leading-5">
-                  {user.initials}
+          <div className="p-4 rounded-3xl bg-gradient-soft border border-border flex overflow-hidden">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="flex-none size-10 bg-warm rounded-full inline-flex justify-center items-center text-primary-foreground font-semibold">
+                {user.initials}
+              </div>
+              <div className="flex-1 min-w-0 overflow-hidden">
+                <div className="truncate whitespace-nowrap text-sm font-semibold">
+                  {user.name}
                 </div>
               </div>
             </div>
-
-            <div className="flex-1 self-stretch pt-1.5 inline-flex flex-col justify-center items-start gap-2 overflow-hidden">
-              <div className="justify-start text-dark-gray text-base font-semibold font-['DM_Sans'] leading-[10px]">
-                {user.name}
-              </div>
-            </div>
-          </button>
+          </div>
         ) : null}
 
         {onLogout ? (
           <button
             type="button"
             onClick={onLogout}
-            className="self-stretch px-5 py-3.5 rounded-3xl inline-flex justify-start items-center gap-2.5 overflow-hidden text-Colors-muted-foreground hover:bg-Colors-muted transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-full text-foreground hover:bg-destructive/10 hover:text-destructive transition"
           >
-            <div className="w-5 h-5 flex justify-center items-center gap-2.5">
+            <div className="size-5 flex justify-center items-center">
               <i
                 aria-hidden="true"
-                className="fi fi-rr-sign-out-alt text-[16px] leading-none"
+                className="fi fi-rr-exit text-[16px] leading-none"
               />
             </div>
-            <div className="justify-start text-base font-medium font-['DM_Sans'] leading-5">
-              Logga ut
-            </div>
+            <div className="text-base font-medium">Logga ut</div>
           </button>
         ) : null}
       </div>
@@ -206,7 +184,7 @@ export default function MenuLoggedIn<Id extends string>({
   children,
 }: MenuLoggedInProps<Id>) {
   return (
-    <div className="flex min-h-dvh w-full bg-Colors-background">
+    <div className="h-screen w-full overflow-hidden flex bg-background">
       <Sidebar
         items={items}
         activePage={activeId}
@@ -216,7 +194,7 @@ export default function MenuLoggedIn<Id extends string>({
         brandInitial={brandInitial}
         user={user}
       />
-      <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-Colors-background p-6">
+      <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-auto bg-Colors-background">
         {children ?? <h1>{activeId}</h1>}
       </main>
     </div>
