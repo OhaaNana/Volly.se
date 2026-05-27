@@ -4,6 +4,7 @@ export type CreatePostInput = {
   title: string;
   description: string;
   help_type: string;
+  tagg: string;
 };
 
 export type PostRow = {
@@ -13,6 +14,7 @@ export type PostRow = {
   title: string;
   description: string | null;
   help_type: string | null;
+  tagg: string;
   created_at: Date;
   updated_at: Date;
 };

@@ -65,6 +65,8 @@ function badgeForPost(post: CategoryPost): string {
 type Props = {
   posts: CategoryPost[];
   onProfile?: (authorEmail?: string) => void;
+  onDeletePost?: (postId: string) => void;
+  currentUserEmail?: string | null;
   initialCategory?: CategoryKey;
   onContact?: (post: CategoryPost) => void;
 };
@@ -88,14 +90,25 @@ function formatDisplayName(post: CategoryPost) {
 export default function CategoryPage({
   posts,
   onProfile,
+  onDeletePost,
+  currentUserEmail,
   onContact,
   initialCategory,
 }: Props) {
   const [activeCategory, setActiveCategory] = useState<CategoryKey>(
     initialCategory ?? "allt"
   );
+  const [prevInitialCategory, setPrevInitialCategory] =
+    useState(initialCategory);
   const [postKind, setPostKind] = useState<"seek" | "offer">("seek");
   const [searchQuery, setSearchQuery] = useState("");
+
+  if (initialCategory !== prevInitialCategory) {
+    setPrevInitialCategory(initialCategory);
+    if (initialCategory) {
+      setActiveCategory(initialCategory);
+    }
+  }
 
   const activeFilterLabel =
     CATEGORY_CARDS.find((c) => c.id === activeCategory)?.filterLabel ?? null;
@@ -269,6 +282,13 @@ export default function CategoryPage({
                   onProfile ? () => onProfile(post.author_email) : undefined
                 }
                 onContact={onContact ? () => onContact(post) : undefined}
+                onDelete={
+                  onDeletePost &&
+                  currentUserEmail &&
+                  post.author_email === currentUserEmail
+                    ? () => onDeletePost(post.id)
+                    : undefined
+                }
               />
             ))
           )}
