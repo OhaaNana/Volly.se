@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 
-export default function Room() {
-  const { roomId } = useParams();
-  const navigate = useNavigate();
+type Props = {
+  roomId: string;
+  onDisconnect: () => void;
+};
+
+export default function Room({ roomId, onDisconnect }: Props) {
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const pcRef = useRef<RTCPeerConnection | null>(null);
@@ -14,41 +16,48 @@ export default function Room() {
   const [muted, setMuted] = useState(false);
   const [camOff, setCamOff] = useState(false);
   const [sharing, setSharing] = useState(false);
+  const [callSeconds, setCallSeconds] = useState(0);
 
-  const createPC = (ws: WebSocket) => {
+  useEffect(() => {
+    const interval = setInterval(() => setCallSeconds((s) => s + 1), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const formatTime = (s: number) => {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+  };
+
+  const createPC = async (ws: WebSocket) => {
+    const res = await fetch("/api/turn-credentials");
+    const data = await res.json();
+
     const pc = new RTCPeerConnection({
       iceServers: [
-        { urls: "stun:stun.l.google.com:19302" },
-        { urls: "stun:stun1.l.google.com:19302" },
+        {
+          urls: data.urls,
+          username: data.username,
+          credential: data.credential,
+        },
       ],
     });
 
     pc.ontrack = (event) => {
       if (remoteVideoRef.current) {
-        // Uses the video element to transfer the stream
         remoteVideoRef.current.srcObject = event.streams[0];
-        // Waits till the video is ready
         remoteVideoRef.current.onloadedmetadata = () => {
-          // Starts playing the remote video
           remoteVideoRef.current!.play().catch(console.error);
         };
       }
     };
 
-    // ICE
-    // Interactive Connectivity Establishment
-    // Its job is to figure out the best way to connect computers with each other
-
-    // looks for the best connection
     pc.onicecandidate = (event) => {
-      // goes through only if it finds it
       if (event.candidate) {
-        // Sends network info to the other device through websockets
         ws.send(JSON.stringify({ type: "ice", candidate: event.candidate }));
       }
     };
 
-    // Runs only when the connection state is changed
     pc.oniceconnectionstatechange = () => {
       setStatus(pc.iceConnectionState);
     };
@@ -58,72 +67,52 @@ export default function Room() {
   };
 
   const getStream = async (pc: RTCPeerConnection) => {
-    // askes the user for camera and microphone access
     const stream = await navigator.mediaDevices.getUserMedia({
       video: true,
       audio: true,
     });
-    // Stores that data
     localStreamRef.current = stream;
-    // Shows your the local camera
     if (localVideoRef.current) localVideoRef.current.srcObject = stream;
-    // Sends everything to the other user
     stream.getTracks().forEach((track) => pc.addTrack(track, stream));
   };
 
-  // Saving ICE Candidates
   const flushIce = async (pc: RTCPeerConnection) => {
-    // loops through all canditates (All possible connection paths)
     for (const candidate of iceBuf.current) {
-      // Adds a candidate into WebRTC to verify path
       try {
         await pc.addIceCandidate(candidate);
       } catch (e) {
         console.error("ICE flush error", e);
       }
     }
-    // clears the buffer after proccessing
-    // buffer = temporary storage of data
     iceBuf.current = [];
   };
 
   const startCall = async (ws: WebSocket) => {
-    // updates ui
     setStatus("Starting call...");
-    // creates a connection
-    const pc = createPC(ws);
-    // gets all info
+    const pc = await createPC(ws);
     await getStream(pc);
-    // creates a request ("offer") and saves it inside the browser
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
-    // sends it through websocket to the other person
     ws.send(JSON.stringify({ type: "offer", sdp: offer }));
   };
 
   useEffect(() => {
     const token = localStorage.getItem("token") ?? "";
-    const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
     const ws = new WebSocket(
-      `${proto}//${window.location.host}/api/room/${roomId}?token=${encodeURIComponent(token)}`
+      `ws://localhost:3001/ws/${roomId}?token=${encodeURIComponent(token)}`
     );
     wsRef.current = ws;
 
     ws.onmessage = async (event) => {
-      // converts msg to javascript object
       const msg = JSON.parse(event.data);
 
       if (msg.type === "room-joined") {
         if (msg.role === "waiter") {
           setStatus("Waiting for someone...");
-          // creates a webrtc connection
-          // gets all the info
-          // saves this conneciton for later
-          const pc = createPC(ws);
+          const pc = await createPC(ws);
           await getStream(pc);
           pcRef.current = pc;
         } else {
-          // starts call if the second user is connected
           await startCall(ws);
         }
       }
@@ -138,35 +127,24 @@ export default function Room() {
       if (msg.type === "room-full") setStatus("Room is full!");
 
       if (msg.type === "offer") {
-        // gets webrtc connection
         const pc = pcRef.current!;
-        // saves the other user's connection in the browser
         await pc.setRemoteDescription(msg.sdp);
-        // adds ice candites that were stored earlier
         await flushIce(pc);
-        // creates responose to the offer
         const answer = await pc.createAnswer();
-        // stores anwser in browser
         await pc.setLocalDescription(answer);
-        // sends it through the websocket
         ws.send(JSON.stringify({ type: "answer", sdp: answer }));
       }
 
       if (msg.type === "answer") {
-        // waits for response
         await pcRef.current!.setRemoteDescription(msg.sdp);
-        // stores ICE candidates
         await flushIce(pcRef.current!);
       }
 
       if (msg.type === "ice") {
         const pc = pcRef.current;
-        // checks if the connection is not connected
         if (!pc || !pc.remoteDescription) {
-          // saves the ice candidate
           iceBuf.current.push(msg.candidate);
         } else {
-          // else add the network route so both users can connect
           try {
             await pc.addIceCandidate(new RTCIceCandidate(msg.candidate));
           } catch (e) {
@@ -177,26 +155,20 @@ export default function Room() {
     };
 
     return () => ws.close();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
   const toggleMute = () => {
-    // gets local camera & microphone
     const stream = localStreamRef.current;
-    // stops this action if there is no stream
     if (!stream) return;
-    // toggles the mute button
     stream.getAudioTracks().forEach((t) => (t.enabled = muted));
-    // informs the ui
     setMuted(!muted);
   };
 
   const toggleCam = () => {
-    // gets local camera & microphone
     const stream = localStreamRef.current;
     if (!stream) return;
-    // toggles the camera button
     stream.getVideoTracks().forEach((t) => (t.enabled = camOff));
-    //informs the ui
     setCamOff(!camOff);
   };
 
@@ -206,34 +178,21 @@ export default function Room() {
 
     if (!sharing) {
       try {
-        // Opens browesr screenshare
         const screenStream = await navigator.mediaDevices.getDisplayMedia({
           video: true,
         });
-        // uses the screenshare
         const screenTrack = screenStream.getVideoTracks()[0];
-
-        // Replaces the webcam with the screen share
-        // finds the video
         const sender = pc.getSenders().find((s) => s.track?.kind === "video");
-        // swaps it with the screenshare
         if (sender) await sender.replaceTrack(screenTrack);
 
         if (localVideoRef.current) {
-          // creates a preview stream with the screen and mic audio
-          // creates new combined stream
           const newStream = new MediaStream([
-            // adds screenshare
             screenTrack,
-            // adds microphone
             ...localStreamRef.current!.getAudioTracks(),
           ]);
-          // show the screen on your local video
           localVideoRef.current.srcObject = newStream;
         }
-        // Stop sharing
         screenTrack.onended = () => stopShare();
-        // updates ui that it stops sharing
         setSharing(true);
       } catch (e) {
         console.error("Screen share error", e);
@@ -248,71 +207,79 @@ export default function Room() {
     const stream = localStreamRef.current;
     if (!pc || !stream) return;
 
-    // Gets webcam
     const camTrack = stream.getVideoTracks()[0];
-    // switches back to webcam from screenshare
     const sender = pc.getSenders().find((s) => s.track?.kind === "video");
     if (sender) await sender.replaceTrack(camTrack);
 
-    // show webcam in local preview
     if (localVideoRef.current) localVideoRef.current.srcObject = stream;
-    // updates ui
     setSharing(false);
   };
 
   const disconnect = () => {
-    // stops camera and micrphone
     localStreamRef.current?.getTracks().forEach((t) => t.stop());
-    // closes webRTC
     pcRef.current?.close();
-    // closes signaling
     wsRef.current?.close();
-
-    // sends user back
-    // NEEDS TO CHANGE vvvvv
-    navigate("/");
+    onDisconnect();
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <h3>Room: {roomId}</h3>
-      <p>{status}</p>
+    <div className="h-full w-full bg-card flex flex-col p-3 gap-3">
+      <div className="w-full flex items-center justify-between px-2">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+          <span className="text-foreground text-sm font-medium font-['DM_Sans']">
+            {formatTime(callSeconds)}
+          </span>
+        </div>
+        <span className="text-muted-foreground text-xs font-['DM_Sans']">
+          {status}
+        </span>
+      </div>
 
-      <div style={{ display: "flex", gap: 10 }}>
+      <div className="relative flex-1 min-h-0 bg-muted rounded-2xl overflow-hidden">
         <video
           ref={remoteVideoRef}
           autoPlay
           playsInline
-          style={{
-            width: "70%",
-            background: "black",
-          }}
+          className="w-full h-full object-cover"
         />
-
         <video
           ref={localVideoRef}
           autoPlay
           muted
           playsInline
-          style={{
-            width: "30%",
-            background: "black",
-          }}
+          className="absolute bottom-3 right-3 w-1/4 max-w-[240px] min-w-[100px] aspect-video object-cover rounded-xl border-2 border-border"
         />
       </div>
 
-      <div style={{ marginTop: 20, display: "flex", gap: 10 }}>
-        <button onClick={toggleMute}>{muted ? "Unmute" : "Mute"}</button>
-
-        <button onClick={toggleCam}>
-          {camOff ? "Show Camera" : "Hide Camera"}
+      <div className="flex justify-center items-center gap-3 pb-2">
+        <button
+          onClick={toggleMute}
+          className="px-5 py-2.5 bg-muted hover:bg-Colors-card border border-border text-foreground rounded-2xl text-sm font-semibold font-['DM_Sans'] transition-colors"
+        >
+          {muted ? "Slå på ljud" : "Stäng av ljud"}
         </button>
 
-        <button onClick={toggleShare}>
-          {sharing ? "Stop Sharing" : "Share Screen"}
+        <button
+          onClick={toggleCam}
+          className="px-5 py-2.5 bg-muted hover:bg-Colors-card border border-border text-foreground rounded-2xl text-sm font-semibold font-['DM_Sans'] transition-colors"
+        >
+          {camOff ? "Slå på kamera" : "Stäng av kamera"}
         </button>
 
-        <button onClick={disconnect}>Disconnect</button>
+        <button
+          onClick={toggleShare}
+          className="px-5 py-2.5 bg-muted hover:bg-Colors-card border border-border text-foreground rounded-2xl text-sm font-semibold font-['DM_Sans'] transition-colors"
+        >
+          {sharing ? "Sluta dela" : "Dela skärm"}
+        </button>
+
+        <button
+          onClick={disconnect}
+          className="px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-2xl text-sm font-semibold font-['DM_Sans'] transition-colors"
+        >
+          Avsluta
+        </button>
       </div>
     </div>
   );

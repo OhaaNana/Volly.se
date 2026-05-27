@@ -94,6 +94,7 @@ export default function CategoryPage({
   currentUserEmail,
   onContact,
   initialCategory,
+  onContact,
 }: Props) {
   const [activeCategory, setActiveCategory] = useState<CategoryKey>(
     initialCategory ?? "allt"

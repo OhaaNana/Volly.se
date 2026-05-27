@@ -65,11 +65,9 @@ export function App() {
           id: String(p.id),
           title: String(p.title ?? ""),
           content: String(p.description ?? p.content ?? ""),
-          // normalize created_at which may be ISO string, ms number, or seconds number
           createdAt: (() => {
             const v = p.created_at as unknown;
             if (typeof v === "number") {
-              // if it's seconds (<=1e11) convert to ms
               return v < 1e12 ? v * 1000 : v;
             }
             if (typeof v === "string") return new Date(v).getTime();
@@ -254,7 +252,6 @@ export function App() {
             <CreatePostPage
               onCancel={() => setActiveLoggedInPage("start")}
               onSubmit={async (post) => {
-                // send to backend
                 try {
                   const token = localStorage.getItem("token");
                   const body = {
@@ -277,10 +274,8 @@ export function App() {
 
                   if (!res.ok) {
                     console.error("Failed to create post", res.status);
-                    // optionally show error to user
                   } else {
                     const created = await res.json();
-                    // prepend created post to UI list
                     setPosts((prev) => [
                       {
                         id: String(created.id ?? crypto.randomUUID()),
@@ -348,6 +343,9 @@ export function App() {
                 setSelectedCategory(category ?? "allt");
                 setActiveLoggedInPage("kategorier");
               }}
+              onProfile={openProfileFromPost}
+              onContact={openChatFromPost}
+              posts={posts}
             />
           )}
         </MenuLoggedIn>

@@ -1,10 +1,14 @@
-import type { CategoryKey } from "./CategoryPage";
+import PostCard from "../components/PostCard";
+import type { CategoryKey, CategoryPost } from "./CategoryPage";
 import HowVollyWorks from "../components/HowVollyWorks";
 
 type Props = {
   firstName: string;
   onCreatePost: () => void;
   onExploreCategories?: (category?: CategoryKey) => void;
+  onProfile?: (authorEmail?: string) => void;
+  onContact?: (post: CategoryPost) => void;
+  posts?: CategoryPost[];
 };
 
 const POPULAR_CATEGORIES: {
@@ -51,10 +55,67 @@ const POPULAR_CATEGORIES: {
   },
 ];
 
+function formatTimeAgo(createdAt: number): string {
+  if (typeof createdAt !== "number" || Number.isNaN(createdAt)) return "Okänt";
+  const normalized = createdAt < 1e12 ? createdAt * 1000 : createdAt;
+  const sec = Math.floor((Date.now() - normalized) / 1000);
+  if (sec < 60) return "nyss";
+  const min = Math.floor(sec / 60);
+  if (min < 60) return `${min} min sen`;
+  const h = Math.floor(min / 60);
+  if (h < 48) return `${h}h sen`;
+  const d = Math.floor(h / 24);
+  return `${d} d sen`;
+}
+
+function badgeForPost(post: CategoryPost): string {
+  if (post.postType === "seek") return "Söker hjälp";
+  if (post.postType === "offer") return "Erbjuder hjälp";
+  return "Inlägg";
+}
+
+function getAuthorName(post: CategoryPost): string {
+  const fullName = `${post.first_name ?? ""} ${post.last_name ?? ""}`.trim();
+  if (fullName) return fullName;
+  if (post.author_email) {
+    const localPart = post.author_email.split("@")[0] ?? "";
+    const parts = localPart.split(/[._-]/).filter(Boolean);
+    if (parts.length > 0) {
+      return parts
+        .slice(0, 2)
+        .map((part) => part.replace(/^\w/, (c) => c.toUpperCase()))
+        .join(" ");
+    }
+  }
+  return "Okänt namn";
+}
+
+function getInitials(post: CategoryPost): string {
+  if (post.first_name || post.last_name) {
+    return `${post.first_name ?? ""}${post.last_name ?? ""}`
+      .trim()
+      .slice(0, 2)
+      .toUpperCase();
+  }
+  if (post.author_email) {
+    return post.author_email
+      .split("@")[0]
+      .split(/[._-]/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? "")
+      .join("");
+  }
+  return "??";
+}
+
 export default function LoggedInStartPage({
   firstName,
   onCreatePost,
   onExploreCategories,
+  onProfile,
+  onContact,
+  posts,
 }: Props) {
   return (
     <div className="w-full min-w-0 self-stretch overflow-x-hidden px-4 py-10 sm:px-6 sm:py-12 inline-flex flex-col justify-start items-center gap-8">
@@ -120,6 +181,35 @@ export default function LoggedInStartPage({
             </button>
           ))}
         </div>
+      </div>
+
+      <div
+        className={`w-full max-w-[920px] space-y-4 ${
+          posts && posts.length > 1
+            ? "overflow-y-auto max-h-[64vh] pr-2 green-scrollbar"
+            : ""
+        }`}
+      >
+        {posts && posts.length > 0 ? (
+          posts.map((post) => (
+            <PostCard
+              key={post.id}
+              authorName={getAuthorName(post)}
+              authorInitials={getInitials(post)}
+              timeLabel={formatTimeAgo(post.createdAt)}
+              badgeLabel={badgeForPost(post)}
+              title={post.title}
+              body={post.content}
+              tags={post.tags}
+              onProfile={
+                onProfile ? () => onProfile(post.author_email) : undefined
+              }
+              onContact={onContact ? () => onContact(post) : undefined}
+            />
+          ))
+        ) : (
+          <div className="p-6 text-center text-zinc-500">Inga inlägg än.</div>
+        )}
       </div>
       <HowVollyWorks />
     </div>
