@@ -1,4 +1,5 @@
 /* eslint-disable react-refresh/only-export-components -- menu items co-located with layout */
+import { useState } from "react";
 import type { ReactNode } from "react";
 
 export type MenuItem<Id extends string = string> = {
@@ -42,10 +43,12 @@ function SidebarItem<Id extends string>({
   item,
   activePage,
   onNavigate,
+  collapsed,
 }: {
   item: MenuItem<Id>;
   activePage: Id;
   onNavigate: (next: Id) => void;
+  collapsed?: boolean;
 }) {
   const isActive = activePage === item.id;
 
@@ -54,11 +57,13 @@ function SidebarItem<Id extends string>({
       type="button"
       onClick={() => onNavigate(item.id)}
       aria-current={isActive ? "page" : undefined}
-      className={`self-stretch px-5 py-3.5 rounded-3xl inline-flex justify-start items-center gap-2.5 overflow-hidden ${
-        isActive ? "bg-[#D3FBD5]" : ""
-      }`}
+      className={`w-full py-3.5 rounded-3xl inline-flex items-center transition-all duration-500 ease-in-out ${
+        collapsed
+          ? "px-2 justify-center rounded-full gap-0"
+          : "px-5 justify-start gap-2.5"
+      } ${isActive ? "bg-[#D3FBD5]" : ""}`}
     >
-      <div className="w-5 h-5 flex justify-center items-center gap-2.5">
+      <div className="w-5 h-5 shrink-0 flex justify-center items-center">
         {item.flaticonClassName ? (
           <i
             aria-hidden="true"
@@ -79,9 +84,9 @@ function SidebarItem<Id extends string>({
       </div>
 
       <div
-        className={`justify-start text-base font-medium font-['DM_Sans'] leading-5 ${
+        className={`flex-1 min-w-0 overflow-hidden whitespace-nowrap text-base font-medium font-['DM_Sans'] leading-5 ${
           isActive ? "text-green-800" : "text-Forest"
-        }`}
+        } ${collapsed ? "max-w-0 transition-[max-width] duration-[100ms] delay-[400ms]" : "max-w-[1000px]"}`}
       >
         {item.label}
       </div>
@@ -106,56 +111,69 @@ function Sidebar<Id extends string>({
   brandInitial: string;
   user?: MenuLoggedInUser;
 }) {
+  const [collapsed, setCollapsed] = useState(false);
+
   return (
-    <aside className="w-72 shrink-0 min-h-dvh p-7 bg-Colors-background border-r border-Colors-border inline-flex flex-col justify-start items-start gap-8 overflow-hidden">
-      <div className="self-stretch flex flex-col justify-start items-start gap-2.5">
+    <aside
+      className={`relative shrink-0 h-dvh sticky top-0 bg-Colors-background border-r border-Colors-border flex flex-col justify-between overflow-hidden transition-all duration-500 ease-in-out ${collapsed ? "w-[68px] px-2 py-6" : "w-72 p-6"}`}
+    >
+      {/* Toggle — below logo when collapsed, hugging right edge when open, always green */}
+      <button
+        type="button"
+        onClick={() => setCollapsed((c) => !c)}
+        aria-label={collapsed ? "Expandera meny" : "Dölj meny"}
+        className={`absolute z-10 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-neutral-400 flex items-center justify-center opacity-30 hover:opacity-20 transition-all duration-500 ease-in-out ${collapsed ? "left-1/2 -translate-x-1/2" : "right-3"}`}
+      >
+        <i
+          aria-hidden="true"
+          className={`fi fi-rr-angle-small-left text-[14px] leading-none text-white transition-transform duration-500 ${collapsed ? "rotate-180" : "rotate-0"}`}
+        />
+      </button>
+
+      <div className="flex flex-col gap-2.5">
+        {/* Logo */}
         <button
           type="button"
           onClick={() => onNavigate("start" as Id)}
-          className="inline-flex justify-start items-center gap-2.5 overflow-hidden text-left"
+          className={`w-full inline-flex items-center ${collapsed ? "gap-0" : "gap-2.5 pr-10"}`}
         >
-          <div className="w-12 h-12 relative">
-            <div className="w-12 h-12 left-0 top-0 absolute bg-green-400 rounded-full" />
-            <div className="left-[17px] top-[15px] absolute justify-start text-white text-2xl font-semibold font-['DM_Sans'] leading-5">
-              {brandInitial}
-            </div>
+          <div className="w-12 h-12 shrink-0 rounded-full bg-green-400 flex items-center justify-center text-white text-2xl font-semibold font-['DM_Sans']">
+            {brandInitial}
           </div>
-
-          <div className="justify-end text-dark-gray text-4xl font-extrabold font-['DM_Sans'] leading-5">
+          <div
+            className={`flex-1 min-w-0 overflow-hidden whitespace-nowrap text-dark-gray text-4xl font-extrabold font-['DM_Sans'] leading-none ${collapsed ? "max-w-0 transition-[max-width] duration-[100ms] delay-[400ms]" : "max-w-[1000px]"}`}
+          >
             {brandName}
           </div>
         </button>
 
-        <nav className="self-stretch py-5 flex flex-col justify-center items-start gap-[5px] overflow-hidden">
+        <nav className="py-5 flex flex-col gap-[5px]">
           {items.map((item) => (
             <SidebarItem
               key={item.id}
               item={item}
               activePage={activePage}
               onNavigate={onNavigate}
+              collapsed={collapsed}
             />
           ))}
         </nav>
       </div>
 
-      <div className="self-stretch flex flex-col justify-start items-start gap-2 pt-2">
+      <div className="flex flex-col gap-2 pt-2">
         {user ? (
           <button
             type="button"
             onClick={() => onNavigate("profil" as Id)}
-            className="self-stretch p-3.5 bg-gradient-to-b from-green-100 to-red-50 rounded-3xl outline outline-1 outline-offset-[-1px] outline-neutral-800/10 inline-flex justify-start items-center gap-2.5 text-left hover:opacity-95 transition-opacity"
+            className={`shrink-0 bg-gradient-to-b from-green-100 to-red-50 outline outline-1 outline-offset-[-1px] outline-neutral-800/10 inline-flex items-center hover:opacity-95 transition-all duration-500 ease-in-out overflow-hidden ${collapsed ? "w-12 h-12 rounded-full mx-auto justify-center" : "w-full rounded-3xl justify-start p-3.5 gap-2.5 text-left"}`}
           >
-            <div className="inline-flex flex-col justify-start items-start overflow-hidden">
-              <div className="w-10 h-10 relative">
-                <div className="w-10 h-10 left-0 top-0 absolute bg-sky-400 rounded-full" />
-                <div className="left-[9px] top-[10px] absolute justify-start text-white text-base font-semibold font-['DM_Sans'] leading-5">
-                  {user.initials}
-                </div>
-              </div>
+            <div className="w-10 h-10 shrink-0 rounded-full bg-sky-400 flex items-center justify-center text-white text-base font-semibold font-['DM_Sans']">
+              {user.initials}
             </div>
-
-            <div className="flex-1 self-stretch pt-1.5 inline-flex flex-col justify-center items-start gap-2 overflow-hidden">
-              <div className="justify-start text-dark-gray text-base font-semibold font-['DM_Sans'] leading-[10px]">
+            <div
+              className={`flex-1 min-w-0 overflow-hidden whitespace-nowrap pt-1.5 ${collapsed ? "max-w-0 transition-[max-width] duration-[100ms] delay-[400ms]" : "max-w-[1000px]"}`}
+            >
+              <div className="text-dark-gray text-base font-semibold font-['DM_Sans'] leading-[10px] truncate">
                 {user.name}
               </div>
             </div>
@@ -166,15 +184,17 @@ function Sidebar<Id extends string>({
           <button
             type="button"
             onClick={onLogout}
-            className="self-stretch px-5 py-3.5 rounded-3xl inline-flex justify-start items-center gap-2.5 overflow-hidden text-Colors-muted-foreground hover:bg-Colors-muted transition-colors"
+            className={`shrink-0 inline-flex items-center text-Colors-muted-foreground hover:bg-Colors-muted transition-all duration-500 ease-in-out ${collapsed ? "w-10 h-10 rounded-full mx-auto justify-center" : "w-full py-3.5 px-5 rounded-3xl gap-2.5 justify-start"}`}
           >
-            <div className="w-5 h-5 flex justify-center items-center gap-2.5">
+            <div className="w-5 h-5 flex items-center justify-center shrink-0">
               <i
                 aria-hidden="true"
                 className="fi fi-rr-sign-out-alt text-[16px] leading-none"
               />
             </div>
-            <div className="justify-start text-base font-medium font-['DM_Sans'] leading-5">
+            <div
+              className={`flex-1 min-w-0 overflow-hidden whitespace-nowrap text-base font-medium font-['DM_Sans'] leading-5 ${collapsed ? "max-w-0 transition-[max-width] duration-[100ms] delay-[400ms]" : "max-w-[1000px]"}`}
+            >
               Logga ut
             </div>
           </button>
@@ -206,7 +226,7 @@ export default function MenuLoggedIn<Id extends string>({
   children,
 }: MenuLoggedInProps<Id>) {
   return (
-    <div className="flex min-h-dvh w-full bg-Colors-background">
+    <div className="flex h-dvh w-full overflow-hidden bg-Colors-background">
       <Sidebar
         items={items}
         activePage={activeId}
@@ -216,7 +236,7 @@ export default function MenuLoggedIn<Id extends string>({
         brandInitial={brandInitial}
         user={user}
       />
-      <main className="flex min-h-0 min-w-0 flex-1 flex-col bg-Colors-background p-6">
+      <main className="flex min-w-0 flex-1 flex-col overflow-y-auto bg-Colors-background p-6">
         {children ?? <h1>{activeId}</h1>}
       </main>
     </div>

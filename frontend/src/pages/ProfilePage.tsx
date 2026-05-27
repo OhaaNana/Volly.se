@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, useMemo, type FormEvent } from "react";
 
 type Props = {
   userEmail: string;
@@ -103,6 +103,7 @@ export default function ProfilePage({
   const [bio, setBio] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [posts, setPosts] = useState<ProfilePost[]>([]);
+  const [postKind, setPostKind] = useState<"all" | "seek" | "offer">("all");
   const [isProfileLoading, setIsProfileLoading] = useState(true);
   const [isPostsLoading, setIsPostsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -239,6 +240,13 @@ export default function ProfilePage({
   const isLoading = isProfileLoading || isPostsLoading;
   const isFormLocked = isReadOnly || !isEditing || isLoading || isSaving;
 
+  const filteredPosts = useMemo(() => {
+    if (postKind === "all") return posts;
+    if (postKind === "seek")
+      return posts.filter((p) => p.help_type === "getHelp");
+    return posts.filter((p) => p.help_type === "giveHelp");
+  }, [posts, postKind]);
+
   const saveProfile = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSaving(true);
@@ -315,8 +323,8 @@ export default function ProfilePage({
   };
 
   return (
-    <div className="w-full min-w-0 px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
+    <div className="w-full py-10 flex flex-col items-start">
+      <div className="w-full max-w-[900px] ml-[8%] flex flex-col gap-6">
         <section className="overflow-hidden rounded-[28px] border border-Colors-border bg-Colors-card shadow-[0px_8px_24px_-8px_rgba(22,26,38,0.08),0px_1px_3px_0px_rgba(22,26,38,0.05)]">
           <div className="relative h-44 overflow-hidden">
             <div className="absolute inset-x-0 top-0 h-28 bg-linear-to-r from-[#0f766e] via-[#16a34a] to-[#15803d]" />
@@ -326,14 +334,6 @@ export default function ProfilePage({
               <div className="flex items-end gap-4">
                 <div className="flex size-24 items-center justify-center overflow-hidden rounded-3xl border-4 border-Colors-card bg-[#D3FBD5] text-3xl font-bold text-[#166534] shadow-[0px_8px_24px_-8px_rgba(22,26,38,0.12)]">
                   {initials}
-                </div>
-                <div className="hidden flex-col gap-1 pb-1 sm:flex">
-                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-white/90">
-                    Profil
-                  </div>
-                  <div className="text-sm text-white/85">
-                    Inloggad som {currentEmail}
-                  </div>
                 </div>
               </div>
 
@@ -368,107 +368,115 @@ export default function ProfilePage({
 
           <div className="flex flex-col gap-5 px-5 pb-6 sm:px-7">
             <div className="flex flex-col gap-2">
-              <h2 className="text-2xl font-bold text-[#161a26] sm:text-3xl">
+              <h1 className="text-3xl font-bold text-Colors-foreground font-['DM_Sans']">
                 {displayName}
-              </h2>
-              <p className="max-w-3xl text-base leading-7 text-Colors-muted-foreground">
-                {isReadOnly
-                  ? "Här kan du läsa mer om användaren och se personens inlägg."
-                  : "Uppdatera dina kontaktuppgifter och en kort presentation av dig själv här."}
-              </p>
+              </h1>
+              {!isReadOnly && (
+                <p className="text-base font-medium text-Colors-muted-foreground font-['DM_Sans']">
+                  Uppdatera dina kontaktuppgifter och en kort presentation av
+                  dig själv här.
+                </p>
+              )}
             </div>
 
-            <form className="grid gap-4 sm:grid-cols-2" onSubmit={saveProfile}>
-              <label className="flex flex-col gap-2 sm:col-span-1">
-                <span className="text-sm font-semibold text-[#161a26]">
-                  Förnamn
-                </span>
-                <input
-                  value={firstName}
-                  onChange={(event) => setFirstName(event.target.value)}
-                  disabled={isFormLocked}
-                  className="h-12 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-base text-[#161a26] outline-none transition-shadow disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
-                  placeholder="Förnamn"
-                />
-              </label>
-
-              <label className="flex flex-col gap-2 sm:col-span-1">
-                <span className="text-sm font-semibold text-[#161a26]">
-                  Efternamn
-                </span>
-                <input
-                  value={lastName}
-                  onChange={(event) => setLastName(event.target.value)}
-                  disabled={isFormLocked}
-                  className="h-12 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-base text-[#161a26] outline-none transition-shadow disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
-                  placeholder="Efternamn"
-                />
-              </label>
-
-              <label className="flex flex-col gap-2 sm:col-span-2">
-                <span className="text-sm font-semibold text-[#161a26]">
-                  E-post
-                </span>
-                <input
-                  type="email"
-                  value={currentEmail}
-                  onChange={(event) => setCurrentEmail(event.target.value)}
-                  disabled={isFormLocked}
-                  className="h-12 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-base text-[#161a26] outline-none transition-shadow disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
-                  placeholder="namn@exempel.se"
-                />
-              </label>
-
-              <label className="flex flex-col gap-2 sm:col-span-2">
-                <span className="text-sm font-semibold text-[#161a26]">
-                  Om dig själv
-                </span>
-                <textarea
-                  value={bio}
-                  onChange={(event) => setBio(event.target.value)}
-                  disabled={isFormLocked}
-                  className="min-h-32 rounded-3xl border border-Colors-border bg-Colors-card px-4 py-3 text-base text-[#161a26] outline-none transition-shadow placeholder:text-Colors-muted-foreground disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
-                  placeholder="Skriv något om vad du kan hjälpa till med, språk du talar eller vad du söker hjälp med."
-                />
-              </label>
-
-              <div className="sm:col-span-2 flex flex-wrap items-center gap-3 pt-1">
-                {!isReadOnly && isEditing ? (
-                  <button
-                    type="submit"
-                    disabled={isSaving || isLoading}
-                    className="inline-flex h-11 items-center justify-center rounded-3xl bg-Colors-foreground px-5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    {isSaving ? "Sparar..." : "Spara ändringar"}
-                  </button>
-                ) : !isReadOnly ? (
-                  <span className="text-sm text-Colors-muted-foreground">
-                    Fälten är låsta. Tryck på Redigera för att uppdatera din
-                    profil.
-                  </span>
-                ) : (
-                  <span className="text-sm text-Colors-muted-foreground">
-                    Visningsläge för profil.
-                  </span>
-                )}
-
-                {isLoading ? (
-                  <span className="text-sm text-Colors-muted-foreground">
-                    Laddar profil och inlägg...
-                  </span>
-                ) : null}
-                {statusMessage ? (
-                  <span className="text-sm font-medium text-green-700">
-                    {statusMessage}
-                  </span>
-                ) : null}
-                {errorMessage ? (
-                  <span className="text-sm font-medium text-red-600">
-                    {errorMessage}
-                  </span>
+            {isReadOnly ? (
+              <div className="flex flex-col gap-3">
+                {bio.trim() ? (
+                  <div className="text-sm leading-6 text-[#334155]">{bio}</div>
                 ) : null}
               </div>
-            </form>
+            ) : (
+              <form
+                className="grid gap-4 sm:grid-cols-2"
+                onSubmit={saveProfile}
+              >
+                <label className="flex flex-col gap-2 sm:col-span-1">
+                  <span className="text-sm font-semibold text-[#161a26]">
+                    Förnamn
+                  </span>
+                  <input
+                    value={firstName}
+                    onChange={(event) => setFirstName(event.target.value)}
+                    disabled={isFormLocked}
+                    className="h-12 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-base text-[#161a26] outline-none transition-shadow disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
+                    placeholder="Förnamn"
+                  />
+                </label>
+
+                <label className="flex flex-col gap-2 sm:col-span-1">
+                  <span className="text-sm font-semibold text-[#161a26]">
+                    Efternamn
+                  </span>
+                  <input
+                    value={lastName}
+                    onChange={(event) => setLastName(event.target.value)}
+                    disabled={isFormLocked}
+                    className="h-12 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-base text-[#161a26] outline-none transition-shadow disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
+                    placeholder="Efternamn"
+                  />
+                </label>
+
+                <label className="flex flex-col gap-2 sm:col-span-2">
+                  <span className="text-sm font-semibold text-[#161a26]">
+                    E-post
+                  </span>
+                  <input
+                    type="email"
+                    value={currentEmail}
+                    onChange={(event) => setCurrentEmail(event.target.value)}
+                    disabled={isFormLocked}
+                    className="h-12 rounded-3xl border border-Colors-border bg-Colors-card px-4 text-base text-[#161a26] outline-none transition-shadow disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
+                    placeholder="namn@exempel.se"
+                  />
+                </label>
+
+                <label className="flex flex-col gap-2 sm:col-span-2">
+                  <span className="text-sm font-semibold text-[#161a26]">
+                    Om dig själv
+                  </span>
+                  <textarea
+                    value={bio}
+                    onChange={(event) => setBio(event.target.value)}
+                    disabled={isFormLocked}
+                    className="min-h-32 rounded-3xl border border-Colors-border bg-Colors-card px-4 py-3 text-base text-[#161a26] outline-none transition-shadow placeholder:text-Colors-muted-foreground disabled:cursor-not-allowed disabled:bg-[#f3f4f6] disabled:text-[#6b7280] focus:shadow-[0px_0px_0px_4px_rgba(19,78,74,0.12)]"
+                    placeholder="Skriv något om vad du kan hjälpa till med, språk du talar eller vad du söker hjälp med."
+                  />
+                </label>
+
+                <div className="sm:col-span-2 flex flex-wrap items-center gap-3 pt-1">
+                  {isEditing ? (
+                    <button
+                      type="submit"
+                      disabled={isSaving || isLoading}
+                      className="inline-flex h-11 items-center justify-center rounded-3xl bg-Colors-foreground px-5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {isSaving ? "Sparar..." : "Spara ändringar"}
+                    </button>
+                  ) : (
+                    <span className="text-sm text-Colors-muted-foreground">
+                      Fälten är låsta. Tryck på Redigera för att uppdatera din
+                      profil.
+                    </span>
+                  )}
+
+                  {isLoading ? (
+                    <span className="text-sm text-Colors-muted-foreground">
+                      Laddar profil och inlägg...
+                    </span>
+                  ) : null}
+                  {statusMessage ? (
+                    <span className="text-sm font-medium text-green-700">
+                      {statusMessage}
+                    </span>
+                  ) : null}
+                  {errorMessage ? (
+                    <span className="text-sm font-medium text-red-600">
+                      {errorMessage}
+                    </span>
+                  ) : null}
+                </div>
+              </form>
+            )}
 
             <div className="grid gap-3 sm:grid-cols-3">
               <div className="rounded-2xl bg-orange-50/70 px-3 py-4 text-center ring-1 ring-inset ring-[#e9e4dc]">
@@ -497,7 +505,7 @@ export default function ProfilePage({
               </div>
             </div>
 
-            {bio.trim() ? (
+            {!isReadOnly && bio.trim() ? (
               <div className="rounded-3xl border border-Colors-border bg-[#f8faf7] px-4 py-4 text-sm leading-6 text-[#334155]">
                 <div className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-Colors-muted-foreground">
                   Om mig
@@ -509,18 +517,57 @@ export default function ProfilePage({
         </section>
 
         <section className="space-y-4">
-          <div className="flex items-center justify-between gap-4">
-            <h3 className="text-xl font-bold text-[#161a26]">
+          <div className="flex items-center justify-between gap-4 px-2">
+            <h2 className="text-xl font-bold text-Colors-foreground font-['DM_Sans']">
               {isReadOnly ? "Inlägg" : "Dina inlägg"}
-            </h3>
-            <span className="rounded-full bg-Colors-muted px-3 py-1 text-xs font-semibold text-Colors-muted-foreground">
-              {posts.length} st
-            </span>
+            </h2>
+            <div
+              className="inline-flex w-fit rounded-full bg-Colors-muted/90 p-1 outline outline-1 -outline-offset-1 outline-Colors-border"
+              role="group"
+              aria-label="Filtrera på typ av hjälp"
+            >
+              <button
+                type="button"
+                onClick={() => setPostKind("all")}
+                aria-pressed={postKind === "all"}
+                className={`rounded-full px-5 py-2 text-sm font-semibold font-['DM_Sans'] transition-colors ${
+                  postKind === "all"
+                    ? "bg-white text-Colors-foreground shadow-sm"
+                    : "text-Colors-muted-foreground hover:text-Colors-foreground"
+                }`}
+              >
+                Alla
+              </button>
+              <button
+                type="button"
+                onClick={() => setPostKind("seek")}
+                aria-pressed={postKind === "seek"}
+                className={`rounded-full px-5 py-2 text-sm font-semibold font-['DM_Sans'] transition-colors ${
+                  postKind === "seek"
+                    ? "bg-white text-Colors-foreground shadow-sm"
+                    : "text-Colors-muted-foreground hover:text-Colors-foreground"
+                }`}
+              >
+                Söker
+              </button>
+              <button
+                type="button"
+                onClick={() => setPostKind("offer")}
+                aria-pressed={postKind === "offer"}
+                className={`rounded-full px-5 py-2 text-sm font-semibold font-['DM_Sans'] transition-colors ${
+                  postKind === "offer"
+                    ? "bg-white text-Colors-foreground shadow-sm"
+                    : "text-Colors-muted-foreground hover:text-Colors-foreground"
+                }`}
+              >
+                Erbjuder
+              </button>
+            </div>
           </div>
 
           <div className="space-y-4">
-            {posts.length > 0 ? (
-              posts.map((post) => (
+            {filteredPosts.length > 0 ? (
+              filteredPosts.map((post) => (
                 <article
                   key={post.id}
                   className="rounded-3xl border border-Colors-border bg-Colors-card p-5 shadow-[0px_8px_24px_-8px_rgba(22,26,38,0.08),0px_1px_3px_0px_rgba(22,26,38,0.05)]"
@@ -540,8 +587,6 @@ export default function ProfilePage({
                         </div>
                         <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-Colors-muted-foreground">
                           <span>{formatTimeAgo(post.created_at)}</span>
-                          <span>·</span>
-                          <span>{formatHelpLabel(post.help_type)}</span>
                         </div>
                       </div>
                     </div>
@@ -586,7 +631,9 @@ export default function ProfilePage({
               ))
             ) : (
               <div className="rounded-3xl border border-dashed border-Colors-border bg-Colors-card p-6 text-sm text-Colors-muted-foreground">
-                Du har inga inlägg ännu.
+                {postKind === "all"
+                  ? "Inga inlägg ännu."
+                  : `Inga inlägg av typen "${postKind === "seek" ? "Söker" : "Erbjuder"}".`}
               </div>
             )}
           </div>

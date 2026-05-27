@@ -56,21 +56,21 @@ export default function LoggedInStartPage({
   onExploreCategories,
 }: Props) {
   return (
-    <div className="w-full min-w-0 self-stretch overflow-x-hidden px-4 py-10 sm:px-6 sm:py-12 inline-flex flex-col justify-start items-center gap-8">
-      <div className="w-full max-w-[920px] p-6 sm:p-10 bg-gradient-to-b from-green-100 to-red-50 rounded-[30px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 flex flex-col justify-start items-start gap-5 overflow-hidden shadow-[0px_10px_24px_-14px_rgba(22,26,38,0.35)]">
+    <div className="w-full py-10 flex flex-col items-start gap-8">
+      <div className="w-full max-w-[900px] ml-[8%] p-6 sm:p-10 bg-gradient-to-b from-green-100 to-red-50 rounded-[30px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 flex flex-col justify-start items-start gap-5 overflow-hidden shadow-[0px_10px_24px_-14px_rgba(22,26,38,0.35)]">
         <div className="px-3.5 py-[5px] bg-white rounded-[20px] outline outline-1 outline-offset-[-1px] outline-stone-300/60 flex flex-col justify-center items-start gap-2.5 overflow-hidden">
           <div className="justify-center text-green-600 text-sm font-semibold font-['DM_Sans'] leading-5">
             Välkommen tillbaka, {firstName}
           </div>
         </div>
         <div className="self-stretch py-2.5 flex flex-col justify-start items-start gap-2.5">
-          <div className="justify-start text-dark-gray text-3xl sm:text-4xl font-bold font-['DM_Sans'] leading-10">
+          <h1 className="text-3xl font-bold text-Colors-foreground font-['DM_Sans']">
             Vad kan vi lösa tillsammans idag?
-          </div>
-          <div className="self-stretch justify-start text-neutral-500 text-base sm:text-lg font-normal font-['DM_Sans'] leading-7">
+          </h1>
+          <p className="text-base font-medium text-Colors-muted-foreground font-['DM_Sans']">
             Skriv ett inlägg och nå ut till någon med rätt kunskap - eller
             utforska vad du själv kan bidra med.
-          </div>
+          </p>
         </div>
         <div className="inline-flex flex-wrap justify-start items-center gap-3">
           <button
@@ -94,16 +94,16 @@ export default function LoggedInStartPage({
         </div>
       </div>
 
-      <div className="w-full max-w-[920px] flex flex-col items-start">
+      <div className="w-full max-w-[900px] ml-[8%] flex flex-col items-start gap-6">
         <div className="flex flex-col gap-1">
-          <h2 className="text-foreground text-lg font-bold font-['DM_Sans'] leading-7">
+          <h2 className="text-xl font-bold text-Colors-foreground font-['DM_Sans']">
             Populära kategorier
           </h2>
-          <p className="text-muted-foreground text-xs font-normal font-['DM_Sans'] leading-4">
+          <p className="text-sm text-Colors-muted-foreground font-['DM_Sans']">
             Klicka på en kategori för att komma till flödet
           </p>
         </div>
-        <div className="mt-6 self-stretch inline-flex justify-start items-center gap-2">
+        <div className="self-stretch inline-flex justify-start items-center gap-2">
           {POPULAR_CATEGORIES.map((cat) => (
             <button
               key={cat.id}

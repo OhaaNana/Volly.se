@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
-import { isTokenExpired, clearAuth } from "./utils/auth";
+import { tokenExpiry, clearAuth } from "./utils/auth";
 import LoginPage from "./LogingPage";
 import HomePage from "./HomePage";
+import Navbar from "./Navbar";
+import Footer from "./components/footer";
 import "./index.css";
 import MenuLoggedIn, {
   LOGGED_IN_MENU_ITEMS,
@@ -173,7 +175,7 @@ export function App() {
   useEffect(() => {
     if (!currentUser) return;
     const check = () => {
-      if (isTokenExpired()) logout(true);
+      if (tokenExpiry()) logout(true);
     };
     check();
     const interval = setInterval(check, 60 * 1000);
@@ -190,13 +192,19 @@ export function App() {
   //show onboarding after signup
   if (currentUser && needsOnboarding) {
     return (
-      <OnboardingPage
-        onComplete={(data) => {
-          // TODO: save onboarding data to your backend here
-          console.log("Onboarding complete:", data);
-          setNeedsOnboarding(false);
-        }}
-      />
+      <div className="w-full min-h-screen bg-background flex flex-col">
+        <Navbar hideLinks />
+        <main className="flex-1 flex flex-col">
+          <OnboardingPage
+            onComplete={(data) => {
+              // TODO: save onboarding data to your backend here
+              console.log("Onboarding complete:", data);
+              setNeedsOnboarding(false);
+            }}
+          />
+        </main>
+        <Footer />
+      </div>
     );
   }
 
@@ -334,7 +342,10 @@ export function App() {
         )}
         <LoginPage
           initialEmail={prefillEmail}
-          onLoginSuccess={(email) => setCurrentUser(email)}
+          onLoginSuccess={(email) => {
+            setCurrentUser(email);
+            setSessionExpired(false);
+          }}
         />
       </div>
     </HomePage>

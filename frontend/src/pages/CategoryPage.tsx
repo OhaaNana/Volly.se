@@ -94,8 +94,16 @@ export default function CategoryPage({
   const [activeCategory, setActiveCategory] = useState<CategoryKey>(
     initialCategory ?? "allt"
   );
-  const [postKind, setPostKind] = useState<"seek" | "offer">("seek");
+  const [postKind, setPostKind] = useState<"all" | "seek" | "offer">("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [savedPosts, setSavedPosts] = useState<Set<string>>(new Set());
+
+  const toggleSave = (id: string) =>
+    setSavedPosts((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
 
   const activeFilterLabel =
     CATEGORY_CARDS.find((c) => c.id === activeCategory)?.filterLabel ?? null;
@@ -104,7 +112,8 @@ export default function CategoryPage({
     const query = searchQuery.trim().toLowerCase();
 
     return posts.filter((p) => {
-      const typeOk = !p.postType || p.postType === postKind;
+      const typeOk =
+        postKind === "all" || !p.postType || p.postType === postKind;
       if (!typeOk) return false;
       if (activeFilterLabel !== null && p.category !== activeFilterLabel) {
         return false;
@@ -132,8 +141,8 @@ export default function CategoryPage({
     : "Inga inlägg matchar filtret ännu.";
 
   return (
-    <div className="w-full min-w-0 self-stretch px-6 py-10 inline-flex flex-col justify-start items-center gap-8">
-      <div className="w-full max-w-[900px] flex flex-col gap-6">
+    <div className="w-full py-10 flex flex-col items-start gap-8">
+      <div className="w-full max-w-[1224px] flex flex-col gap-6 ml-[8%]">
         <header className="flex flex-col gap-1">
           <h1 className="text-Colors-foreground text-3xl font-bold font-['DM_Sans'] tracking-tight sm:text-4xl">
             Kategorier
@@ -180,7 +189,7 @@ export default function CategoryPage({
           })}
         </div>
 
-        <label className="w-full p-2.5 bg-white-3 rounded-[40px] shadow-[0px_4px_12px_0px_rgba(0,0,0,0.07)] outline outline-1 outline-offset-[-1px] outline-stone-300/40 inline-flex justify-start items-center gap-3 overflow-hidden cursor-text">
+        <label className="w-full p-2.5 bg-Colors-card rounded-[40px] shadow-[0px_4px_12px_0px_rgba(0,0,0,0.07)] outline outline-1 outline-offset-[-1px] outline-stone-300/40 inline-flex justify-start items-center gap-3 overflow-hidden cursor-text">
           <i
             aria-hidden
             className="fi fi-br-search-heart ml-1 shrink-0 text-[20px] leading-none text-zinc-500"
@@ -196,7 +205,7 @@ export default function CategoryPage({
         </label>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="text-Colors-foreground text-lg font-semibold font-['DM_Sans'] sm:text-xl">
+          <h2 className="text-xl font-bold text-Colors-foreground font-['DM_Sans']">
             Alla inlägg ({count})
           </h2>
           <div
@@ -204,6 +213,18 @@ export default function CategoryPage({
             role="group"
             aria-label="Filtrera på typ av hjälp"
           >
+            <button
+              type="button"
+              onClick={() => setPostKind("all")}
+              aria-pressed={postKind === "all"}
+              className={`rounded-full px-5 py-2 text-sm font-semibold font-['DM_Sans'] transition-colors ${
+                postKind === "all"
+                  ? "bg-white text-Colors-foreground shadow-sm"
+                  : "text-Colors-muted-foreground hover:text-Colors-foreground"
+              }`}
+            >
+              Alla
+            </button>
             <button
               type="button"
               onClick={() => setPostKind("seek")}
@@ -231,9 +252,9 @@ export default function CategoryPage({
           </div>
         </div>
 
-        <div className="flex w-full flex-col items-stretch gap-6">
+        <div className="grid w-full grid-cols-2 gap-6">
           {filteredPosts.length === 0 ? (
-            <p className="rounded-2xl bg-Colors-card px-5 py-8 text-center text-Colors-muted-foreground outline outline-1 -outline-offset-1 outline-Colors-border font-['DM_Sans'] text-sm font-medium">
+            <p className="col-span-2 rounded-2xl bg-Colors-card px-5 py-8 text-center text-Colors-muted-foreground outline outline-1 -outline-offset-1 outline-Colors-border font-['DM_Sans'] text-sm font-medium">
               {emptyMessage}
             </p>
           ) : (
@@ -269,6 +290,8 @@ export default function CategoryPage({
                   onProfile ? () => onProfile(post.author_email) : undefined
                 }
                 onContact={onContact ? () => onContact(post) : undefined}
+                isSaved={savedPosts.has(post.id)}
+                onToggleSave={() => toggleSave(post.id)}
               />
             ))
           )}

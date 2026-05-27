@@ -7,13 +7,14 @@ type CreatePostBody = {
   description: string;
   help_type: string;
   category: string;
+  tagg?: string;
 };
 
 export async function createPostHandler(
   request: FastifyRequest<{ Body: CreatePostBody }>,
   reply: FastifyReply
 ) {
-  const { title, description, help_type, category } = request.body;
+  const { title, description, help_type, category, tagg } = request.body;
   const userId = request.user?.id;
 
   if (!userId) {
@@ -26,6 +27,7 @@ export async function createPostHandler(
     title,
     description,
     help_type,
+    tagg: tagg ?? "",
   };
 
   const post = await createPost(data, request);

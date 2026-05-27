@@ -77,7 +77,7 @@ const categoryChip =
   "px-3.5 py-2 rounded-3xl outline outline-1 -outline-offset-1 outline-Colors-border inline-flex flex-col justify-center items-start gap-1.5";
 
 const tagChipBase =
-  "px-2.5 py-1 rounded-3xl inline-flex flex-col justify-center items-center text-xs font-medium font-['DM_Sans'] leading-4 transition-[outline,background-color]";
+  "px-3.5 py-2 rounded-3xl inline-flex flex-col justify-center items-center text-xs font-medium font-['DM_Sans'] leading-4 transition-[outline,background-color]";
 
 export default function CreatePostPage({ onSubmit, onCancel }: Props) {
   const [title, setTitle] = useState("");
@@ -148,23 +148,18 @@ export default function CreatePostPage({ onSubmit, onCancel }: Props) {
     "flex-1 min-w-0 p-5 bg-Colors-card rounded-2xl outline outline-2 -outline-offset-2 outline-Colors-border inline-flex flex-col justify-start items-start text-left transition-[outline-color,outline-width]";
 
   return (
-    <div className="w-full max-w-[1000px] min-h-0 py-6 inline-flex flex-col justify-start items-center overflow-hidden">
-      <div className="w-full max-w-[672px] px-4 py-6 flex flex-col justify-start items-start gap-1">
-        <div className="w-full max-w-[672px] pb-6 flex flex-col justify-start items-start gap-1 overflow-hidden">
-          <div className="self-stretch pb-1 inline-flex justify-center items-center">
-            <h1 className="flex-1 justify-start text-Colors-foreground text-3xl font-bold font-['DM_Sans']">
-              Skapa nytt inlägg
-            </h1>
-          </div>
-          <p className="self-stretch justify-start text-Colors-muted-foreground text-base font-medium font-['DM_Sans']">
+    <div className="w-full py-10 flex flex-col items-start gap-8">
+      <div className="w-full max-w-[900px] ml-[8%] flex flex-col gap-6">
+        <header className="flex flex-col gap-1">
+          <h1 className="text-Colors-foreground text-3xl font-bold font-['DM_Sans'] tracking-tight sm:text-4xl">
+            Skapa nytt inlägg
+          </h1>
+          <p className="text-Colors-muted-foreground text-base font-medium font-['DM_Sans']">
             Berätta vad du behöver - eller vad du kan bidra med.
           </p>
-        </div>
+        </header>
 
-        <form
-          className="self-stretch pb-6 flex flex-col justify-start items-start gap-6"
-          onSubmit={submit}
-        >
+        <form className="self-stretch flex flex-col gap-6" onSubmit={submit}>
           <div className="self-stretch inline-flex justify-start items-stretch gap-3 max-sm:flex-col">
             <button
               type="button"
@@ -294,7 +289,7 @@ export default function CreatePostPage({ onSubmit, onCancel }: Props) {
                   type="button"
                   onClick={() => toggleTag(t)}
                   aria-pressed={tags.includes(t)}
-                  className={`${tagChipBase} bg-Colors-muted text-Colors-muted-foreground ${
+                  className={`${tagChipBase} bg-Colors-muted text-Colors-foreground ${
                     tags.includes(t)
                       ? "outline outline-2 -outline-offset-1 outline-Colors-foreground"
                       : "outline outline-1 -outline-offset-1 outline-transparent hover:outline-Colors-border"

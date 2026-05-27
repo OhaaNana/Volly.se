@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-function Navbar() {
+function Navbar({ hideLinks = false }: { hideLinks?: boolean }) {
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     el?.scrollIntoView({ behavior: "smooth" });
@@ -14,7 +14,7 @@ function Navbar() {
   ] as const;
 
   return (
-    <header className="w-full relative bg-primary-soft">
+    <header className="w-full bg-primary-soft">
       <div className="w-full max-w-[1280px] mx-auto h-32 pl-14 pr-12 py-10 flex justify-between items-center">
         <div className="h-12 flex justify-start items-center gap-3">
           <button
@@ -26,31 +26,31 @@ function Navbar() {
           </button>
         </div>
 
-        <nav className="flex justify-start items-center gap-1">
-          {navLinks.map((link) =>
-            "isRoute" in link && link.isRoute ? (
-              <Link
-                key={link.id}
-                to="/faq"
-                className="px-4 py-2 rounded-3xl flex justify-center items-center gap-2.5 text-warm-foreground text-2xl font-semibold font-['DM_Sans'] hover:opacity-80 transition-opacity"
-              >
-                {link.label}
-              </Link>
-            ) : (
-              <button
-                key={link.id}
-                type="button"
-                onClick={() => scrollTo(link.id)}
-                className="px-4 py-2 rounded-3xl flex justify-center items-center gap-2.5 text-warm-foreground text-2xl font-semibold font-['DM_Sans'] hover:opacity-80 transition-opacity"
-              >
-                {link.label}
-              </button>
-            )
-          )}
-        </nav>
+        {!hideLinks && (
+          <nav className="flex justify-start items-center gap-1">
+            {navLinks.map((link) =>
+              "isRoute" in link && link.isRoute ? (
+                <Link
+                  key={link.id}
+                  to="/faq"
+                  className="px-4 py-2 rounded-3xl flex justify-center items-center gap-2.5 text-warm-foreground text-2xl font-semibold font-['DM_Sans'] hover:opacity-80 transition-opacity"
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <button
+                  key={link.id}
+                  type="button"
+                  onClick={() => scrollTo(link.id)}
+                  className="px-4 py-2 rounded-3xl flex justify-center items-center gap-2.5 text-warm-foreground text-2xl font-semibold font-['DM_Sans'] hover:opacity-80 transition-opacity"
+                >
+                  {link.label}
+                </button>
+              )
+            )}
+          </nav>
+        )}
       </div>
-
-      <div className="absolute left-0 right-0 bottom-0 h-0 border-b-2 border-border" />
     </header>
   );
 }

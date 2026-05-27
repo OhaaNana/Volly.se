@@ -36,6 +36,7 @@ services:
       - ./Backend/src/database/migrations/004_create_messages_tabel.sql:/docker-entrypoint-initdb.d/05.sql
       - ./Backend/src/database/migrations/005_add_post_category.sql:/docker-entrypoint-initdb.d/06.sql
       - ./Backend/src/database/migrations/006_add_bio_to_users.sql:/docker-entrypoint-initdb.d/07.sql
+      - ./Backend/src/database/migrations/008_add_tagg_to_post.sql:/docker-entrypoint-initdb.d/08.sql
 
 volumes:
   pgdata:
