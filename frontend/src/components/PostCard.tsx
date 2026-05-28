@@ -54,7 +54,7 @@ export default function PostCard({
       : "bg-success/15 text-success";
 
   return (
-    <article className="w-full rounded-3xl border border-border/60 bg-card p-5 shadow-card transition-shadow hover:shadow-glow sm:p-6">
+    <article className="w-full flex flex-col rounded-3xl border border-border/60 bg-card p-5 shadow-card transition-shadow hover:shadow-glow sm:p-6">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <div className="size-11 shrink-0 rounded-full ring-2 ring-background">
@@ -85,65 +85,67 @@ export default function PostCard({
       <h3 className="font-display mb-1.5 text-lg font-bold leading-snug">
         {title}
       </h3>
-      <p className="mb-4 text-sm leading-relaxed text-muted-foreground line-clamp-3">
+      <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
         {body}
       </p>
 
-      <div className="mb-4 flex flex-wrap gap-2">
-        {category ? (
-          <span className="inline-flex items-center rounded-full bg-primary-soft px-2.5 py-1 text-xs font-medium text-primary">
-            {category}
-          </span>
-        ) : null}
+      <div className="mt-auto">
+        <div className="mb-4 flex flex-wrap gap-2">
+          {category ? (
+            <span className="inline-flex items-center rounded-full bg-primary-soft px-2.5 py-1 text-xs font-medium text-primary">
+              {category}
+            </span>
+          ) : null}
 
-        {tags && tags.length > 0
-          ? tags.map((tag) => (
-              <span
-                key={tag}
-                className="inline-flex items-center rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground"
-              >
-                {tag}
-              </span>
-            ))
-          : null}
-      </div>
+          {tags && tags.length > 0
+            ? tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground"
+                >
+                  {tag}
+                </span>
+              ))
+            : null}
+        </div>
 
-      <div className="flex items-center gap-2 border-t border-border pt-3">
-        <button
-          type="button"
-          onClick={onContact}
-          disabled={!onContact}
-          className="flex flex-1 items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
-        >
-          <i
-            className="fi fi-rs-comment-dots text-base leading-none"
-            aria-hidden="true"
-          />
-          Kontakta
-        </button>
-        {onDelete ? (
+        <div className="flex items-center gap-2 border-t border-border pt-3">
           <button
             type="button"
-            onClick={onDelete}
-            aria-label="Ta bort inlägg"
-            title="Ta bort inlägg"
-            className="size-10 shrink-0 rounded-full bg-red-50 outline outline-1 -outline-offset-1 outline-red-200 flex justify-center items-center hover:bg-red-100 transition-colors"
+            onClick={onContact}
+            disabled={!onContact}
+            className="flex flex-1 items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
           >
             <i
-              className="fi fi-rr-trash text-red-600 text-base leading-none"
+              className="fi fi-rs-comment-dots text-base leading-none"
               aria-hidden="true"
             />
+            Kontakta
           </button>
-        ) : null}
-        {onProfile ? (
-          <button
-            type="button"
-            onClick={onProfile}
-            className="inline-flex h-10 items-center rounded-full border border-border px-4 text-sm font-medium text-muted-foreground transition hover:bg-muted"
-          >
-            Profil
-          </button>
-        ) : null}
+          {onDelete ? (
+            <button
+              type="button"
+              onClick={onDelete}
+              aria-label="Ta bort inlägg"
+              title="Ta bort inlägg"
+              className="size-10 shrink-0 rounded-full bg-red-50 outline outline-1 -outline-offset-1 outline-red-200 flex justify-center items-center hover:bg-red-100 transition-colors"
+            >
+              <i
+                className="fi fi-rr-trash text-red-600 text-base leading-none"
+                aria-hidden="true"
+              />
+            </button>
+          ) : null}
+          {onProfile ? (
+            <button
+              type="button"
+              onClick={onProfile}
+              className="inline-flex h-10 items-center rounded-full border border-border px-4 text-sm font-medium text-muted-foreground transition hover:bg-muted"
+            >
+              Profil
+            </button>
+          ) : null}
+        </div>
       </div>
     </article>
   );
