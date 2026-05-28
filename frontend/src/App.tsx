@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
-import { isTokenExpired, clearAuth } from "./utils/auth";
+import { tokenExpiry, clearAuth } from "./utils/auth";
 import LoginPage from "./pages/LogingPage";
 import HomePage from "./pages/HomePage";
+import Navbar from "./components/Navbar";
+import Footer from "./components/footer";
 import "./index.css";
 import MenuLoggedIn, {
   LOGGED_IN_MENU_ITEMS,
@@ -39,7 +41,9 @@ export function App() {
     localStorage.getItem("currentUser")
   );
   const [sessionExpired, setSessionExpired] = useState(false);
-  const [needsOnboarding, setNeedsOnboarding] = useState(false); //added a new onboarding state-variable
+  const [needsOnboarding, setNeedsOnboarding] = useState(
+    () => localStorage.getItem("needsOnboarding") === "true"
+  );
   const [prefillEmail] = useState("");
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedProfileEmail, setSelectedProfileEmail] = useState<
@@ -199,14 +203,15 @@ export function App() {
   const logout = useCallback((expired = false) => {
     clearAuth();
     setCurrentUser(null);
-    setNeedsOnboarding(false); //added a onboarding flag on logout clear
+    setNeedsOnboarding(false);
+    localStorage.removeItem("needsOnboarding");
     if (expired) setSessionExpired(true);
   }, []);
 
   useEffect(() => {
     if (!currentUser) return;
     const check = () => {
-      if (isTokenExpired()) logout(true);
+      if (tokenExpiry()) logout(true);
     };
     check();
     const interval = setInterval(check, 60 * 1000);
@@ -223,13 +228,28 @@ export function App() {
   //show onboarding after signup
   if (currentUser && needsOnboarding) {
     return (
-      <OnboardingPage
-        onComplete={(data) => {
-          // TODO: save onboarding data to your backend here
-          console.log("Onboarding complete:", data);
-          setNeedsOnboarding(false);
-        }}
-      />
+      <div className="w-full min-h-screen bg-background flex flex-col">
+        <Navbar hideLinks />
+        <main className="flex-1 flex flex-col">
+          <OnboardingPage
+            onComplete={async (data) => {
+              console.log("Onboarding complete:", data);
+              try {
+                const token = localStorage.getItem("token");
+                await fetch("/api/users/me/onboarding", {
+                  method: "PATCH",
+                  headers: token ? { Authorization: `Bearer ${token}` } : {},
+                });
+              } catch (e) {
+                console.error("Failed to persist onboarding completion", e);
+              }
+              setNeedsOnboarding(false);
+              localStorage.removeItem("needsOnboarding");
+            }}
+          />
+        </main>
+        <Footer />
+      </div>
     );
   }
 
@@ -240,7 +260,7 @@ export function App() {
           items={LOGGED_IN_MENU_ITEMS}
           activeId={activeLoggedInPage}
           onNavigate={handleLoggedInNavigate}
-          onLogout={logout}
+          onLogout={() => logout()}
           brandName="Volly"
           brandInitial="V"
           user={{
@@ -364,7 +384,8 @@ export function App() {
       onSignupSuccess={(email) => {
         setSessionExpired(false);
         setCurrentUser(email);
-        setNeedsOnboarding(true); //added the onboarding-after-signup trigger
+        setNeedsOnboarding(true);
+        localStorage.setItem("needsOnboarding", "true");
       }}
     >
       <div className="flex flex-col">
@@ -375,7 +396,13 @@ export function App() {
         )}
         <LoginPage
           initialEmail={prefillEmail}
-          onLoginSuccess={(email) => setCurrentUser(email)}
+          onLoginSuccess={(email) => {
+            setCurrentUser(email);
+            setSessionExpired(false);
+            setNeedsOnboarding(
+              localStorage.getItem("needsOnboarding") === "true"
+            );
+          }}
         />
       </div>
     </HomePage>

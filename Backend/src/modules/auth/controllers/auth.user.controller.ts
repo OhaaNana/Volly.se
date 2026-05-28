@@ -1,6 +1,22 @@
 import { type FastifyRequest, type FastifyReply } from "fastify";
 import { pool } from "./auth.controller";
 
+export const completeOnboarding = async (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => {
+  try {
+    const userId = Number(request.user?.id);
+    await pool.query(
+      "UPDATE users SET onboarding_completed = TRUE WHERE id = $1",
+      [userId]
+    );
+    reply.send({ success: true });
+  } catch (error) {
+    reply.code(500).send({ message: "Error completing onboarding", error });
+  }
+};
+
 // Skapa en user
 export const createUser = async (
   request: FastifyRequest<{ Body: { email: string; password: string } }>,

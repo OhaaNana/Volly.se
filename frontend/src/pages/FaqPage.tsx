@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Footer from "../components/footer";
 
 type FaqSubItem = { q: string; a: string };
 type FaqSection = {
@@ -187,55 +188,8 @@ export default function FaqPage() {
   };
 
   return (
-    <div
-      className="min-h-screen flex flex-col"
-      style={{ backgroundColor: "#FDFAF4" }}
-    >
-      <header
-        className="w-full px-10 py-5 flex justify-between items-center border-b"
-        style={{ backgroundColor: "#D6E8D9", borderColor: "#c8dccb" }}
-      >
-        <Link
-          to="/"
-          className="text-5xl font-normal font-['Emblema_One'] leading-[48px]"
-          style={{ color: "#00AB46" }}
-        >
-          Volly
-        </Link>
-
-        <nav className="flex items-center gap-6">
-          {[
-            { label: "Vår vision", href: "/#Vision" },
-            { label: "Hur Volly fungerar", href: "/#Funkar" },
-            { label: "FAQ", href: "/faq", active: true },
-            { label: "Skapa konto", href: "/#Skapa konto" },
-          ].map((link) =>
-            link.active ? (
-              <Link
-                key={link.label}
-                to="/faq"
-                className="text-sm font-medium font-['DM_Sans']"
-                style={{
-                  color: "#321A16",
-                  textDecoration: "underline",
-                  textUnderlineOffset: "4px",
-                }}
-              >
-                {link.label}
-              </Link>
-            ) : (
-              <a
-                key={link.label}
-                href={link.href}
-                className="text-sm font-medium font-['DM_Sans'] transition-opacity hover:opacity-60"
-                style={{ color: "#321A16" }}
-              >
-                {link.label}
-              </a>
-            )
-          )}
-        </nav>
-      </header>
+    <div className="min-h-screen flex flex-col bg-background">
+      <Navbar />
 
       <main className="flex-1 w-full max-w-[720px] mx-auto px-6 py-16">
         <h1
@@ -267,82 +221,7 @@ export default function FaqPage() {
         </section>
       </main>
 
-      <footer
-        className="w-full px-10 pt-10 pb-5 flex flex-col gap-8"
-        style={{ backgroundColor: "#D6E8D9" }}
-      >
-        <div className="flex justify-between items-start gap-16">
-          <div className="flex flex-col gap-3">
-            <h3
-              className="text-lg font-semibold font-['DM_Sans']"
-              style={{ color: "#321A16" }}
-            >
-              Om oss
-            </h3>
-            <div className="flex flex-col gap-1.5">
-              {["Vår vision", "Hur Volly fungerar", "FAQ"].map((text) => (
-                <span
-                  key={text}
-                  className="text-sm font-normal font-['DM_Sans'] underline underline-offset-2 cursor-pointer hover:opacity-70"
-                  style={{ color: "#321A16" }}
-                >
-                  {text}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-2">
-              <h3
-                className="text-lg font-semibold font-['DM_Sans']"
-                style={{ color: "#321A16" }}
-              >
-                Kontakta oss
-              </h3>
-              <a
-                href="mailto:info@volly.nu"
-                className="text-sm font-normal font-['DM_Sans'] underline underline-offset-2 hover:opacity-70"
-                style={{ color: "#321A16" }}
-              >
-                info@volly.nu
-              </a>
-            </div>
-            <div className="flex flex-col gap-2">
-              <h3
-                className="text-lg font-semibold font-['DM_Sans']"
-                style={{ color: "#321A16" }}
-              >
-                Säkerhet & Villkor
-              </h3>
-              <span
-                className="text-sm font-normal font-['DM_Sans'] underline underline-offset-2 cursor-pointer hover:opacity-70"
-                style={{ color: "#321A16" }}
-              >
-                Användarvillkor
-              </span>
-            </div>
-          </div>
-
-          <div className="flex-1 flex justify-end items-center">
-            <span
-              className="text-5xl font-normal font-['Emblema_One'] opacity-70"
-              style={{ color: "#00AB46" }}
-            >
-              Volly
-            </span>
-          </div>
-        </div>
-
-        <div className="flex justify-center">
-          <span
-            className="text-sm font-normal font-['DM_Sans']"
-            style={{ color: "#321A16", opacity: 0.4 }}
-          >
-            © 2026 Volly
-          </span>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

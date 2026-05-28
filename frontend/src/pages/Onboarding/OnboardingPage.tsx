@@ -1,11 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import StepRole from "./Steps/StepRole";
 import StepExpertise from "./Steps/StepExpertise";
 import StepHelpType from "./Steps/StepHelpType";
 import StepPreference from "./Steps/StepPreference";
 import StepToS from "./Steps/StepToS";
-import Header from "../../components/header";
-import Footer from "../../components/footer";
 
 export type OnboardingData = {
   role: string;
@@ -55,6 +53,10 @@ export default function OnboardingPage({ onComplete }: OnboardingPageProps) {
   const progress = ((safeStepIndex + 1) / steps.length) * 100;
   const CurrentStepComponent = currentStep.component;
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [safeStepIndex]);
+
   const nextStep = () => {
     if (isLast) {
       onComplete(data);
@@ -66,9 +68,8 @@ export default function OnboardingPage({ onComplete }: OnboardingPageProps) {
   const prevStep = () => setStepIndex((s) => Math.max(s - 1, 0));
 
   return (
-    <div className="min-h-dvh w-full flex flex-col items-center justify-center px-4 py-10 bg-[#F5F3EE] font-['DM_Sans']">
-      <Header />
-      <div className="w-full max-w-xl mb-10">
+    <div className="w-full flex flex-col items-center justify-center px-4 py-24 font-['DM_Sans']">
+      <div className="w-full max-w-xl mb-16">
         <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
           <div
             className="h-full bg-[#2D6A4F] rounded-full transition-all duration-500 ease-out"
@@ -86,24 +87,23 @@ export default function OnboardingPage({ onComplete }: OnboardingPageProps) {
           {!isFirst && (
             <button
               onClick={prevStep}
-              className="flex-1 py-3 bg-[#2D6A4F] text-white font-semibold rounded-full hover:bg-[#245a42] transition-colors"
+              className="flex-1 py-3 bg-gray-100 text-gray-500 font-semibold rounded-full hover:bg-gray-200 transition-colors"
             >
               Föregående Steg
             </button>
           )}
           <button
             onClick={isLast && !data.tosAccepted ? undefined : nextStep}
-            className={`flex-1 py-3 bg-[#E74C3C] text-white font-semibold rounded-full transition-colors ${
+            className={`flex-1 py-3 bg-[#2D6A4F] text-white font-semibold rounded-full transition-colors ${
               isLast && !data.tosAccepted
                 ? "opacity-40 cursor-not-allowed"
-                : "hover:bg-[#d44233]"
+                : "hover:bg-[#245a42]"
             }`}
           >
             {isLast ? "Gå vidare" : "Nästa Steg"}
           </button>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

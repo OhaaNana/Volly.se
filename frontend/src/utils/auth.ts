@@ -15,7 +15,7 @@ export function getToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);
 }
 
-export function isTokenExpired(): boolean {
+export function tokenExpiry(): boolean {
   const expiry = localStorage.getItem(EXPIRY_KEY);
   if (!expiry) return false;
   return Date.now() > Number(expiry);

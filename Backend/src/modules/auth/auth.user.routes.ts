@@ -6,6 +6,7 @@ import {
   deleteUser,
   getUserByEmail,
   updateUserByEmail,
+  completeOnboarding,
 } from "./controllers/auth.user.controller";
 import { protect } from "../../middleware/auth.middleware";
 
@@ -62,4 +63,9 @@ export default async function userRoutes(app: FastifyInstance) {
     updateUserByEmail
   );
   app.delete("/:id", { preHandler: protect } as any, deleteUser);
+  app.patch(
+    "/me/onboarding",
+    { preHandler: protect } as any,
+    completeOnboarding
+  );
 }

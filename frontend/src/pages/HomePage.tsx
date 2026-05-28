@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useLocation } from "react-router-dom";
 import { saveToken } from "../utils/auth";
 import Navbar from "../components/Navbar";
 import Footer from "../components/footer";
@@ -19,6 +20,16 @@ const scroll = () => {
 };
 
 function HomePage({ children, onSignupSuccess }: HomePageProps) {
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (!hash) return;
+    const id = decodeURIComponent(hash.slice(1));
+    requestAnimationFrame(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    });
+  }, [hash]);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -267,7 +278,9 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
           </div>
         </section>
 
-        <HowVollyWorks />
+        <div className="w-full max-w-7xl mx-auto px-20">
+          <HowVollyWorks />
+        </div>
       </main>
 
       <button

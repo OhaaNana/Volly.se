@@ -57,7 +57,7 @@ function HowVollyWorks({ compact = false }: HowVollyWorksProps) {
     );
   }
   return (
-    <section id="Funkar" className="w-full py-12">
+    <section id="Funkar" className="w-full pt-12 pb-24">
       <h2 className="mb-8 text-3xl font-bold font-['DM_Sans']">
         Hur Volly fungerar
       </h2>

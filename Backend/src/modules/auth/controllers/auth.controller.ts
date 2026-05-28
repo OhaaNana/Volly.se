@@ -64,7 +64,7 @@ export const register = async (
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await pool.query(
-      "INSERT INTO users (first_name, last_name, email, password) VALUES ($1, $2, $3, $4) RETURNING *",
+      "INSERT INTO users (first_name, last_name, email, password, onboarding_completed) VALUES ($1, $2, $3, $4, FALSE) RETURNING *",
       [first_name ?? null, last_name ?? null, email, hashedPassword]
     );
 
@@ -75,6 +75,7 @@ export const register = async (
       id: user.id,
       token: generateAccessToken(user.id),
       refreshToken: generateRefreshToken(user.id),
+      onboarding_completed: user.onboarding_completed,
     });
   } catch (error) {
     console.error("Register error:", error);
@@ -114,6 +115,7 @@ export const login = async (
       id: user.id,
       token: generateAccessToken(user.id),
       refreshToken: generateRefreshToken(user.id),
+      onboarding_completed: user.onboarding_completed,
     });
   } catch (error) {
     console.error("Login error:", error);

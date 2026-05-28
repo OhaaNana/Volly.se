@@ -44,6 +44,7 @@ services:
       - ./Backend/src/database/migrations/005_add_post_category.sql:/docker-entrypoint-initdb.d/06.sql
       - ./Backend/src/database/migrations/006_add_bio_to_users.sql:/docker-entrypoint-initdb.d/07.sql
       - ./Backend/src/database/migrations/007_add_post_tagg.sql:/docker-entrypoint-initdb.d/08.sql
+      - ./Backend/src/database/migrations/008_add_onboarding_to_users.sql:/docker-entrypoint-initdb.d/09.sql
 
   coturn:
     image: coturn/coturn:latest

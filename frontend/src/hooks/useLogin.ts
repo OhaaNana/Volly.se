@@ -43,6 +43,9 @@ export const useLogin = () => {
       if (data?.id != null) {
         localStorage.setItem("userId", String(data.id));
       }
+      if (data?.onboarding_completed === false) {
+        localStorage.setItem("needsOnboarding", "true");
+      }
       return true;
     } catch {
       setErrorMessage("Login failed.");
