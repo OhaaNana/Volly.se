@@ -78,7 +78,10 @@ function LoginPage({ onLoginSuccess, initialEmail = "" }: LoginPageProps) {
         }
       );
 
-      if (!response.ok) {
+      const result = (await response.json().catch(() => null)) as {
+        success?: string;
+      } | null;
+      if (!response.ok || result?.success !== "true") {
         throw new Error("Kunde inte skicka förfrågan");
       }
 
