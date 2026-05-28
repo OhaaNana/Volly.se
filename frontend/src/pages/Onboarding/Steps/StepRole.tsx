@@ -15,13 +15,13 @@ export default function StepRole({ data, setData }: StepProps) {
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-900 text-center mb-2">
-        Hej...., välkommen till{" "}
+        Hej, välkommen till{" "}
         <span className="italic font-semibold">Volly</span> !
       </h1>
       <p className="text-sm text-gray-500 text-center italic leading-relaxed mb-6">
-        "Vår tjänst är helt gratis att använda. Volly är byggt för att skapa ett
+        Vår tjänst är helt gratis att använda. Volly är byggt för att skapa ett
         tryggare, varmare och mer sammanhållet samhälle där vi hjälper
-        varandra."
+        varandra.
       </p>
 
       <div className="border-t border-gray-200 pt-6">
