@@ -16,10 +16,80 @@ function LoginPage({ onLoginSuccess, initialEmail = "" }: LoginPageProps) {
   } = useLogin();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotMessage, setForgotMessage] = useState("");
+  const [forgotStatus, setForgotStatus] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
+  const [forgotError, setForgotError] = useState("");
+
+  const formSubmitEmail = import.meta.env.VITE_FORMSUBMIT_EMAIL as
+    | string
+    | undefined;
 
   useEffect(() => {
     setEmail(initialEmail);
   }, [initialEmail, setEmail]);
+
+  const openForgotPassword = () => {
+    setForgotEmail(email);
+    setForgotMessage("");
+    setForgotStatus("idle");
+    setForgotError("");
+    setShowForgotPassword(true);
+  };
+
+  const closeForgotPassword = () => {
+    setShowForgotPassword(false);
+    setForgotStatus("idle");
+    setForgotError("");
+  };
+
+  const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!formSubmitEmail?.trim()) {
+      setForgotStatus("error");
+      setForgotError(
+        "E-post för återställning är inte konfigurerad. Lägg till VITE_FORMSUBMIT_EMAIL i frontend/.env."
+      );
+      return;
+    }
+
+    setForgotStatus("submitting");
+    setForgotError("");
+
+    try {
+      const response = await fetch(
+        `https://formsubmit.co/ajax/${encodeURIComponent(formSubmitEmail.trim())}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            email: forgotEmail.trim(),
+            message: forgotMessage.trim() || "(inget meddelande)",
+            _subject: "Glömt lösenord – Volly",
+            _template: "table",
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Kunde inte skicka förfrågan");
+      }
+
+      setForgotStatus("success");
+    } catch {
+      setForgotStatus("error");
+      setForgotError(
+        "Något gick fel. Försök igen om en stund eller kontakta support."
+      );
+    }
+  };
 
   const scrollToSignup = () => {
     document
@@ -135,6 +205,7 @@ function LoginPage({ onLoginSuccess, initialEmail = "" }: LoginPageProps) {
                   </button>
                   <button
                     type="button"
+                    onClick={openForgotPassword}
                     className="text-warm-foreground text-base font-semibold font-['DM_Sans'] leading-4 hover:opacity-80"
                   >
                     Glömt lösenord
@@ -145,6 +216,111 @@ function LoginPage({ onLoginSuccess, initialEmail = "" }: LoginPageProps) {
           </div>
         </div>
       </div>
+
+      {showForgotPassword ? (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="forgot-password-title"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          onClick={closeForgotPassword}
+        >
+          <div
+            className="w-96 max-w-full p-8 bg-card rounded-[30px] shadow-lg flex flex-col gap-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {forgotStatus === "success" ? (
+              <>
+                <h3
+                  id="forgot-password-title"
+                  className="text-warm-foreground text-2xl font-semibold font-['DM_Sans'] text-center"
+                >
+                  Förfrågan skickad
+                </h3>
+                <p className="text-foreground text-sm font-normal font-['DM_Sans'] text-center">
+                  Om din e-post finns registrerad återkommer vi så snart vi kan.
+                </p>
+                <button
+                  type="button"
+                  onClick={closeForgotPassword}
+                  className="self-stretch px-12 py-3 btn-volly-cta inline-flex justify-center items-center"
+                >
+                  <span className="text-foreground text-base font-bold font-['DM_Sans'] leading-4">
+                    Stäng
+                  </span>
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="flex flex-col gap-2">
+                  <h3
+                    id="forgot-password-title"
+                    className="text-warm-foreground text-2xl font-semibold font-['DM_Sans'] text-center"
+                  >
+                    Glömt lösenord
+                  </h3>
+                  <p className="text-foreground text-sm font-normal font-['DM_Sans'] text-center opacity-70">
+                    Fyll i din e-post så återkommer vi med hjälp att återställa
+                    kontot.
+                  </p>
+                </div>
+
+                <form
+                  onSubmit={handleForgotPasswordSubmit}
+                  className="flex flex-col gap-4"
+                >
+                  <div className="p-3 bg-card rounded-md outline outline-2 outline-offset-[-2px] outline-foreground">
+                    <MyTextInput
+                      type="email"
+                      name="email"
+                      required
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      placeholder="E-post"
+                      className="w-full text-foreground text-base font-normal font-['DM_Sans'] leading-4 bg-transparent border-none outline-none placeholder:text-foreground opacity-50"
+                    />
+                  </div>
+
+                  <div className="p-3 bg-card rounded-md outline outline-2 outline-offset-[-2px] outline-foreground">
+                    <textarea
+                      name="message"
+                      value={forgotMessage}
+                      onChange={(e) => setForgotMessage(e.target.value)}
+                      placeholder="Meddelande (valfritt)"
+                      rows={3}
+                      className="w-full resize-none text-foreground text-base font-normal font-['DM_Sans'] leading-5 bg-transparent border-none outline-none placeholder:text-foreground opacity-50"
+                    />
+                  </div>
+
+                  {forgotError ? (
+                    <p className="text-sm text-red-600 font-['DM_Sans']">
+                      {forgotError}
+                    </p>
+                  ) : null}
+
+                  <button
+                    type="submit"
+                    disabled={forgotStatus === "submitting"}
+                    className="px-12 py-3 btn-volly-cta inline-flex justify-center items-center disabled:opacity-60"
+                  >
+                    <span className="text-foreground text-base font-bold font-['DM_Sans'] leading-4">
+                      {forgotStatus === "submitting" ? "Skickar..." : "Skicka"}
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={closeForgotPassword}
+                    className="text-warm-foreground text-sm font-semibold font-['DM_Sans'] hover:opacity-80"
+                  >
+                    Avbryt
+                  </button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }
