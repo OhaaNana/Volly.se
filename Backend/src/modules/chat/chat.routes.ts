@@ -2,6 +2,7 @@ import { getChatController } from "../auth/controllers/auth.chat.controller";
 import {
   createChatHandler,
   listMyChatsHandler,
+  sendMessageHandler,
   updateChatStatusHandler,
 } from "./chat.controller";
 import { protect } from "../../middleware/auth.middleware";
@@ -17,6 +18,11 @@ export default async function chatRoutes(app: FastifyInstance) {
   );
 
   app.get("/chat/:roomId", { preHandler: protect }, getChatController);
+  app.post(
+    "/chat/:roomId/messages",
+    { preHandler: protect },
+    sendMessageHandler
+  );
 
   app.get("/health", {
     schema: {

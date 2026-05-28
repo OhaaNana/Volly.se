@@ -185,7 +185,9 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
 
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data) as Message;
-      setMessages((prev) => [...prev, message]);
+      if (String(message.sender_id) !== String(userId)) {
+        setMessages((prev) => [...prev, message]);
+      }
     };
 
     return () => {
@@ -193,19 +195,24 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
     };
   }, [selectedId, status, userId]);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (!newMessage.trim() || !selectedId || status !== "accepted") return;
+    const text = newMessage;
+    setNewMessage("");
     const optimistic: Message = {
       id: `tmp-${Date.now()}`,
       request_id: selectedId,
       sender_id: userId,
       sender_email: localStorage.getItem("currentUser"),
-      text_message: newMessage,
+      text_message: text,
       created_at: new Date().toISOString(),
     };
-    socketRef.current?.send(JSON.stringify({ text: newMessage }));
     setMessages((prev) => [...prev, optimistic]);
-    setNewMessage("");
+    await fetch(`/api/chat/chat/${selectedId}/messages`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...getAuthHeader() },
+      body: JSON.stringify({ text }),
+    });
   };
 
   const updateStatus = async (next: "accepted" | "denied") => {
