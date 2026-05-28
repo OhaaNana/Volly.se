@@ -18,7 +18,7 @@ export default function StepHelpType({ data, setData }: StepProps) {
         Steg 3 : Hur vill du hjälpa andra?
       </h2>
       <p className="text-xs text-gray-400 mb-6">
-        Du kan ändra detta val sedan under Mina sidor
+        Du kan alltid ändra valen i din profil
       </p>
 
       <div className="flex gap-3">

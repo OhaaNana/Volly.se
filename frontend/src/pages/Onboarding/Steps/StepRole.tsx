@@ -6,7 +6,7 @@ interface StepProps {
 }
 
 const ROLE_OPTIONS = [
-  { id: "volontär", label: "Volontärer" },
+  { id: "volontär", label: "Erbjuda hjälp" },
   { id: "hjälpsökande", label: "Hjälpsökande" },
   { id: "båda", label: "Båda" },
 ];
@@ -15,24 +15,22 @@ export default function StepRole({ data, setData }: StepProps) {
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-900 text-center mb-2">
-        Hej...., välkommen till{" "}
-        <span className="italic font-semibold">Volly</span> !
+        Välkommen till Volly!
       </h1>
       <p className="text-sm text-gray-500 text-center italic leading-relaxed mb-6">
-        "Vår tjänst är helt gratis att använda. Volly är byggt för att skapa ett
-        tryggare, varmare och mer sammanhållet samhälle där vi hjälper
-        varandra."
+        Vår tjänst är helt gratis att använda. Volly är byggt för att skapa ett
+        tryggare, varmare och mer sammanhållet samhälle där vi hjälper varandra.
       </p>
 
       <div className="border-t border-gray-200 pt-6">
         <p className="text-xs text-gray-400 mb-3">
-          Bara 5 snabba frågor kvar innan du är igång!
+          Några snabba frågor innan du är igång!
         </p>
         <h2 className="text-base font-bold text-gray-900 mb-1">
           Steg 1: Vad vill du göra på plattformen?
         </h2>
         <p className="text-xs text-gray-400 mb-5">
-          Du kan alltid ändra detta val under Mina sidor
+          Du kan alltid ändra valen i din profil
         </p>
 
         <div className="flex gap-3">

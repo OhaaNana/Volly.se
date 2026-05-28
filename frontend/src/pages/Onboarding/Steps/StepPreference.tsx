@@ -26,10 +26,10 @@ export default function StepPreference({ data, setData }: StepProps) {
   return (
     <div>
       <h2 className="text-base font-bold text-gray-900 mb-1">
-        Steg 4 : När passar det dig bäst?
+        Steg 4 : När är du oftast tillgänglig?
       </h2>
       <p className="text-xs text-gray-400 mb-6">
-        Du kan ändra detta val sedan under Mina sidor
+        Du kan alltid ändra valen i din profil
       </p>
 
       <div className="flex flex-wrap gap-3">

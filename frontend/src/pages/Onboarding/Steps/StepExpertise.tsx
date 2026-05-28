@@ -27,10 +27,10 @@ export default function StepExpertise({ data, setData }: StepProps) {
   return (
     <div>
       <h2 className="text-base font-bold text-gray-900 mb-1">
-        Steg 2 : Välj dina kategoriområden
+        Steg 2 : Vilka kategorier vill du erbjuda hjälp inom?
       </h2>
       <p className="text-xs text-gray-400 mb-6">
-        Du kan alltid ändra detta val under Mina sidor
+        Du kan alltid ändra valen i din profil
       </p>
 
       <div className="grid grid-cols-3 gap-3">
