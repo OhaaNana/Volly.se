@@ -101,7 +101,7 @@ build_frontend:
       - dist/
   script:
     - export IMAGE=$FRONTEND_IMAGE
-    - docker build --cache-from "${IMAGE}:staging" -t "${IMAGE}:${CI_COMMIT_SHORT_SHA}" ./frontend
+    - docker build --cache-from "${IMAGE}:staging" --build-arg VITE_FORMSUBMIT_EMAIL="${VITE_FORMSUBMIT_EMAIL}" -t "${IMAGE}:${CI_COMMIT_SHORT_SHA}" ./frontend
     - docker push "${IMAGE}:${CI_COMMIT_SHORT_SHA}"
     - *tag_and_push
 
