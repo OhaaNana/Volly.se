@@ -4,8 +4,6 @@ import StepExpertise from "./Steps/StepExpertise";
 import StepHelpType from "./Steps/StepHelpType";
 import StepPreference from "./Steps/StepPreference";
 import StepToS from "./Steps/StepToS";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/footer";
 
 export type OnboardingData = {
   role: string;
@@ -70,43 +68,40 @@ export default function OnboardingPage({ onComplete }: OnboardingPageProps) {
   const prevStep = () => setStepIndex((s) => Math.max(s - 1, 0));
 
   return (
-    <div className="w-full min-h-screen bg-background flex flex-col">
-      <Navbar />
-      <div className="min-h-dvh w-full flex flex-col items-center justify-center px-4 py-10 bg-[#F5F3EE]">
-        <div className="w-full max-w-xl mb-10">
-          <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-[#2D6A4F] rounded-full transition-all duration-500 ease-out"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
+    <div className="w-full flex flex-col items-center justify-center px-4 py-24 font-['DM_Sans']">
+      <div className="w-full max-w-xl mb-16">
+        <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-[#2D6A4F] rounded-full transition-all duration-500 ease-out"
+            style={{ width: `${progress}%` }}
+          />
         </div>
+      </div>
 
-        {/* Card */}
-        <div className="w-full max-w-xl bg-white rounded-2xl shadow-sm border border-gray-100 px-10 py-8">
-          <CurrentStepComponent data={data} setData={setData} />
+      {/* Card */}
+      <div className="w-full max-w-xl bg-white rounded-2xl shadow-sm border border-gray-100 px-10 py-8">
+        <CurrentStepComponent data={data} setData={setData} />
 
-          {/* Navigation */}
-          <div className="mt-8 flex gap-3">
-            {!isFirst && (
-              <button
-                onClick={prevStep}
-                className="flex-1 py-3 bg-primary-soft text-muted-foreground font-semibold rounded-full hover:bg-primary-soft/70 transition-colors"
-              >
-                Föregående Steg
-              </button>
-            )}
+        {/* Navigation */}
+        <div className="mt-8 flex gap-3">
+          {!isFirst && (
             <button
-              onClick={isLast && !data.tosAccepted ? undefined : nextStep}
-              className={`flex-1 py-3 bg-primary text-white font-semibold rounded-full transition-colors ${
-                isLast && !data.tosAccepted
-                  ? "opacity-40 cursor-not-allowed"
-                  : "hover:bg-primary/80"
-              }`}
+              onClick={prevStep}
+              className="flex-1 py-3 bg-gray-100 text-gray-500 font-semibold rounded-full hover:bg-gray-200 transition-colors"
             >
-              {isLast ? "Gå vidare" : "Nästa Steg"}
+              Föregående Steg
             </button>
-          </div>
+          )}
+          <button
+            onClick={isLast && !data.tosAccepted ? undefined : nextStep}
+            className={`flex-1 py-3 bg-[#2D6A4F] text-white font-semibold rounded-full transition-colors ${
+              isLast && !data.tosAccepted
+                ? "opacity-40 cursor-not-allowed"
+                : "hover:bg-[#245a42]"
+            }`}
+          >
+            {isLast ? "Gå vidare" : "Nästa Steg"}
+          </button>
         </div>
       </div>
     </div>
