@@ -195,7 +195,7 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
     };
   }, [selectedId, status, userId]);
 
-  const sendMessage = async () => {
+  const sendMessage = () => {
     if (!newMessage.trim() || !selectedId || status !== "accepted") return;
     const text = newMessage;
     setNewMessage("");
@@ -208,11 +208,7 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
       created_at: new Date().toISOString(),
     };
     setMessages((prev) => [...prev, optimistic]);
-    await fetch(`/api/chat/chat/${selectedId}/messages`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...getAuthHeader() },
-      body: JSON.stringify({ text }),
-    });
+    socketRef.current?.send(JSON.stringify({ text }));
   };
 
   const updateStatus = async (next: "accepted" | "denied") => {

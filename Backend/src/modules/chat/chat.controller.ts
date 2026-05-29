@@ -3,11 +3,8 @@ import {
   createOrGetChat,
   getChatById,
   getMyChats,
-  saveMessage,
   updateChatStatus,
 } from "./chat.repo";
-import { createPayload } from "./chat.service";
-import { rooms, users } from "./chat.rooms";
 import type { ChatStatus } from "../../shared/types/chat.types";
 
 export async function createChatHandler(
@@ -80,41 +77,4 @@ export async function updateChatStatusHandler(
 
   const updated = await updateChatStatus(chatId, userId, status, request);
   return reply.send(updated);
-}
-
-export async function sendMessageHandler(
-  request: FastifyRequest<{
-    Params: { roomId: string };
-    Body: { text: string };
-  }>,
-  reply: FastifyReply
-) {
-  const userId = Number(request.user?.id);
-  const roomId = Number(request.params.roomId);
-  const { text } = request.body;
-
-  if (!text?.trim()) return reply.code(400).send({ message: "text required" });
-
-  const chat = await getChatById(roomId, request);
-  if (!chat) return reply.code(404).send({ message: "Chat not found" });
-  if (chat.status !== "accepted")
-    return reply.code(403).send({ message: "Chat not accepted" });
-  if (userId !== chat.creator_id && userId !== chat.post_author_id)
-    return reply.code(403).send({ message: "Not a participant" });
-
-  const draft = createPayload(
-    { userId: String(userId), roomId: String(roomId) },
-    text.trim()
-  );
-  const saved = await saveMessage(draft, request);
-
-  const roomClients = rooms.get(String(roomId)) ?? new Set();
-  for (const client of roomClients) {
-    const meta = users.get(client);
-    if (meta && meta.userId !== String(userId) && client.readyState === 1) {
-      client.send(JSON.stringify(saved));
-    }
-  }
-
-  return reply.send(saved);
 }
