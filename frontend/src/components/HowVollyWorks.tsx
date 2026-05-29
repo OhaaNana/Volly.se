@@ -57,32 +57,32 @@ function HowVollyWorks({ compact = false }: HowVollyWorksProps) {
     );
   }
   return (
-    <section id="Funkar" className="w-full pt-12 pb-24">
-      <h2 className="mb-8 text-3xl font-bold font-['DM_Sans']">
-        Hur Volly fungerar
-      </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        {HOW_IT_WORKS_CARDS.map((card) => (
-          <article
-            key={card.title}
-            className="p-6 bg-card rounded-2xl border border-border flex flex-col gap-4"
-          >
-            <div className="size-14 rounded-full bg-accent inline-flex items-center justify-center shrink-0">
-              <i
-                className={`${card.icon} text-2xl text-primary leading-none`}
-                aria-hidden="true"
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <h3 className="text-lg font-semibold font-['DM_Sans']">
-                {card.title}
-              </h3>
-              <p className="text-sm text-muted-foreground font-['DM_Sans'] leading-6 whitespace-pre-line">
-                {card.description}
-              </p>
-            </div>
-          </article>
-        ))}
+    <section id="Funkar" className="w-full py-12">
+      <div className="flex flex-col gap-6">
+        <h2 className="self-stretch text-icon-active text-4xl font-semibold leading-17">
+          Hur Volly fungerar
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          {HOW_IT_WORKS_CARDS.map((card) => (
+            <article
+              key={card.title}
+              className="p-6 bg-card rounded-2xl border border-border flex flex-col gap-4"
+            >
+              <div className="size-14 rounded-full bg-accent inline-flex items-center justify-center shrink-0">
+                <i
+                  className={`${card.icon} text-2xl text-primary leading-none`}
+                  aria-hidden="true"
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <h3 className="text-lg font-semibold">{card.title}</h3>
+                <p className="text-base text-muted-foreground leading-6 whitespace-pre-line">
+                  {card.description}
+                </p>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );

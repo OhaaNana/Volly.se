@@ -109,13 +109,12 @@ function LoginPage({ onLoginSuccess, initialEmail = "" }: LoginPageProps) {
   };
 
   return (
-    <section className="w-full bg-linear-to-b from-primary-soft to-neutral-300 rounded-bl-[30px] rounded-br-[30px]">
+    <section className="w-full bg-gradient-primary-soft rounded-bl-[30px] rounded-br-[30px]">
       <div className="w-full max-w-7xl mx-auto p-32 flex justify-between items-center gap-12">
         <div className="flex-1 flex justify-center items-center gap-2.5">
-          <h1 className="flex-1 text-center text-warm-foreground font-['DM_Sans'] leading-30">
+          <h1 className="flex-1 text-left text-warm-foreground leading-28">
             <span className="text-7xl font-medium">Enklare vardag. </span>
-            <span className="text-7xl font-bold">Tillsammans</span>
-            <span className="text-7xl font-medium">.</span>
+            <span className="text-7xl font-bold">Tillsammans.</span>
           </h1>
         </div>
 
@@ -141,7 +140,7 @@ function LoginPage({ onLoginSuccess, initialEmail = "" }: LoginPageProps) {
                       setErrorMessage("");
                     }}
                     placeholder="E-post"
-                    className="flex-1 w-full opacity-50 text-foreground text-base font-normal font-['DM_Sans'] leading-4 bg-transparent border-none outline-none placeholder:text-foreground"
+                    className="flex-1 w-full opacity-50 text-foreground text-base font-normal leading-4 border-none outline-none placeholder:text-foreground"
                   />
                 </div>
 
@@ -154,7 +153,7 @@ function LoginPage({ onLoginSuccess, initialEmail = "" }: LoginPageProps) {
                       setErrorMessage("");
                     }}
                     placeholder="Lösenord"
-                    className="flex-1 w-full opacity-50 text-foreground text-base font-normal font-['DM_Sans'] leading-4 bg-transparent border-none outline-none placeholder:text-foreground"
+                    className="flex-1 w-full opacity-50 text-foreground text-base font-normal leading-4 border-none outline-none placeholder:text-foreground"
                   />
                 </div>
 
@@ -166,7 +165,7 @@ function LoginPage({ onLoginSuccess, initialEmail = "" }: LoginPageProps) {
                     className="sr-only"
                   />
                   <span
-                    className={`size-3.5 rounded-xs border-[1.50px] border-foreground flex items-center justify-center ${
+                    className={`size-3.5 rounded-xs border-[1.75px] border-foreground flex items-center justify-center ${
                       showPassword ? "bg-foreground" : "bg-transparent"
                     }`}
                     aria-hidden="true"
@@ -177,7 +176,7 @@ function LoginPage({ onLoginSuccess, initialEmail = "" }: LoginPageProps) {
                       </span>
                     ) : null}
                   </span>
-                  <span className="text-foreground text-sm font-normal font-['DM_Sans'] leading-4">
+                  <span className="text-foreground text-sm font-normal leading-4">
                     Visa lösenord
                   </span>
                 </label>
@@ -187,13 +186,13 @@ function LoginPage({ onLoginSuccess, initialEmail = "" }: LoginPageProps) {
                   disabled={isLoading}
                   className="self-stretch px-12 py-3 btn-volly-cta inline-flex justify-center items-center disabled:opacity-60"
                 >
-                  <span className="text-foreground text-base font-bold font-['DM_Sans'] leading-4">
+                  <span className="text-foreground text-base font-bold leading-4">
                     {isLoading ? "Loggar in..." : "Logga in"}
                   </span>
                 </button>
 
                 {errorMessage ? (
-                  <p className="self-stretch text-sm text-red-600 font-['DM_Sans']">
+                  <p className="self-stretch text-sm text-destructive">
                     {errorMessage}
                   </p>
                 ) : null}
@@ -202,7 +201,7 @@ function LoginPage({ onLoginSuccess, initialEmail = "" }: LoginPageProps) {
                   <button
                     type="button"
                     onClick={scrollToSignup}
-                    className="text-warm-foreground text-base font-semibold font-['DM_Sans'] leading-4 hover:opacity-80"
+                    className="text-warm-foreground text-base font-semibold leading-4 hover:opacity-80"
                   >
                     Skapa konto
                   </button>

@@ -21,14 +21,20 @@ function Navbar({ hideLinks = false }: NavbarProps) {
   ] as const;
 
   return (
-    <header className="w-full bg-primary-soft">
-      <div className="w-full max-w-7xl mx-auto h-32 pl-14 pr-12 py-10 flex justify-between items-center">
+    <header className="w-full relative bg-primary-soft ">
+      <div className="w-full mx-auto h-28 pl-14 pr-12 py-10 flex justify-between items-center">
         <div className="h-12 flex justify-start items-center gap-3">
           <Link
             to="/"
-            className="justify-start text-primary text-5xl font-normal font-emblema leading-12"
+            className="justify-start flex flex-row gap-2 hover:opacity-80 transition-opacit"
           >
-            Volly
+            <div className="size-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-2xl font-bold shadow-glow">
+              V
+            </div>
+
+            <div className="font-display text-5xl font-bold tracking-tight text-warm-foreground">
+              Volly
+            </div>
           </Link>
         </div>
 

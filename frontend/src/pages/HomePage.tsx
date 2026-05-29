@@ -134,10 +134,10 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
         <section id="Vision" className="w-full min-h-168 py-28 bg-background">
           <div className="w-full max-w-7xl mx-auto px-20 flex justify-center items-start">
             <div className="w-full max-w-225 flex flex-col justify-start items-start gap-6">
-              <h2 className="self-stretch text-icon-active text-5xl font-semibold font-['DM_Sans'] leading-17">
+              <h2 className="self-stretch text-icon-active text-4xl font-semibold leading-17">
                 Vår Vision
               </h2>
-              <p className="self-stretch text-foreground text-xl font-normal font-['DM_Sans'] leading-8">
+              <p className="self-stretch text-foreground text-lg font-normal leading-8">
                 Vår vision är att bygga en plattform, där det är enkelt och
                 uppmuntrande att kunna be om hjälp med sina vardagliga sysslor.
                 Vi vill skapa en gemenskap där människor känner sig trygga och
@@ -149,16 +149,13 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
                 Vår mission är att överbrygga klyftan mellan personliga nätverk
                 och formell socialtjänst, för att säkerställa att alla har lika
                 tillgång till stöd.
+                <br />
+                <br />I en tid av stigande kostnader tror vi att bara en minut
+                av din dag kan göra en enorm skillnad. Vi vill främja ett
+                tryggare och mer förknippad samhälle genom att skapa en
+                dedikerad plats för dem som vill hjälpa andra och de som behöver
+                hjälp i vardagen.
               </p>
-              <div className="pt-6 inline-flex justify-start items-center gap-1.25">
-                <span className="text-icon-active text-xl font-medium font-['DM_Sans'] leading-8">
-                  Läs mer
-                </span>
-                <span
-                  className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-8 border-l-transparent border-r-transparent border-t-icon-active"
-                  aria-hidden="true"
-                />
-              </div>
             </div>
           </div>
         </section>
@@ -170,7 +167,7 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
           <div className="w-full max-w-7xl mx-auto px-10 flex flex-col items-center">
             <div className="w-80 flex flex-col justify-start items-center gap-8">
               <div className="self-stretch flex flex-col justify-start items-start gap-2">
-                <h2 className="self-stretch text-center text-warm-foreground text-3xl font-semibold font-['DM_Sans'] leading-9">
+                <h2 className="self-stretch text-center text-warm-foreground text-4xl font-semibold font-['DM_Sans'] leading-9">
                   Skapa konto
                 </h2>
               </div>
@@ -277,8 +274,7 @@ function HomePage({ children, onSignupSuccess }: HomePageProps) {
             </div>
           </div>
         </section>
-
-        <div className="w-full max-w-7xl mx-auto px-20">
+        <div className="w-full max-w-225 mx-auto flex justify-center pb-32">
           <HowVollyWorks />
         </div>
       </main>

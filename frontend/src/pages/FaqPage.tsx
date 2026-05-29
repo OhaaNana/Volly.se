@@ -188,9 +188,8 @@ export default function FaqPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="w-full min-h-screen bg-background flex flex-col">
       <Navbar />
-
       <main className="flex-1 w-full max-w-[720px] mx-auto px-6 py-16">
         <h1
           className="text-4xl font-bold font-['DM_Sans'] tracking-tight"
@@ -220,7 +219,6 @@ export default function FaqPage() {
           ))}
         </section>
       </main>
-
       <Footer />
     </div>
   );
