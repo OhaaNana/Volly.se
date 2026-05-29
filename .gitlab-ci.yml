@@ -162,10 +162,10 @@ cleanup_registry:
     - |
       REPOS=$(curl -s --header "JOB-TOKEN: $CI_JOB_TOKEN" \
         "$CI_API_V4_URL/projects/$CI_PROJECT_ID/registry/repositories")
-      for REPO_ID in $(echo $REPOS | jq -r '.[].id'); do
+      for REPO_ID in $(echo $REPOS | jq -r 'arrays | .[].id'); do
         OLD_TAGS=$(curl -s --header "JOB-TOKEN: $CI_JOB_TOKEN" \
           "$CI_API_V4_URL/projects/$CI_PROJECT_ID/registry/repositories/$REPO_ID/tags" | \
-          jq -r '[.[] | select(.name | test("^[0-9a-f]{8}$"))] | sort_by(.created_at) | reverse | .[5:] | .[].name')
+          jq -r 'arrays | [.[] | select(.name | test("^[0-9a-f]{8}$"))] | sort_by(.created_at) | reverse | .[5:] | .[].name')
         for TAG in $OLD_TAGS; do
           curl -s --request DELETE --header "JOB-TOKEN: $CI_JOB_TOKEN" \
             "$CI_API_V4_URL/projects/$CI_PROJECT_ID/registry/repositories/$REPO_ID/tags/$TAG"
