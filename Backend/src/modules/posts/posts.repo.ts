@@ -37,7 +37,17 @@ export async function deletePost(
   id: number,
   userId: number
 ): Promise<{ id: number } | null> {
-  const result = await request.server.pg.query<{ id: number }>(
+  const pg = request.server.pg;
+  await pg.query("DELETE FROM messages WHERE post_id = $1", [id]);
+  const requestIds = await pg.query<{ id: number }>(
+    "SELECT id FROM request WHERE post_id = $1",
+    [id]
+  );
+  for (const row of requestIds.rows) {
+    await pg.query("DELETE FROM messages WHERE request_id = $1", [row.id]);
+  }
+  await pg.query("DELETE FROM request WHERE post_id = $1", [id]);
+  const result = await pg.query<{ id: number }>(
     "DELETE FROM post WHERE id = $1 AND user_id = $2 RETURNING id",
     [id, userId]
   );
