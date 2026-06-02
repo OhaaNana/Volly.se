@@ -14,7 +14,7 @@ const POPULAR_CATEGORIES: {
   textClass: string;
 }[] = [
   {
-    id: "mental",
+    id: "halsa",
     label: "Hälsa",
     bgClass: "bg-rose-200",
     textClass: "text-rose-900",

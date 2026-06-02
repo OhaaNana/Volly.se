@@ -6,12 +6,14 @@ interface StepProps {
 }
 
 const CATEGORY_OPTIONS = [
-  { id: "hälsa", label: "Hälsa", emoji: "🌿" },
+  { id: "halsa", label: "Hälsa", emoji: "🌿" },
   { id: "teknik", label: "Teknik", emoji: "💻" },
   { id: "vardag", label: "Vardag", emoji: "🤝" },
   { id: "studier", label: "Studier", emoji: "📚" },
   { id: "språk", label: "Språk", emoji: "🗣️" },
   { id: "karriär", label: "Karriär", emoji: "💼" },
+  { id: "administration", label: "Administration", emoji: "🗂️" },
+  { id: "overigt", label: "Övrigt", emoji: "✨" },
 ];
 
 export default function StepExpertise({ data, setData }: StepProps) {
