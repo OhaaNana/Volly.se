@@ -510,15 +510,6 @@ export default function ProfilePage({
                 </div>
               </div>
             </div>
-
-            {bio.trim() ? (
-              <div className="rounded-3xl border border-Colors-border bg-[#f8faf7] px-4 py-4 text-sm leading-6 text-[#334155]">
-                <div className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-Colors-muted-foreground">
-                  Om mig
-                </div>
-                {bio}
-              </div>
-            ) : null}
           </div>
         </section>
 
