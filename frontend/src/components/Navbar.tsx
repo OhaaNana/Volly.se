@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import vollyLogo from "../assets/Volly_logga.png";
 
 interface NavbarProps {
   hideLinks?: boolean;
@@ -28,12 +29,12 @@ function Navbar({ hideLinks = false }: NavbarProps) {
             to="/"
             className="justify-start flex flex-row gap-2 hover:opacity-80 transition-opacit"
           >
-            <div className="size-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-2xl font-bold shadow-glow">
-              V
-            </div>
-
             <div className="font-display text-5xl font-bold tracking-tight text-warm-foreground">
-              Volly
+              <img
+                src={vollyLogo}
+                alt="Volly Logo"
+                className="h-12 w-full max-w-40 object-contain"
+              />
             </div>
           </Link>
         </div>

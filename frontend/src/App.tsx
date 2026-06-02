@@ -294,8 +294,6 @@ export function App() {
           activeId={activeLoggedInPage}
           onNavigate={handleLoggedInNavigate}
           onLogout={() => logout()}
-          brandName="Volly"
-          brandInitial="V"
           user={{
             name: currentUser,
             initials: currentUser.slice(0, 2).toUpperCase(),

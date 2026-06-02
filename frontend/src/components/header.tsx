@@ -1,9 +1,15 @@
+import vollyLogo from "../assets/Volly_logga.png";
+
 export default function header() {
   return (
     <div className="self-stretch h-32 px-14 py-10 relative bg-neutral-200 inline-flex justify-between items-center">
       <div className="h-12 flex justify-start items-center gap-3">
         <div className="justify-start text-black text-5xl font-normal font-['Emblema_One'] leading-12">
-          Volly
+          <img
+            src={vollyLogo}
+            alt="Volly Logo"
+            className="h-12 w-full max-w-40 object-contain"
+          />
         </div>
       </div>
       <div className="flex justify-start items-start gap-9">

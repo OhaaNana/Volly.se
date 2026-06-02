@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components -- menu items co-located with layout */
 import type { ReactNode } from "react";
+import vollyLogo from "../assets/Volly_logga.png";
 
 export type MenuItem<Id extends string = string> = {
   id: Id;
@@ -90,16 +91,12 @@ function Sidebar<Id extends string>({
   activePage,
   onNavigate,
   onLogout,
-  brandName,
-  brandInitial,
   user,
 }: {
   items: readonly MenuItem<Id>[];
   activePage: Id;
   onNavigate: (next: Id) => void;
   onLogout?: () => void;
-  brandName: string;
-  brandInitial: string;
   user?: MenuLoggedInUser;
 }) {
   return (
@@ -109,13 +106,7 @@ function Sidebar<Id extends string>({
         onClick={() => onNavigate("start" as Id)}
         className="flex items-center gap-2 mb-8 hover:opacity-80 transition-opacity"
       >
-        <div className="size-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold shadow-glow">
-          {brandInitial}
-        </div>
-
-        <div className="font-display text-3xl font-bold tracking-tight">
-          {brandName}
-        </div>
+        <img src={vollyLogo} alt="Volly Logo" className="h-12 object-contain" />
       </button>
 
       <nav className="flex flex-col gap-1">
@@ -175,8 +166,6 @@ export type MenuLoggedInProps<Id extends string = string> = {
   activeId: Id;
   onNavigate: (next: Id) => void;
   onLogout?: () => void;
-  brandName: string;
-  brandInitial: string;
   user?: MenuLoggedInUser;
   children?: ReactNode;
 };
@@ -186,8 +175,6 @@ export default function MenuLoggedIn<Id extends string>({
   activeId,
   onNavigate,
   onLogout,
-  brandName,
-  brandInitial,
   user,
   children,
 }: MenuLoggedInProps<Id>) {
@@ -198,8 +185,6 @@ export default function MenuLoggedIn<Id extends string>({
         activePage={activeId}
         onNavigate={onNavigate}
         onLogout={onLogout}
-        brandName={brandName}
-        brandInitial={brandInitial}
         user={user}
       />
       <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-auto bg-Colors-background">
