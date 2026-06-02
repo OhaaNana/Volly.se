@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import vollyLogo from "../assets/Volly_logga.png";
 
 function Footer() {
   const scrollTo = (id: string) => {
@@ -8,7 +9,7 @@ function Footer() {
   return (
     <footer className="w-full bg-primary-soft rounded-tl-[30px] rounded-tr-[30px]">
       <div className="w-full mx-auto px-14 pt-4 pb-2 flex flex-col">
-        <div className="p-4 flex justify-start items-start gap-24 flex-wrap">
+        <div className="px-4 pt-4 flex justify-start items-start gap-24 flex-wrap">
           <div className="inline-flex flex-col justify-start items-start gap-2">
             <div className="text-warm-foreground text-xl font-semibold leading-6">
               Om oss
@@ -64,12 +65,12 @@ function Footer() {
 
           <div className="flex-1 min-w-50 inline-flex flex-col justify-between items-end">
             <div className="py-16 pr-10 justify-center items-end flex flex-row gap-2">
-              <div className="size-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-2xl font-bold shadow-glow">
-                V
-              </div>
-
-              <div className="font-display text-5xl font-bold tracking-tight text-warm-foreground">
-                Volly
+              <div className="inline-flex flex-col items-center justify-center lg:justify-self-center lg:self-center">
+                <img
+                  src={vollyLogo}
+                  alt="Volly Logo"
+                  className="w-full max-w-40 object-contain"
+                />
               </div>
             </div>
           </div>
