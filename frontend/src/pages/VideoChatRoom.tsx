@@ -256,7 +256,9 @@ export default function Room({ roomId, onDisconnect }: Props) {
           autoPlay
           muted
           playsInline
-          className="absolute bottom-3 right-3 w-1/4 max-w-[240px] min-w-[100px] aspect-video object-cover rounded-xl border-2 border-border"
+          className={`absolute bottom-3 right-3 w-1/4 max-w-[240px] min-w-[100px] aspect-video object-cover rounded-xl border-2 border-border${
+            sharing ? "" : " -scale-x-100"
+          }`}
         />
       </div>
 
