@@ -16,15 +16,16 @@ export const postSchema = {
       category: {
         type: "string",
         enum: [
+          "Hälsa",
           "Teknik",
-          "Språk",
-          "Socialt & sällskap",
-          "Karriär",
-          "Studier",
-          "Dokument & byråkrati",
-          "Funktionsvariation & NPF",
-          "Mental hälsa",
           "Vardag",
+          "Studier",
+          "Språk",
+          "Karriär",
+          "Administration",
+          "Socialt",
+          "Funktionsvariation",
+          "Övrigt",
         ],
       },
       help_type: {

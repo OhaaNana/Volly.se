@@ -16,13 +16,13 @@ export type CategoryPost = {
 
 export type CategoryKey =
   | "allt"
-  | "mental"
+  | "halsa"
   | "teknik"
   | "vardag"
   | "studier"
   | "sprak"
   | "karriar"
-  | "admistration"
+  | "administration"
   | "socialt"
   | "funktionsvariation"
   | "ovrigt";
@@ -34,12 +34,7 @@ const CATEGORY_CARDS: readonly {
   filterLabel: string | null;
 }[] = [
   { id: "allt", label: "Allt", icon: "✨", filterLabel: null },
-  {
-    id: "mental",
-    label: "Hälsa",
-    icon: "💚",
-    filterLabel: "Hälsa",
-  },
+  { id: "halsa", label: "Hälsa", icon: "💚", filterLabel: "Hälsa" },
   { id: "teknik", label: "Teknik", icon: "💻", filterLabel: "Teknik" },
 
   { id: "vardag", label: "Vardag", icon: "🤝", filterLabel: "Vardag" },
@@ -51,7 +46,7 @@ const CATEGORY_CARDS: readonly {
   { id: "karriar", label: "Karriär", icon: "💼", filterLabel: "Karriär" },
 
   {
-    id: "admistration",
+    id: "administration",
     label: "Administration",
     icon: "📋",
     filterLabel: "Administration",
