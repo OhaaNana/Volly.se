@@ -12,6 +12,7 @@ export default function Room({ roomId, onDisconnect }: Props) {
   const wsRef = useRef<WebSocket | null>(null);
   const iceBuf = useRef<RTCIceCandidateInit[]>([]);
   const localStreamRef = useRef<MediaStream | null>(null);
+  const screenStreamRef = useRef<MediaStream | null>(null);
   const [status, setStatus] = useState("Connecting...");
   const [muted, setMuted] = useState(false);
   const [camOff, setCamOff] = useState(false);
@@ -182,6 +183,7 @@ export default function Room({ roomId, onDisconnect }: Props) {
         const screenStream = await navigator.mediaDevices.getDisplayMedia({
           video: true,
         });
+        screenStreamRef.current = screenStream;
         const screenTrack = screenStream.getVideoTracks()[0];
         const sender = pc.getSenders().find((s) => s.track?.kind === "video");
         if (sender) await sender.replaceTrack(screenTrack);
@@ -212,12 +214,17 @@ export default function Room({ roomId, onDisconnect }: Props) {
     const sender = pc.getSenders().find((s) => s.track?.kind === "video");
     if (sender) await sender.replaceTrack(camTrack);
 
+    screenStreamRef.current?.getTracks().forEach((t) => t.stop());
+    screenStreamRef.current = null;
+
     if (localVideoRef.current) localVideoRef.current.srcObject = stream;
     setSharing(false);
   };
 
   const disconnect = () => {
     localStreamRef.current?.getTracks().forEach((t) => t.stop());
+    screenStreamRef.current?.getTracks().forEach((t) => t.stop());
+    screenStreamRef.current = null;
     pcRef.current?.close();
     wsRef.current?.close();
     onDisconnect();

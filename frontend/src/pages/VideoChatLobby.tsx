@@ -246,7 +246,10 @@ export function VideoChatLobby({ userName, onConnect, onCancel }: Props) {
         {/* Security Warning */}
         <div className="self-stretch p-4 bg-orange-300/10 rounded-2xl outline outline-1 outline-offset-[-1px] outline-orange-300/40 flex flex-col justify-start items-start gap-1.5">
           <div className="inline-flex justify-start items-start gap-1.5">
-            <div className="w-3 h-4 outline outline-2 outline-offset-[-1px] outline-foreground shrink-0 mt-px" />
+            <i
+              aria-hidden
+              className="fi fi-rr-shield-check shrink-0 text-[14px] leading-none text-foreground mt-0.5"
+            />
             <div className="text-center justify-center text-foreground text-sm font-semibold font-['DM_Sans']">
               Håll dig säker på Volly
             </div>
