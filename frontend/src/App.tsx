@@ -44,6 +44,9 @@ export function App() {
   const [currentUser, setCurrentUser] = useState<string | null>(() =>
     localStorage.getItem("currentUser")
   );
+  const [isAdmin, setIsAdmin] = useState<boolean>(
+    () => localStorage.getItem("isAdmin") === "true"
+  );
   const [sessionExpired, setSessionExpired] = useState(false);
   const [needsOnboarding, setNeedsOnboarding] = useState(
     () => localStorage.getItem("needsOnboarding") === "true"
@@ -233,6 +236,7 @@ export function App() {
     (expired = false) => {
       clearAuth();
       setCurrentUser(null);
+      setIsAdmin(false);
       setNeedsOnboarding(false);
       localStorage.removeItem("needsOnboarding");
       if (expired) setSessionExpired(true);
@@ -381,6 +385,7 @@ export function App() {
               onProfile={openProfileFromPost}
               onDeletePost={handleDeletePost}
               currentUserEmail={currentUser}
+              isAdmin={isAdmin}
               initialCategory={selectedCategory}
               onContact={openChatFromPost}
             />
@@ -415,6 +420,7 @@ export function App() {
       onSignupSuccess={(email) => {
         setSessionExpired(false);
         setCurrentUser(email);
+        setIsAdmin(localStorage.getItem("isAdmin") === "true");
         setNeedsOnboarding(true);
         localStorage.setItem("needsOnboarding", "true");
       }}
@@ -429,6 +435,7 @@ export function App() {
           initialEmail={prefillEmail}
           onLoginSuccess={(email) => {
             setCurrentUser(email);
+            setIsAdmin(localStorage.getItem("isAdmin") === "true");
             setSessionExpired(false);
             setNeedsOnboarding(
               localStorage.getItem("needsOnboarding") === "true"

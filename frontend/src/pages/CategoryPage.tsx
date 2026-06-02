@@ -67,6 +67,7 @@ type Props = {
   onProfile?: (authorEmail?: string) => void;
   onDeletePost?: (postId: string) => void;
   currentUserEmail?: string | null;
+  isAdmin?: boolean;
   initialCategory?: CategoryKey;
   onContact?: (post: CategoryPost) => void;
 };
@@ -92,6 +93,7 @@ export default function CategoryPage({
   onProfile,
   onDeletePost,
   currentUserEmail,
+  isAdmin,
   onContact,
   initialCategory,
 }: Props) {
@@ -284,7 +286,7 @@ export default function CategoryPage({
                 onDelete={
                   onDeletePost &&
                   currentUserEmail &&
-                  post.author_email === currentUserEmail
+                  (isAdmin || post.author_email === currentUserEmail)
                     ? () => onDeletePost(post.id)
                     : undefined
                 }

@@ -10,6 +10,7 @@ services:
       DATABASE_URL: postgresql://postgres:postgres@database:5432/postgres
       JWT_SECRET: ${JWT_SECRET:-supersecretjwt123}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-supersecretrefresh123}
+      ADMIN_EMAILS: ${ADMIN_EMAILS:-admin@volly.se}
       TURN_SECRET: your_turn_secret_here
       TURN_URL: turn:YOUR_SERVER_IP:3478
     depends_on:

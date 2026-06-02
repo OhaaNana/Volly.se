@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { Pool } from "pg";
 import dotenv from "dotenv";
+import { isAdminEmail } from "../../../config/admin";
 
 dotenv.config();
 export const pool = new Pool({
@@ -76,6 +77,7 @@ export const register = async (
       token: generateAccessToken(user.id),
       refreshToken: generateRefreshToken(user.id),
       onboarding_completed: user.onboarding_completed,
+      is_admin: isAdminEmail(user.email),
     });
   } catch (error) {
     console.error("Register error:", error);
@@ -116,6 +118,7 @@ export const login = async (
       token: generateAccessToken(user.id),
       refreshToken: generateRefreshToken(user.id),
       onboarding_completed: user.onboarding_completed,
+      is_admin: isAdminEmail(user.email),
     });
   } catch (error) {
     console.error("Login error:", error);

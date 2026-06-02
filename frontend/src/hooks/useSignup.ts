@@ -103,6 +103,7 @@ export const useSignup = () => {
       if (data?.token) {
         saveToken(data.token);
       }
+      localStorage.setItem("isAdmin", String(data?.is_admin === true));
       if (data?.id != null) {
         localStorage.setItem("userId", String(data.id));
       }

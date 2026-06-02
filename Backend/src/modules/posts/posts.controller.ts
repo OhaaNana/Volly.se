@@ -1,6 +1,7 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { createPost, deletePost, getPostOwner, getPosts } from "./posts.repo";
 import type { CreatePostInput } from "../../shared/types/posts.types";
+import { isAdminEmail } from "../../config/admin";
 
 type CreatePostBody = {
   title: string;
@@ -54,13 +55,24 @@ export async function deletePostHandler(
     if (!owner) {
       return reply.code(404).send({ message: "Post not found" });
     }
-    if (owner.user_id !== Number(userId)) {
+
+    const emailRes = await request.server.pg.query<{ email: string }>(
+      "SELECT email FROM users WHERE id = $1",
+      [Number(userId)]
+    );
+    const isAdmin = isAdminEmail(emailRes.rows[0]?.email);
+
+    if (!isAdmin && owner.user_id !== Number(userId)) {
       return reply
         .code(403)
         .send({ message: "You can only delete your own posts" });
     }
 
-    const deleted = await deletePost(request, postId, Number(userId));
+    const deleted = await deletePost(
+      request,
+      postId,
+      isAdmin ? undefined : Number(userId)
+    );
     if (!deleted) {
       return reply.code(404).send({ message: "Post not found" });
     }

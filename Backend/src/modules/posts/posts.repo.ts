@@ -35,7 +35,7 @@ export async function getPostOwner(
 export async function deletePost(
   request: FastifyRequest,
   id: number,
-  userId: number
+  userId?: number
 ): Promise<{ id: number } | null> {
   const pg = request.server.pg;
   await pg.query("DELETE FROM messages WHERE post_id = $1", [id]);
@@ -47,10 +47,17 @@ export async function deletePost(
     await pg.query("DELETE FROM messages WHERE request_id = $1", [row.id]);
   }
   await pg.query("DELETE FROM request WHERE post_id = $1", [id]);
-  const result = await pg.query<{ id: number }>(
-    "DELETE FROM post WHERE id = $1 AND user_id = $2 RETURNING id",
-    [id, userId]
-  );
+  // When userId is undefined (admin), delete regardless of owner.
+  const result =
+    userId === undefined
+      ? await pg.query<{ id: number }>(
+          "DELETE FROM post WHERE id = $1 RETURNING id",
+          [id]
+        )
+      : await pg.query<{ id: number }>(
+          "DELETE FROM post WHERE id = $1 AND user_id = $2 RETURNING id",
+          [id, userId]
+        );
   return result.rows[0] ?? null;
 }
 
