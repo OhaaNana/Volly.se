@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { tokenExpiry, clearAuth } from "./utils/auth";
 import LoginPage from "./pages/LogingPage";
 import HomePage from "./pages/HomePage";
@@ -37,6 +38,9 @@ function helpTypeToPostType(helpType: unknown): Post["postType"] {
 }
 
 export function App() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [currentUser, setCurrentUser] = useState<string | null>(() =>
     localStorage.getItem("currentUser")
   );
@@ -57,64 +61,89 @@ export function App() {
     null
   );
 
-  useEffect(() => {
-    let mounted = true;
-    async function loadPosts() {
-      try {
-        const res = await fetch("/api/posts");
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        if (!mounted) return;
-        const mapped: Post[] = (data as Record<string, unknown>[]).map((p) => ({
-          id: String(p.id),
-          title: String(p.title ?? ""),
-          content: String(p.description ?? p.content ?? ""),
-          createdAt: (() => {
-            const v = p.created_at as unknown;
-            if (typeof v === "number") {
-              return v < 1e12 ? v * 1000 : v;
-            }
-            if (typeof v === "string") return new Date(v).getTime();
-            return Date.now();
-          })(),
-          postType: helpTypeToPostType(p.help_type),
-          category: p.category != null ? String(p.category) : undefined,
-          tags:
-            Array.isArray(p.tags) && p.tags.length > 0
-              ? (p.tags as string[])
-              : typeof p.tagg === "string" && p.tagg.trim()
-                ? (String(p.tagg)
-                    .split(",")
-                    .map((t) => t.trim())
-                    .filter(Boolean) as string[])
-                : undefined,
-          author_email:
-            p.author_email != null ? String(p.author_email) : undefined,
-          first_name: p.first_name != null ? String(p.first_name) : undefined,
-          last_name: p.last_name != null ? String(p.last_name) : undefined,
-        }));
-        setPosts(mapped);
-      } catch (error) {
-        console.error("Failed to load posts:", error);
-      }
-    }
+  const pathToTab = (pathname: string): LoggedInMenuId => {
+    if (pathname.startsWith("/kategorier")) return "kategorier";
+    if (pathname.startsWith("/skapa")) return "skapa";
+    if (pathname.startsWith("/inkorg")) return "inkorg";
+    if (pathname.startsWith("/profil")) return "profil";
+    return "start";
+  };
+  const activeLoggedInPage = pathToTab(location.pathname);
 
-    loadPosts();
-    return () => {
-      mounted = false;
-    };
+  const goToTab = useCallback(
+    (next: LoggedInMenuId) => {
+      navigate(next === "start" ? "/" : `/${next}`);
+    },
+    [navigate]
+  );
+
+  const loadPosts = useCallback(async () => {
+    try {
+      const res = await fetch("/api/posts");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const mapped: Post[] = (data as Record<string, unknown>[]).map((p) => ({
+        id: String(p.id),
+        title: String(p.title ?? ""),
+        content: String(p.description ?? p.content ?? ""),
+        createdAt: (() => {
+          const v = p.created_at as unknown;
+          if (typeof v === "number") {
+            return v < 1e12 ? v * 1000 : v;
+          }
+          if (typeof v === "string") return new Date(v).getTime();
+          return Date.now();
+        })(),
+        postType: helpTypeToPostType(p.help_type),
+        category: p.category != null ? String(p.category) : undefined,
+        tags:
+          Array.isArray(p.tags) && p.tags.length > 0
+            ? (p.tags as string[])
+            : typeof p.tagg === "string" && p.tagg.trim()
+              ? (String(p.tagg)
+                  .split(",")
+                  .map((t) => t.trim())
+                  .filter(Boolean) as string[])
+              : undefined,
+        author_email:
+          p.author_email != null ? String(p.author_email) : undefined,
+        first_name: p.first_name != null ? String(p.first_name) : undefined,
+        last_name: p.last_name != null ? String(p.last_name) : undefined,
+      }));
+      setPosts(mapped);
+    } catch (error) {
+      console.error("Failed to load posts:", error);
+    }
   }, []);
-  const [activeLoggedInPage, setActiveLoggedInPage] =
-    useState<LoggedInMenuId>("start");
+
+  useEffect(() => {
+    // Initial load + polling + focus refetch keep the feed live without WS.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadPosts();
+    const interval = setInterval(loadPosts, 20000);
+    window.addEventListener("focus", loadPosts);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", loadPosts);
+    };
+  }, [loadPosts]);
+
+  useEffect(() => {
+    if (activeLoggedInPage === "start" || activeLoggedInPage === "kategorier") {
+      // Refetch when the user lands on a feed view so they always see fresh posts.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      loadPosts();
+    }
+  }, [activeLoggedInPage, loadPosts]);
 
   const handleLoggedInNavigate = (nextPage: LoggedInMenuId) => {
-    setActiveLoggedInPage(nextPage);
     if (nextPage === "profil") {
       setSelectedProfileEmail(null);
     }
     if (nextPage === "kategorier") {
       setSelectedCategory(undefined);
     }
+    goToTab(nextPage);
   };
 
   const openChatFromPost = async (post: Post) => {
@@ -154,7 +183,7 @@ export function App() {
         preview: post.content,
         timeLabel: "",
       });
-      setActiveLoggedInPage("inkorg");
+      goToTab("inkorg");
     } catch (e) {
       console.error("Error starting chat", e);
     }
@@ -197,16 +226,20 @@ export function App() {
     } else {
       setSelectedProfileEmail(authorEmail);
     }
-    setActiveLoggedInPage("profil");
+    goToTab("profil");
   };
 
-  const logout = useCallback((expired = false) => {
-    clearAuth();
-    setCurrentUser(null);
-    setNeedsOnboarding(false);
-    localStorage.removeItem("needsOnboarding");
-    if (expired) setSessionExpired(true);
-  }, []);
+  const logout = useCallback(
+    (expired = false) => {
+      clearAuth();
+      setCurrentUser(null);
+      setNeedsOnboarding(false);
+      localStorage.removeItem("needsOnboarding");
+      if (expired) setSessionExpired(true);
+      navigate("/");
+    },
+    [navigate]
+  );
 
   useEffect(() => {
     if (!currentUser) return;
@@ -270,7 +303,7 @@ export function App() {
         >
           {activeLoggedInPage === "skapa" ? (
             <CreatePostPage
-              onCancel={() => setActiveLoggedInPage("start")}
+              onCancel={() => goToTab("start")}
               onSubmit={async (post) => {
                 try {
                   const token = localStorage.getItem("token");
@@ -322,7 +355,7 @@ export function App() {
                 } catch (e) {
                   console.error("Error creating post", e);
                 } finally {
-                  setActiveLoggedInPage("start");
+                  goToTab("start");
                 }
               }}
             />
@@ -334,7 +367,7 @@ export function App() {
                 selectedProfileEmail
                   ? () => {
                       setSelectedProfileEmail(null);
-                      setActiveLoggedInPage("start");
+                      goToTab("start");
                     }
                   : undefined
               }
@@ -358,10 +391,10 @@ export function App() {
           ) : (
             <LoggedInStartPage
               firstName={firstName}
-              onCreatePost={() => setActiveLoggedInPage("skapa")}
+              onCreatePost={() => goToTab("skapa")}
               onExploreCategories={(category) => {
                 setSelectedCategory(category ?? "allt");
-                setActiveLoggedInPage("kategorier");
+                goToTab("kategorier");
               }}
             />
           )}
