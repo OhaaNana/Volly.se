@@ -21,7 +21,11 @@ export type CategoryKey =
   | "vardag"
   | "studier"
   | "sprak"
-  | "karriar";
+  | "karriar"
+  | "admistration"
+  | "socialt"
+  | "funktionsvariation"
+  | "ovrigt";
 
 const CATEGORY_CARDS: readonly {
   id: CategoryKey;
@@ -33,14 +37,36 @@ const CATEGORY_CARDS: readonly {
   {
     id: "mental",
     label: "Hälsa",
-    icon: "🌿",
+    icon: "💚",
     filterLabel: "Hälsa",
   },
   { id: "teknik", label: "Teknik", icon: "💻", filterLabel: "Teknik" },
+
   { id: "vardag", label: "Vardag", icon: "🤝", filterLabel: "Vardag" },
+
   { id: "studier", label: "Studier", icon: "📚", filterLabel: "Studier" },
+
   { id: "sprak", label: "Språk", icon: "🗣️", filterLabel: "Språk" },
+
   { id: "karriar", label: "Karriär", icon: "💼", filterLabel: "Karriär" },
+
+  {
+    id: "admistration",
+    label: "Administration",
+    icon: "📋",
+    filterLabel: "Administration",
+  },
+
+  { id: "socialt", label: "Socialt", icon: "👥", filterLabel: "Socialt" },
+
+  {
+    id: "funktionsvariation",
+    label: "Funktionsvariation",
+    icon: "🧩",
+    filterLabel: "Funktionsvariation",
+  },
+
+  { id: "ovrigt", label: "Övrigt", icon: "📦", filterLabel: "Övrigt" },
 ] as const;
 
 function formatTimeAgo(createdAt: number): string {
