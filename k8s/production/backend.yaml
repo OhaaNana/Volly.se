@@ -17,11 +17,35 @@ spec:
         - name: gitlab-registry
       containers:
         - name: backend
-          image: registry.chas-lab.dev/chas-challenge-2026/grupp-15/zero-bug-heroes/zero-bug-heroes/backend:latest
+          image: registry.chas-lab.dev/chas-challenge-2026/grupp-15/zero-bug-heroes/zero-bug-heroes/backend:production
           imagePullPolicy: Always
           env:
-            - name: DATABASE_URI
+            - name: DATABASE_URL
               value: postgres://postgres:postgres@postgres-production:5432/postgres
+            - name: POSTGRES_URI
+              value: postgres://postgres:postgres@postgres-production:5432/postgres
+            - name: CORS_ORIGIN
+              value: "https://volly.cc.k3s.chas-lab.dev"
+            - name: ADMIN_EMAILS
+              value: "admin@volly.se"
+            - name: TURN_HOST
+              # Production coturn public IP — must match k8s/production/coturn.yaml external-ip
+              value: "REPLACE_WITH_PRODUCTION_TURN_PUBLIC_IP"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets-prod
+                  key: JWT_SECRET
+            - name: JWT_REFRESH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets-prod
+                  key: JWT_REFRESH_SECRET
+            - name: TURN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets-prod
+                  key: TURN_SECRET
           ports:
             - containerPort: 3001
 ---
