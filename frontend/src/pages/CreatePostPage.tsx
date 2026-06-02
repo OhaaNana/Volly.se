@@ -20,43 +20,57 @@ const CATEGORIES: readonly {
   text: string;
 }[] = [
   { id: "teknik", label: "Teknik", bg: "bg-teal-200", text: "text-teal-800" },
+
   { id: "sprak", label: "Språk", bg: "bg-pink-200", text: "text-fuchsia-800" },
   {
     id: "socialt",
-    label: "Socialt & sällskap",
+    label: "Socialt",
     bg: "bg-orange-200",
     text: "text-orange-900",
   },
+
   { id: "karriar", label: "Karriär", bg: "bg-blue-200", text: "text-blue-900" },
+
   {
     id: "studier",
     label: "Studier",
     bg: "bg-green-200",
     text: "text-green-900",
   },
+
   {
-    id: "dokument",
-    label: "Dokument & byråkrati",
+    id: "administration",
+    label: "Administration",
     bg: "bg-slate-300",
     text: "text-slate-900",
   },
+
   {
-    id: "npf",
-    label: "Funktionsvariation & NPF",
+    id: "funktionsvariation",
+    label: "Funktionsvariation",
     bg: "bg-violet-200",
     text: "text-violet-900",
   },
+
   {
-    id: "mental",
-    label: "Mental hälsa",
+    id: "halsa",
+    label: "Hälsa",
     bg: "bg-rose-200",
     text: "text-rose-900",
   },
+
   {
     id: "vardag",
     label: "Vardag",
     bg: "bg-yellow-200",
     text: "text-yellow-900",
+  },
+
+  {
+    id: "ovrigt",
+    label: "Övrigt",
+    bg: "bg-green-100",
+    text: "text-green-900",
   },
 ] as const;
 
