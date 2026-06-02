@@ -95,6 +95,7 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
   const [newMessage, setNewMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
   const [refreshTick, setRefreshTick] = useState(0);
+  const [messagesTick, setMessagesTick] = useState(0);
   const socketRef = useRef<WebSocket | null>(null);
 
   const userId = (() => {
@@ -153,23 +154,45 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
 
   useEffect(() => {
     if (!selectedId) return;
+    const targetId = selectedId;
+    const showSpinner = messagesTick === 0;
     const fetchMessages = async () => {
-      setIsLoading(true);
+      if (showSpinner) setIsLoading(true);
       try {
-        const response = await fetch(`/api/chat/chat/${selectedId}`, {
+        const response = await fetch(`/api/chat/chat/${targetId}`, {
           headers: getAuthHeader(),
         });
         if (!response.ok) throw new Error("Failed to fetch messages");
         const data = await response.json();
+        if (selectedId !== targetId) return;
         setMessages(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching messages:", error);
       } finally {
-        setIsLoading(false);
+        if (showSpinner) setIsLoading(false);
       }
     };
     fetchMessages();
+  }, [selectedId, messagesTick]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMessages([]);
+    setMessagesTick(0);
   }, [selectedId]);
+
+  useEffect(() => {
+    const bump = () => {
+      setRefreshTick((t) => t + 1);
+      setMessagesTick((t) => (t === 0 ? 1 : t + 1));
+    };
+    const interval = setInterval(bump, 15000);
+    window.addEventListener("focus", bump);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", bump);
+    };
+  }, []);
 
   useEffect(() => {
     if (!selectedId || status !== "accepted" || !userId) return;
@@ -447,6 +470,16 @@ export default function InboxPage({ pendingChat }: InboxPageProps = {}) {
                   type="text"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (
+                      e.key === "Enter" &&
+                      !e.shiftKey &&
+                      !e.nativeEvent.isComposing
+                    ) {
+                      e.preventDefault();
+                      sendMessage();
+                    }
+                  }}
                   placeholder={
                     status === "accepted"
                       ? "Skriv ett meddelande..."
