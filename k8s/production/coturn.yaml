@@ -9,7 +9,7 @@ data:
     fingerprint
     use-auth-secret
     # MUST equal the TURN_SECRET GitLab CI/CD variable used for backend-secrets-prod
-    static-auth-secret=REPLACE_WITH_PRODUCTION_TURN_SECRET
+    static-auth-secret=6374e6cae5e4e31478cd6c575733311853a95e1631c1f18f709a872e3f11171c
     realm=volly.cc.k3s.chas-lab.dev
     no-cli
     log-file=stdout
