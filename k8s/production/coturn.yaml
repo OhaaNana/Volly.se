@@ -35,7 +35,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       # Staging coturn binds host UDP 3478 on cc-wp-1. Two coturns cannot share
       # that port on the same node — pin production to a DIFFERENT node.
-      nodeName: REPLACE_WITH_PRODUCTION_TURN_NODE
+      nodeName: cc-wp-1
       containers:
         - name: coturn
           image: coturn/coturn:latest
