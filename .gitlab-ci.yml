@@ -145,6 +145,12 @@ deploy_production:
     name: production
     url: https://volly.cc.k3s.chas-lab.dev
   script:
+    - |
+      kubectl create secret generic backend-secrets-prod -n doe25-group-15 \
+        --from-literal=JWT_SECRET="$JWT_SECRET" \
+        --from-literal=JWT_REFRESH_SECRET="$JWT_REFRESH_SECRET" \
+        --from-literal=TURN_SECRET="$TURN_SECRET" \
+        --dry-run=client -o yaml | kubectl apply -f -
     - kubectl apply -f k8s/production/ -n doe25-group-15
     - kubectl rollout restart deployment/frontend-production -n doe25-group-15
     - kubectl rollout restart deployment/backend-production -n doe25-group-15
