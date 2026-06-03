@@ -17,10 +17,10 @@ spec:
         - name: gitlab-registry
       containers:
         - name: frontend
-          image: registry.chas-lab.dev/chas-challenge-2026/grupp-15/zero-bug-heroes/zero-bug-heroes/frontend:latest
+          image: registry.chas-lab.dev/chas-challenge-2026/grupp-15/zero-bug-heroes/zero-bug-heroes/frontend:production
           imagePullPolicy: Always
           ports:
-            - containerPort: 3000
+            - containerPort: 4173
 ---
 apiVersion: v1
 kind: Service
@@ -31,5 +31,5 @@ spec:
   selector:
     app: frontend-production
   ports:
-    - port: 3000
-      targetPort: 3000
+    - port: 4173
+      targetPort: 4173

@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coturn-config
+  namespace: doe25-group-15
+data:
+  turnserver.conf: |
+    listening-port=3478
+    fingerprint
+    use-auth-secret
+    static-auth-secret=SUPER_SECRET_KEY
+    realm=volly-staging.cc.k3s.chas-lab.dev
+    no-cli
+    log-file=stdout
+    external-ip=46.62.255.23
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coturn-staging
+  namespace: doe25-group-15
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coturn-staging
+  template:
+    metadata:
+      labels:
+        app: coturn-staging
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      nodeName: cc-wp-1
+      containers:
+        - name: coturn
+          image: coturn/coturn:latest
+          args: ["-c", "/etc/coturn/turnserver.conf"]
+          volumeMounts:
+            - name: config
+              mountPath: /etc/coturn
+      volumes:
+        - name: config
+          configMap:
+            name: coturn-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: coturn-staging
+  namespace: doe25-group-15
+spec:
+  type: LoadBalancer
+  selector:
+    app: coturn-staging
+  ports:
+    - name: turn-udp
+      port: 3478
+      targetPort: 3478
+      protocol: UDP

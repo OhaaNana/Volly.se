@@ -8,14 +8,22 @@ services:
     environment:
       POSTGRES_URI: postgresql://postgres:postgres@database:5432/postgres
       DATABASE_URL: postgresql://postgres:postgres@database:5432/postgres
+      JWT_SECRET: ${JWT_SECRET:-supersecretjwt123}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-supersecretrefresh123}
+      ADMIN_EMAILS: ${ADMIN_EMAILS:-admin@volly.se}
+      TURN_SECRET: your_turn_secret_here
+      TURN_URL: turn:YOUR_SERVER_IP:3478
     depends_on:
       - database
 
   frontend:
-    build: ./Frontend
+    build: ./frontend
     ports:
       - "4173:4173"
+    environment:
+      BACKEND_URL: http://backend:3001
+    depends_on:
+      - backend
 
   database:
     image: postgres:16
@@ -29,7 +37,24 @@ services:
       - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./Backend/src/database/migrations/000_create_users_table.sql:/docker-entrypoint-initdb.d/01_users.sql
+      - ./Backend/src/database/migrations/000_create_users_table.sql:/docker-entrypoint-initdb.d/01.sql
+      - ./Backend/src/database/migrations/001_create_post_table.sql:/docker-entrypoint-initdb.d/02.sql
+      - ./Backend/src/database/migrations/002_create_request_status_enum.sql:/docker-entrypoint-initdb.d/03.sql
+      - ./Backend/src/database/migrations/003_create_request_tabel.sql:/docker-entrypoint-initdb.d/04.sql
+      - ./Backend/src/database/migrations/004_create_messages_tabel.sql:/docker-entrypoint-initdb.d/05.sql
+      - ./Backend/src/database/migrations/005_add_post_category.sql:/docker-entrypoint-initdb.d/06.sql
+      - ./Backend/src/database/migrations/006_add_bio_to_users.sql:/docker-entrypoint-initdb.d/07.sql
+      - ./Backend/src/database/migrations/007_add_post_tagg.sql:/docker-entrypoint-initdb.d/08.sql
+      - ./Backend/src/database/migrations/008_add_onboarding_to_users.sql:/docker-entrypoint-initdb.d/09.sql
+
+  coturn:
+    image: coturn/coturn:latest
+    container_name: volly-coturn
+    restart: unless-stopped
+    network_mode: "host"
+    volumes:
+      - ./coturn/turnserver.conf:/etc/coturn/turnserver.conf
+    command: ["-c", "/etc/coturn/turnserver.conf"]
 
 volumes:
   pgdata:

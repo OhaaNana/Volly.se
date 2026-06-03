@@ -6,9 +6,9 @@ export async function createPost(
   request: FastifyRequest
 ): Promise<PostRow> {
   const query = `
-    INSERT INTO post (user_id, category, title, description, help_type)
-    VALUES ($1, $2, $3, $4, $5)
-    RETURNING id, user_id, category, title, description, help_type, created_at, updated_at
+    INSERT INTO post (user_id, category, title, description, help_type, tagg)
+    VALUES ($1, $2, $3, $4, $5, $6)
+    RETURNING id, user_id, category, title, description, help_type, tagg, created_at, updated_at
   `;
   const result = await request.server.pg.query<PostRow>(query, [
     data.user_id,
@@ -16,14 +16,56 @@ export async function createPost(
     data.title,
     data.description,
     data.help_type,
+    data.tagg,
   ]);
   return result.rows[0];
+}
+
+export async function getPostOwner(
+  request: FastifyRequest,
+  id: number
+): Promise<{ user_id: number } | null> {
+  const result = await request.server.pg.query<{ user_id: number }>(
+    "SELECT user_id FROM post WHERE id = $1",
+    [id]
+  );
+  return result.rows[0] ?? null;
+}
+
+export async function deletePost(
+  request: FastifyRequest,
+  id: number,
+  userId?: number
+): Promise<{ id: number } | null> {
+  const pg = request.server.pg;
+  await pg.query("DELETE FROM messages WHERE post_id = $1", [id]);
+  const requestIds = await pg.query<{ id: number }>(
+    "SELECT id FROM request WHERE post_id = $1",
+    [id]
+  );
+  for (const row of requestIds.rows) {
+    await pg.query("DELETE FROM messages WHERE request_id = $1", [row.id]);
+  }
+  await pg.query("DELETE FROM request WHERE post_id = $1", [id]);
+  // When userId is undefined (admin), delete regardless of owner.
+  const result =
+    userId === undefined
+      ? await pg.query<{ id: number }>(
+          "DELETE FROM post WHERE id = $1 RETURNING id",
+          [id]
+        )
+      : await pg.query<{ id: number }>(
+          "DELETE FROM post WHERE id = $1 AND user_id = $2 RETURNING id",
+          [id, userId]
+        );
+  return result.rows[0] ?? null;
 }
 
 export async function getPosts(request: FastifyRequest, authorEmail?: string) {
   const query = `
     SELECT p.id, p.user_id, u.first_name, u.last_name, u.email as author_email,
-           p.category, p.title, p.description, p.help_type, p.created_at, p.updated_at
+           p.category, p.title, p.description, p.help_type, p.tagg,
+           p.created_at, p.updated_at
     FROM post p
     JOIN users u ON p.user_id = u.id
     ${authorEmail ? "WHERE u.email = $1" : ""}

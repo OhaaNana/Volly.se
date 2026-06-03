@@ -1,5 +1,22 @@
 import { type FastifyRequest, type FastifyReply } from "fastify";
 import { pool } from "./auth.controller";
+import { isAdminEmail } from "../../../config/admin";
+
+export const completeOnboarding = async (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => {
+  try {
+    const userId = Number(request.user?.id);
+    await pool.query(
+      "UPDATE users SET onboarding_completed = TRUE WHERE id = $1",
+      [userId]
+    );
+    reply.send({ success: true });
+  } catch (error) {
+    reply.code(500).send({ message: "Error completing onboarding", error });
+  }
+};
 
 // Skapa en user
 export const createUser = async (
@@ -90,6 +107,20 @@ export const deleteUser = async (
 ) => {
   try {
     const { id } = request.params;
+
+    // Only admins may delete other users; a user may delete their own account.
+    const requesterId = Number(request.user?.id);
+    if (requesterId !== Number(id)) {
+      const emailRes = await pool.query<{ email: string }>(
+        "SELECT email FROM users WHERE id = $1",
+        [requesterId]
+      );
+      if (!isAdminEmail(emailRes.rows[0]?.email)) {
+        return reply
+          .code(403)
+          .send({ message: "Not authorized to delete this user" });
+      }
+    }
 
     const result = await pool.query(
       "DELETE FROM users WHERE id = $1 RETURNING id",

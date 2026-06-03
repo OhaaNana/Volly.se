@@ -1,229 +1,120 @@
-import PostCard from "../components/PostCard";
-
-type Post = {
-  id: string;
-  title: string;
-  content: string;
-  createdAt: number;
-  postType?: "seek" | "offer";
-  tags?: string[];
-  author_email?: string;
-  first_name?: string;
-  last_name?: string;
-};
+import type { CategoryKey } from "./CategoryPage";
+import HowVollyWorks from "../components/HowVollyWorks";
 
 type Props = {
   firstName: string;
   onCreatePost: () => void;
-  onExploreCategories?: () => void;
-  onProfile?: (authorEmail?: string) => void;
-  posts?: Post[];
-  formatDisplayName?: (
-    firstName?: string,
-    lastName?: string,
-    authorEmail?: string
-  ) => string;
+  onExploreCategories?: (category?: CategoryKey) => void;
 };
 
-function formatTimeAgo(createdAt: number): string {
-  if (typeof createdAt !== "number" || Number.isNaN(createdAt)) return "Okänt";
-  // normalize seconds -> ms
-  const normalized = createdAt < 1e12 ? createdAt * 1000 : createdAt;
-  const sec = Math.floor((Date.now() - normalized) / 1000);
-  if (sec < 60) return "nyss";
-  const min = Math.floor(sec / 60);
-  if (min < 60) return `${min} min sen`;
-  const h = Math.floor(min / 60);
-  if (h < 48) return `${h}h sen`;
-  const d = Math.floor(h / 24);
-  return `${d} d sen`;
-}
-
-function badgeForPost(post: Post | undefined): string {
-  if (post?.postType === "seek") return "Söker hjälp";
-  if (post?.postType === "offer") return "Erbjuder hjälp";
-  return "Erbjuder hjälp";
-}
+const POPULAR_CATEGORIES: {
+  id: CategoryKey;
+  label: string;
+  bgClass: string;
+  textClass: string;
+}[] = [
+  {
+    id: "halsa",
+    label: "Hälsa",
+    bgClass: "bg-rose-200",
+    textClass: "text-rose-900",
+  },
+  {
+    id: "teknik",
+    label: "Teknik",
+    bgClass: "bg-teal-200",
+    textClass: "text-teal-800",
+  },
+  {
+    id: "vardag",
+    label: "Vardag",
+    bgClass: "bg-yellow-200",
+    textClass: "text-yellow-900",
+  },
+  {
+    id: "studier",
+    label: "Studier",
+    bgClass: "bg-green-200",
+    textClass: "text-green-900",
+  },
+  {
+    id: "sprak",
+    label: "Språk",
+    bgClass: "bg-pink-200",
+    textClass: "text-fuchsia-800",
+  },
+  {
+    id: "karriar",
+    label: "Karriär",
+    bgClass: "bg-blue-200",
+    textClass: "text-blue-900",
+  },
+];
 
 export default function LoggedInStartPage({
   firstName,
   onCreatePost,
   onExploreCategories,
-  onProfile,
-  posts,
-  formatDisplayName,
 }: Props) {
-  const getAuthorName = (post: Post) => {
-    if (formatDisplayName) {
-      return formatDisplayName(
-        post.first_name,
-        post.last_name,
-        post.author_email
-      );
-    }
-    if (post.first_name || post.last_name)
-      return `${post.first_name ?? ""} ${post.last_name ?? ""}`.trim();
-    if (post.author_email)
-      return post.author_email.split("@")[0] ?? "Okänt namn";
-    return "Okänt namn";
-  };
-
-  const getInitials = (post: Post) => {
-    const first = post.first_name?.trim()?.[0] ?? "";
-    const last = post.last_name?.trim()?.[0] ?? "";
-    if (first || last) return (first + last).toUpperCase();
-    if (post.author_email) {
-      const localPart = post.author_email.split("@")[0] ?? "";
-      return localPart
-        .split(/[._-]/)
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((part) => part[0]?.toUpperCase() ?? "")
-        .join("");
-    }
-    return (first + last).toUpperCase();
-  };
   return (
-    <div className="w-full min-w-0 self-stretch overflow-x-hidden px-4 py-10 sm:px-6 sm:py-12 inline-flex flex-col justify-start items-center gap-8">
-      <div className="w-full max-w-[920px] p-6 sm:p-10 bg-gradient-to-b from-green-100 to-red-50 rounded-[30px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 flex flex-col justify-start items-start gap-5 overflow-hidden shadow-[0px_10px_24px_-14px_rgba(22,26,38,0.35)]">
-        <div className="px-3.5 py-[5px] bg-white rounded-[20px] outline outline-1 outline-offset-[-1px] outline-stone-300/60 flex flex-col justify-center items-start gap-2.5 overflow-hidden">
-          <div className="justify-center text-green-600 text-sm font-semibold font-['DM_Sans'] leading-5">
-            Välkommen tillbaka, {firstName}
-          </div>
+    <div className="max-w-4xl w-full mx-auto px-10 sm:px-10 py-12 lg:py-10 space-y-8">
+      <section className="w-full rounded-3xl p-6 sm:p-8 bg-gradient-card border border-border relative overflow-hidden">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-card text-sm font-semibold text-primary border border-border mb-4">
+          Välkommen tillbaka, {firstName}
         </div>
-        <div className="self-stretch py-2.5 flex flex-col justify-start items-start gap-2.5">
-          <div className="justify-start text-dark-gray text-3xl sm:text-4xl font-bold font-['DM_Sans'] leading-10">
-            Vad kan vi lösa tillsammans idag?
-          </div>
-          <div className="self-stretch justify-start text-neutral-500 text-base sm:text-lg font-normal font-['DM_Sans'] leading-7">
-            Skriv ett inlägg och nå ut till någon med rätt kunskap - eller
-            utforska vad du själv kan bidra med.
-          </div>
-        </div>
-        <div className="inline-flex flex-wrap justify-start items-center gap-3">
+        <h1 className="text-3xl sm:text-4xl font-bold leading-tight mb-2">
+          Vad kan vi lösa tillsammans idag?
+        </h1>
+        <p className="text-muted-foreground lg:max-w-xl md:max-w-sm">
+          Skriv ett inlägg och nå ut till någon med rätt kunskap - eller
+          utforska vad du själv kan bidra med.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-3">
           <button
             type="button"
             onClick={onCreatePost}
-            className="px-6 py-3.5 bg-orange-300 rounded-3xl outline outline-1 outline-offset-[-1px] outline-zinc-400/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden"
+            className="inline-flex items-center justify-center h-11 px-5 rounded-full bg-gradient-warm text-warm-foreground font-semibold shadow-soft hover:shadow-glow transition"
           >
-            <div className="justify-start text-dark-gray text-base font-semibold font-['DM_Sans'] leading-5">
-              Skriv ett inlägg
-            </div>
+            Skriv ett inlägg
           </button>
           <button
             type="button"
-            onClick={onExploreCategories}
-            className="px-6 py-3.5 bg-white-2 rounded-3xl outline outline-1 outline-offset-[-1px] outline-zinc-400/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden"
+            onClick={() => onExploreCategories?.()}
+            className="inline-flex items-center justify-center h-11 px-5 rounded-full bg-card border border-border font-semibold hover:bg-muted transition"
           >
-            <div className="justify-start text-dark-gray text-base font-semibold font-['DM_Sans'] leading-5">
-              Utforska kategorier
-            </div>
+            Utforska kategorier
           </button>
         </div>
-      </div>
+      </section>
 
-      <div className="self-stretch flex flex-col justify-start items-center gap-4">
-        <div className="w-full max-w-[920px] p-2.5 bg-white-3 rounded-[40px] shadow-[0px_4px_12px_0px_rgba(0,0,0,0.07)] outline outline-1 outline-offset-[-1px] outline-stone-300/40 inline-flex justify-start items-center gap-3 overflow-hidden">
-          <i
-            aria-hidden
-            className="fi fi-br-search-heart ml-1 shrink-0 text-[20px] leading-none text-zinc-500"
-          />
-          <div className="flex-1 p-[5px] flex justify-start items-center gap-2.5 overflow-hidden">
-            <div className="justify-start text-zinc-500 text-base font-normal font-['DM_Sans'] leading-5">
-              Sök efter inlägg, ämnen, taggar...
-            </div>
+      <section className="w-full">
+        <div className="w-full inline-flex flex-col justify-center items-start gap-3">
+          <div>
+            <h2 className="font-display text-xl font-bold">
+              Populära kategorier
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Klicka på en kategori för att komma till flödet
+            </p>
+          </div>
+          <div className="w-full flex gap-2">
+            {POPULAR_CATEGORIES.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => onExploreCategories?.(cat.id)}
+                className={`flex-1 flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-full border border-border ${cat.bgClass} hover:bg-muted transition`}
+              >
+                <span className={`${cat.textClass} text-sm font-medium`}>
+                  {cat.label}
+                </span>
+              </button>
+            ))}
           </div>
         </div>
+      </section>
 
-        <div className="w-full max-w-[920px] flex flex-wrap justify-start items-center gap-2.5">
-          <div className="px-7 py-1.5 bg-indigo-200/60 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-            <div className="justify-start text-blue-900/80 text-sm font-semibold font-['DM_Sans'] leading-5">
-              Teknik
-            </div>
-          </div>
-          <div className="px-7 py-1.5 bg-amber-100/60 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-            <div className="justify-start text-yellow-900/80 text-sm font-semibold font-['DM_Sans'] leading-5">
-              Vardag
-            </div>
-          </div>
-          <div className="px-7 py-1.5 bg-fuchsia-200/60 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-            <div className="justify-start text-purple-950/80 text-sm font-semibold font-['DM_Sans'] leading-5">
-              Språk
-            </div>
-          </div>
-          <div className="px-7 py-1.5 bg-cyan-100/60 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-            <div className="justify-start text-teal-800/80 text-sm font-semibold font-['DM_Sans'] leading-5">
-              Studier
-            </div>
-          </div>
-          <div className="px-7 py-1.5 bg-green-200/60 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-            <div className="justify-start text-green-900/80 text-sm font-semibold font-['DM_Sans'] leading-5">
-              Mental hälsa
-            </div>
-          </div>
-          <div className="px-7 py-1.5 bg-orange-100/60 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-            <div className="justify-start text-amber-900/80 text-sm font-semibold font-['DM_Sans'] leading-5">
-              Karriär
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="w-full max-w-[920px] inline-flex flex-wrap justify-start items-center gap-3">
-        <div className="px-7 py-1.5 bg-neutral-700 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-zinc-100 text-xs font-semibold font-['DM_Sans'] leading-5">
-            Allt
-          </div>
-        </div>
-        <div className="px-7 py-1.5 bg-white-2 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-neutral-700 text-xs font-semibold font-['DM_Sans'] leading-5">
-            Söker hjälp
-          </div>
-        </div>
-        <div className="px-7 py-1.5 bg-white-2 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-neutral-700 text-xs font-semibold font-['DM_Sans'] leading-5">
-            Erbjuder hjälp
-          </div>
-        </div>
-        <div className="px-7 py-1.5 bg-white-2 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-neutral-700 text-xs font-semibold font-['DM_Sans'] leading-5">
-            Video
-          </div>
-        </div>
-        <div className="px-7 py-1.5 bg-white-2 rounded-[100px] outline outline-1 outline-offset-[-1px] outline-stone-300/30 inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden">
-          <div className="justify-start text-neutral-700 text-xs font-semibold font-['DM_Sans'] leading-5">
-            Chatt
-          </div>
-        </div>
-      </div>
-
-      <div
-        className={`w-full max-w-[920px] space-y-4 ${
-          posts && posts.length > 1
-            ? "overflow-y-auto max-h-[64vh] pr-2 green-scrollbar"
-            : ""
-        }`}
-      >
-        {posts && posts.length > 0 ? (
-          posts.map((post) => (
-            <PostCard
-              key={post.id}
-              authorName={getAuthorName(post)}
-              authorInitials={getInitials(post)}
-              timeLabel={formatTimeAgo(post.createdAt)}
-              badgeLabel={badgeForPost(post)}
-              title={post.title}
-              body={post.content}
-              tags={post.tags}
-              onProfile={
-                onProfile ? () => onProfile(post.author_email) : undefined
-              }
-            />
-          ))
-        ) : (
-          <div className="p-6 text-center text-zinc-500">Inga inlägg än.</div>
-        )}
-      </div>
+      <HowVollyWorks compact />
     </div>
   );
 }

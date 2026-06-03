@@ -14,14 +14,18 @@ export type CategoryPost = {
   last_name?: string;
 };
 
-type CategoryKey =
+export type CategoryKey =
   | "allt"
-  | "mental"
+  | "halsa"
   | "teknik"
   | "vardag"
   | "studier"
   | "sprak"
-  | "karriar";
+  | "karriar"
+  | "administration"
+  | "socialt"
+  | "funktionsvariation"
+  | "ovrigt";
 
 const CATEGORY_CARDS: readonly {
   id: CategoryKey;
@@ -30,17 +34,34 @@ const CATEGORY_CARDS: readonly {
   filterLabel: string | null;
 }[] = [
   { id: "allt", label: "Allt", icon: "✨", filterLabel: null },
-  {
-    id: "mental",
-    label: "Mental hälsa",
-    icon: "🌿",
-    filterLabel: "Mental hälsa",
-  },
+  { id: "halsa", label: "Hälsa", icon: "💚", filterLabel: "Hälsa" },
   { id: "teknik", label: "Teknik", icon: "💻", filterLabel: "Teknik" },
+
   { id: "vardag", label: "Vardag", icon: "🤝", filterLabel: "Vardag" },
+
   { id: "studier", label: "Studier", icon: "📚", filterLabel: "Studier" },
+
   { id: "sprak", label: "Språk", icon: "🗣️", filterLabel: "Språk" },
+
   { id: "karriar", label: "Karriär", icon: "💼", filterLabel: "Karriär" },
+
+  {
+    id: "administration",
+    label: "Administration",
+    icon: "📋",
+    filterLabel: "Administration",
+  },
+
+  { id: "socialt", label: "Socialt", icon: "👥", filterLabel: "Socialt" },
+
+  {
+    id: "funktionsvariation",
+    label: "Funktionsvariation",
+    icon: "🧩",
+    filterLabel: "Funktionsvariation",
+  },
+
+  { id: "ovrigt", label: "Övrigt", icon: "📦", filterLabel: "Övrigt" },
 ] as const;
 
 function formatTimeAgo(createdAt: number): string {
@@ -65,6 +86,11 @@ function badgeForPost(post: CategoryPost): string {
 type Props = {
   posts: CategoryPost[];
   onProfile?: (authorEmail?: string) => void;
+  onDeletePost?: (postId: string) => void;
+  currentUserEmail?: string | null;
+  isAdmin?: boolean;
+  initialCategory?: CategoryKey;
+  onContact?: (post: CategoryPost) => void;
 };
 
 function formatDisplayName(post: CategoryPost) {
@@ -83,107 +109,170 @@ function formatDisplayName(post: CategoryPost) {
   return "Okänt namn";
 }
 
-export default function CategoryPage({ posts, onProfile }: Props) {
-  const [activeCategory, setActiveCategory] = useState<CategoryKey>("allt");
+export default function CategoryPage({
+  posts,
+  onProfile,
+  onDeletePost,
+  currentUserEmail,
+  isAdmin,
+  onContact,
+  initialCategory,
+}: Props) {
+  const [activeCategory, setActiveCategory] = useState<CategoryKey>(
+    initialCategory ?? "allt"
+  );
+  const [prevInitialCategory, setPrevInitialCategory] =
+    useState(initialCategory);
   const [postKind, setPostKind] = useState<"seek" | "offer">("seek");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  if (initialCategory !== prevInitialCategory) {
+    setPrevInitialCategory(initialCategory);
+    if (initialCategory) {
+      setActiveCategory(initialCategory);
+    }
+  }
 
   const activeFilterLabel =
     CATEGORY_CARDS.find((c) => c.id === activeCategory)?.filterLabel ?? null;
 
   const filteredPosts = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
     return posts.filter((p) => {
       const typeOk = !p.postType || p.postType === postKind;
       if (!typeOk) return false;
-      if (activeFilterLabel === null) return true;
-      return p.category === activeFilterLabel;
+      if (activeFilterLabel !== null && p.category !== activeFilterLabel) {
+        return false;
+      }
+
+      if (!query) return true;
+
+      const authorName = formatDisplayName(p).toLowerCase();
+      return (
+        p.title.toLowerCase().includes(query) ||
+        p.content.toLowerCase().includes(query) ||
+        (p.category?.toLowerCase().includes(query) ?? false) ||
+        authorName.includes(query) ||
+        (p.author_email?.toLowerCase().includes(query) ?? false) ||
+        (p.first_name?.toLowerCase().includes(query) ?? false) ||
+        (p.last_name?.toLowerCase().includes(query) ?? false) ||
+        (p.tags?.some((tag) => tag.toLowerCase().includes(query)) ?? false)
+      );
     });
-  }, [posts, activeFilterLabel, postKind]);
+  }, [posts, activeFilterLabel, postKind, searchQuery]);
 
   const count = filteredPosts.length;
+  const emptyMessage = searchQuery.trim()
+    ? "Inga inlägg matchar din sökning."
+    : "Inga inlägg matchar filtret ännu.";
+
+  const headingLabel =
+    activeCategory === "allt"
+      ? "Alla inlägg"
+      : (CATEGORY_CARDS.find((cat) => cat.id === activeCategory)?.label ??
+        "Alla inlägg");
 
   return (
-    <div className="w-full min-w-0 self-stretch px-6 py-10 inline-flex flex-col justify-start items-center gap-8">
-      <div className="w-full max-w-[900px] flex flex-col gap-6">
-        <header className="flex flex-col gap-1">
-          <h1 className="text-Colors-foreground text-3xl font-bold font-['DM_Sans'] tracking-tight sm:text-4xl">
-            Kategorier
-          </h1>
-          <p className="text-Colors-muted-foreground text-base font-medium font-['DM_Sans']">
-            Hitta inlägg inom specifika kategorier
-          </p>
-        </header>
+    <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 lg:py-10">
+      <header className="mb-6">
+        <h1 className="font-display mb-1 text-3xl font-bold tracking-tight">
+          Kategorier
+        </h1>
+        <p className="text-muted-foreground">
+          Hitta hjälp inom ett ämne — eller erbjuda din egen.
+        </p>
+      </header>
 
-        <div className="-mx-1 flex gap-3 overflow-x-auto pb-1 pt-0.5 [scrollbar-width:thin]">
-          {CATEGORY_CARDS.map((cat) => {
-            const selected = activeCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setActiveCategory(cat.id)}
-                aria-pressed={selected}
-                className={`flex min-w-[104px] shrink-0 flex-col items-center gap-2 rounded-2xl px-4 py-4 font-['DM_Sans'] transition-[background-color,color,box-shadow,outline-color] ${
-                  selected
-                    ? "bg-Colors-foreground text-white shadow-md outline outline-2 -outline-offset-2 outline-Colors-foreground"
-                    : "bg-Colors-card text-Colors-foreground outline outline-1 -outline-offset-1 outline-Colors-border hover:bg-Colors-muted/60"
-                }`}
-              >
-                <span className="text-2xl leading-none" aria-hidden>
-                  {cat.icon}
-                </span>
-                <span
-                  className={`text-center text-sm font-semibold leading-tight ${selected ? "text-white" : "text-Colors-foreground"}`}
-                >
-                  {cat.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+      <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        {CATEGORY_CARDS.map((cat) => {
+          const selected = activeCategory === cat.id;
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => setActiveCategory(cat.id)}
+              aria-pressed={selected}
+              className={`rounded-2xl border p-4 text-left transition ${
+                selected
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-border bg-card hover:bg-muted"
+              }`}
+            >
+              <div className="mb-1 text-2xl" aria-hidden>
+                {cat.icon}
+              </div>
+              <div className="text-sm font-semibold leading-tight">
+                {cat.label}
+              </div>
+            </button>
+          );
+        })}
+      </div>
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="text-Colors-foreground text-lg font-semibold font-['DM_Sans'] sm:text-xl">
-            Alla inlägg ({count})
-          </h2>
-          <div
-            className="inline-flex w-fit rounded-full bg-Colors-muted/90 p-1 outline outline-1 -outline-offset-1 outline-Colors-border"
-            role="group"
-            aria-label="Filtrera på typ av hjälp"
+      <label className="mb-6 inline-flex w-full items-center gap-3 overflow-hidden rounded-full border border-border bg-card p-3 shadow-soft">
+        <i
+          aria-hidden
+          className="fi fi-br-search-heart ml-1 shrink-0 text-4 leading-none text-zinc-500"
+        />
+        <span className="sr-only">Sök efter inlägg, ämnen, taggar</span>
+        <input
+          type="search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Sök efter inlägg, ämnen, taggar..."
+          className="min-w-0 flex-1 text-sm font-normal text-foreground outline-none placeholder:text-zinc-500"
+        />
+      </label>
+
+      <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="font-display text-xl font-bold">
+          {headingLabel}{" "}
+          <span className="text-sm font-normal text-muted-foreground">
+            ({count})
+          </span>
+        </h2>
+
+        <div
+          className="inline-flex w-fit rounded-full border border-border bg-muted p-1"
+          role="group"
+          aria-label="Filtrera på typ av hjälp"
+        >
+          <button
+            type="button"
+            onClick={() => setPostKind("seek")}
+            aria-pressed={postKind === "seek"}
+            className={`rounded-full px-3 py-1.5 text-sm font-semibold transition ${
+              postKind === "seek"
+                ? "bg-card text-foreground shadow-soft"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
           >
-            <button
-              type="button"
-              onClick={() => setPostKind("seek")}
-              aria-pressed={postKind === "seek"}
-              className={`rounded-full px-5 py-2 text-sm font-semibold font-['DM_Sans'] transition-colors ${
-                postKind === "seek"
-                  ? "bg-white text-Colors-foreground shadow-sm"
-                  : "text-Colors-muted-foreground hover:text-Colors-foreground"
-              }`}
-            >
-              Söker
-            </button>
-            <button
-              type="button"
-              onClick={() => setPostKind("offer")}
-              aria-pressed={postKind === "offer"}
-              className={`rounded-full px-5 py-2 text-sm font-semibold font-['DM_Sans'] transition-colors ${
-                postKind === "offer"
-                  ? "bg-white text-Colors-foreground shadow-sm"
-                  : "text-Colors-muted-foreground hover:text-Colors-foreground"
-              }`}
-            >
-              Erbjuder
-            </button>
-          </div>
+            Söker
+          </button>
+          <button
+            type="button"
+            onClick={() => setPostKind("offer")}
+            aria-pressed={postKind === "offer"}
+            className={`rounded-full px-3 py-1.5 text-sm font-semibold transition ${
+              postKind === "offer"
+                ? "bg-card text-foreground shadow-soft"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Erbjuder
+          </button>
         </div>
+      </div>
 
-        <div className="flex w-full flex-col items-stretch gap-6">
-          {filteredPosts.length === 0 ? (
-            <p className="rounded-2xl bg-Colors-card px-5 py-8 text-center text-Colors-muted-foreground outline outline-1 -outline-offset-1 outline-Colors-border font-['DM_Sans'] text-sm font-medium">
-              Inga inlägg matchar filtret ännu.
-            </p>
-          ) : (
-            filteredPosts.map((post) => (
+      <div className="flex w-full flex-col items-stretch gap-6">
+        {filteredPosts.length === 0 ? (
+          <p className="rounded-2xl bg-card px-5 py-8 text-center text-sm font-medium text-muted-foreground outline -outline-offset-1 outline-border">
+            {emptyMessage}
+          </p>
+        ) : (
+          <div className="grid gap-4 lg:grid-cols-2">
+            {filteredPosts.map((post) => (
               <PostCard
                 key={post.id}
                 authorName={formatDisplayName(post)}
@@ -214,10 +303,18 @@ export default function CategoryPage({ posts, onProfile }: Props) {
                 onProfile={
                   onProfile ? () => onProfile(post.author_email) : undefined
                 }
+                onContact={onContact ? () => onContact(post) : undefined}
+                onDelete={
+                  onDeletePost &&
+                  currentUserEmail &&
+                  (isAdmin || post.author_email === currentUserEmail)
+                    ? () => onDeletePost(post.id)
+                    : undefined
+                }
               />
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
