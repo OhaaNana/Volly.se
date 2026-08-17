@@ -5,6 +5,7 @@ import type {
   SignupResult,
   StoredUser,
 } from "../types";
+import { validateEmail } from "../utils/validation";
 
 const USERS_KEY = "users";
 
@@ -21,9 +22,6 @@ const getUsers = (): StoredUser[] => {
     return [];
   }
 };
-
-const validateEmail = (email: string) =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 export const useSignup = () => {
   const [formData, setFormData] = useState<SignupFormData>({
